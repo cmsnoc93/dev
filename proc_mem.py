@@ -1,4 +1,3 @@
-﻿import subprocess
 from netmiko import Netmiko
 
 src_ip = '10.7.14.7'
