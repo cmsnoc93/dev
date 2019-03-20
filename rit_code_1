@@ -1,0 +1,233 @@
+import re
+from netmiko import ConnectHandler
+
+#src=input(" Enter Source ")
+#dst=input(" Enter destination ")
+src='10.7.13.13'
+dst='10.11.17.17'
+
+s={src}
+now=src
+honame=set()
+exit=dict()
+entry=dict()
+entryrev=dict()
+ls=[]
+ls.append(now)
+extract=set()
+p=''
+boo=True
+while(len(s)>0):
+    now=ls[0]
+    ssh=ConnectHandler(device_type="cisco_ios",host=now,username="rit",password="pan")
+    ret=ssh.send_command("en")
+    while boo:
+        try:
+            name=ssh.find_prompt()
+            boo=False
+        except Exception as e:
+            print(str(e))
+            print("Trying again")
+            boo=True
+    
+    name=name[:-1]
+    print(name)
+    honame.add(name)
+    boo=True
+    while boo:
+        ret=ssh.send_command("sh ip route "+dst+" | include Known via")
+        if len(ret.split())>=3:
+            boo=False
+        else:
+            print("Trying Again sh ip route")
+    print(" Name "+name+" show ip route | i known via")
+    print(ret)
+    ret=ret.split()
+    prot=ret[2][1:]
+    print("PROT- "+prot)
+    if prot=='bgp':
+        dst1=dst
+        fl=0
+        print("Prot BGP")
+        while fl!=2:
+            boo=True
+            while boo:
+                ret=ssh.send_command("sh ip route "+dst1)
+                if len(ret.split("\n"))>1:
+                    boo=False
+                    print("Trying again")
+            print("\tBGP- sh ip route for dst "+dst1)
+            print(ret)
+            ret=ret.split("\n")
+            fl=0
+            for i in ret:
+                i=i.split()
+                print("splitting ret")
+                print(i)
+                if i[0]=='*':
+                    nxt=i[1]
+                    if nxt=='directly':
+                        x=i.index('via')
+                        hop=i[x+1]
+                        fl=2
+                        break
+                    elif re.match('^(?:[0-9]{1,3}\.){3}([0-9]{1,3})',nxt):
+                        dst1=nxt
+                        if nxt[-1]==',':
+                            dst1=nxt[:-1]
+
+                        fl=1
+                        break
+        print("Name "+name+" BGP: next hop "+dst1+" exit interface "+hop)
+        extract.add(dst1)
+        s.add(dst1)
+        ls.append(dst1)
+        p=''
+        p=hop+' '+dst1
+        if name not in exit.keys():
+            exit[name]=set()
+        exit[name].add(p)
+        p=''
+    elif prot=='connected",':
+        boo=True
+        while boo:
+            ret=ssh.send_command("sh ip route "+dst+" | include directly")
+            if len(ret.split())>3:
+                boo=False
+            else:
+                print("Trying again")
+        
+        print("Connected route- show ip route| i directly ")
+        print(ret)
+        ret=ret.split()
+        p=''
+        x=ret.index('via')
+        p=ret[x+1]
+        p=p+' directly'
+        if name not in exit.keys():
+                exit[name]=set()
+        exit[name].add(p)
+        print(" Name "+name+" is connected to dst via "+p)
+        p=''
+
+       
+
+
+
+
+
+
+
+
+    else:
+        boo=True
+        while boo:
+            ret=ssh.send_command("sh ip route "+dst+" | include via")
+            if len(ret.split('\n'))>1:
+                boo=False
+            else:
+                print("Trying again")
+        print("output from sh ip route | inc via ")
+        print(ret)
+        print("Splitting")
+        ret=ret.split('\n')
+        for i in ret:
+            i=i.split()
+            print(i)
+            t=0
+            for j in i:
+                #print(j)
+                if re.match('^(?:[0-9]{1,3}\.){3}([0-9]{1,3})',j):
+                    print("extract- "+j[:-1])
+                    j=j[:-1]
+                    if j not in extract:
+                        extract.add(j)
+                        s.add(j)
+                        ls.append(j)     
+                    t=1
+               
+                if t==1:
+                    num=i.index('via')
+                    p=i[num+1]
+                    p=p+' '+j
+                    if name not in exit.keys():
+                        exit[name]=set()
+              
+                    exit[name].add(p)
+                    p=''
+                    break
+    extract.clear()
+    s.remove(now)
+    ls.remove(now)
+ 
+    if now!=src:
+        boo=True
+        while boo:
+            ret=ssh.send_command("sh ip int brief | include "+now)
+            if len(ret.split())>2:
+                boo=False
+            else:
+                print("Trying Again")
+        print(" Name "+name+" sh ip int brief | include "+now)
+        print(ret)
+        ret=ret.split()
+ 
+        if name not in entry.keys():
+            entry[name]=set()
+        p=''
+        p=ret[0]
+        p=p+' '+now
+        entry[name].add(p)
+
+        entryrev[now]=set()
+        p=''
+        p=name+' '+ret[0]
+        entryrev[now].add(p)
+     
+ 
+
+ssh=ConnectHandler(device_type="cisco_ios",host=dst,username="rit",password="pan")
+
+boo=True
+while boo:
+    try:
+        name=ssh.find_prompt()
+        boo=False
+    except Exception as e:
+        print(str(e))
+        print("Trying Again")
+        boo=True
+        
+name=name[:-1]
+honame.add(name)
+boo=True
+while boo:
+    ret=ssh.send_command("sh ip int brief | include "+dst)
+    if len(ret.split())>2:
+        boo=False
+    else:
+        print("Trying Again")
+
+ret=ret.split()
+#print(ret)
+if name not in entry.keys():
+    entry[name]=set()
+p=''
+p=ret[0]
+p=p+' '+'directly'
+entry[name].add(p)
+
+p=''
+entryrev['directly']=set()
+p=name+' '+ret[0]
+entryrev['directly'].add(p)
+
+print("Entry interfaces ")
+print(entry)
+print()
+print(" Exit  interfaces ")
+print(exit)
+
+print()
+print(" Entry Reverse ")
+print(entryrev)

@@ -1,0 +1,180 @@
+<!doctype html>
+<meta charset="utf-8"/>
+<html>
+<head>
+  <title>Network Map</title>
+  <!--script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js "></script!-->
+  <script type="text/javascript" src="/static/vis1.0.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" rel="stylesheet" type="text/css" />
+  <style type="text/css">
+    #mynetwork {      
+      height: 500px;
+      border: 1px solid lightgray;
+    }
+    #popup{
+      height:500px;
+      border:1px solid lightgray;
+    }
+    #
+  </style>
+</head>
+<body>
+  <form action="/Topology" method="get">
+    <p>Source IP:
+    <input type="text" name="src">  
+    Destination IP:
+    <input type="text" name="dst">   
+    <input type="submit" value="Submit"></p>
+  </form> 
+  
+  <div id="mynetwork" style="width:70%;float:left"></div>
+  <div id="popup" style="width:28%;float:right;"">
+  <p id="popup-content"></p>
+  </div>
+
+  <script type="text/javascript">
+
+    var response = {{response | safe }}
+    if(response != undefined){
+      console.log(response)
+      drawMap($.parseJSON(response.jsons[0]));
+      populateObjects($.parseJSON(response.jsons[1]))
+    }
+
+    // Utility Function to Abbreviate Interface Names
+    function removeSmall(str){
+        var temp=""
+        for(i=0;i<str.length;i++){
+          var ch = str.charAt(i);
+          if(ch >= "a" && ch <= "z") 
+            continue;
+          temp+=str.charAt(i);
+        }
+        return temp.toLowerCase();
+    }
+
+    
+    function drawMap(response){
+     
+      // Creating Nodes
+      var ds = []
+      var set = new Set();
+      for (line in response){
+          name = response[line]["next"]
+          if(!set.has(name)){
+            set.add(name);
+            var obj = new Object();
+            obj.id = name
+            if(name==response[line]["now"])
+              obj.label = "DEST: "+name            
+            else
+              obj.label = name
+            obj.shape = "image"
+            if(name.includes('RC'))
+            obj.image = "/static/router.png"
+            else
+            obj.image = "/static/switchl3.png"
+            ds.push(obj);    
+          }      
+      }
+
+      // Finding Source 
+      for(line in response){
+        name = response[line]["now"]
+        if(!set.has(name)){
+            set.add(name);
+            var obj = new Object();
+            obj.id = name
+            obj.label = "SRC: " +name            
+            obj.shape = "image"
+            if(name.includes('RC'))
+            obj.image = "/static/router.png"
+            else
+            obj.image = "/static/switchl3.png"
+            ds.push(obj);  
+        }
+      }
+
+      var nodes = new vis.DataSet(ds);
+    
+
+      // Creating Edges
+      var ds1 = []
+      for (line in response){
+        var edge = new Object();
+        edge.from = response[line]["now"]
+        edge.to = response[line]["next"]
+        if(edge.to == edge.from)
+          continue;
+        edge.label = removeSmall(response[line]["entry"])+" / "+removeSmall(response[line]["exit"])
+        ds1.push(edge)
+      }   
+
+      var edges = new vis.DataSet(ds1)
+
+      // Creating Network
+      var container = document.getElementById('mynetwork');
+      var data = {
+        nodes: nodes,
+        edges: edges
+      };
+
+      var options = {physics : {enabled :false}};
+      var network = new vis.Network(container, data, options); 
+      console.log("DRAW COMPLETE") 
+
+      network.on("click", function(properties){
+        var popup = $("#popup");
+        var clicked = properties.nodes;
+        if(clicked.length==0){
+          popup.hide();
+          return
+        }
+
+        var exits =""
+        var entries=""
+        for (entry in response){
+          from = response[entry]["now"]
+          if(from == clicked){
+            if(response[entry]['next']==from)
+              continue;
+            exits+= response[entry]["next"] + " via " + response[entry]["exit"] + "<br>"
+          }
+          to = response[entry]["next"]
+          if(to == clicked){
+            if(response[entry]['now']==to)
+              continue;
+            entries+= response[entry]["now"] + " via " + response[entry]["entry"] +"<br>"
+          }
+
+
+        }
+        if(exits.length==0){
+          exits="THIS IS DESTINATION<br>"
+
+        }
+        if(entries.length==0){
+          entries="THIS IS SOURCE<br>"
+        }
+
+        var content=$("#popup-content")
+        var data="<h4>"+clicked+"</h4><br>";
+        data+= "<b>EXITS:"+"</b><br>" +exits+ "<br>"+ "<b>ENTRIES:</b><br>" +entries+ "<br>";
+        content.text("")
+        content.append(data);
+        popup.css('display','inline');
+        
+        });
+
+  }
+    function populateObjects(response){
+      console.log(response)
+    }
+  
+  
+</script>
+
+
+</body>
+</html>

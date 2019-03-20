@@ -1,0 +1,136 @@
+<!doctype html>
+<meta charset="utf-8"/>
+<html>
+<head>
+  <title>Network Map</title>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js "></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" rel="stylesheet" type="text/css" />
+
+  <style type="text/css">
+    #mynetwork {
+      width: 900px;
+      height: 500px;
+      border: 1px solid lightgray;
+    }
+  </style>
+</head>
+<body>
+
+<form action="/Topology" method="get">
+  <p>Source IP:
+  <input type="text" name="src">  
+  Destination IP:
+  <input type="text" name="dst">   
+  <input type="submit" value="Submit"></p>
+</form> 
+
+<p id="response"> </p>
+<div id="mynetwork"></div>
+
+<script type="text/javascript">
+    var response = {{response | safe }}
+
+    if(response != undefined){
+      console.log(response)
+      drawMap();
+    }
+
+    function removeSmall(str){
+        var temp=""
+        for(i=0;i<str.length;i++){
+          var ch = str.charAt(i);
+          if(ch >= "a" && ch <= "z") 
+            continue;
+          temp+=str.charAt(i);
+        }
+        return temp.toLowerCase();
+    }
+
+    
+    function drawMap(){
+    var ds = []
+    var set = new Set();
+      for (line in response){
+          name = response[line]["now"]
+          if(!set.has(name)){
+            set.add(name);
+            var obj = new Object();
+            obj.id = name
+            obj.label = name
+            
+            obj.shape = "image"
+            if(name.includes('RC'))
+            obj.image = "/static/router.png"
+            else
+            obj.image = "/static/switchl3.png"
+            ds.push(obj);    
+          }      
+      }
+    console.log(ds)
+    var nodes = new vis.DataSet(ds);
+    
+    var ds1 = []
+    for (line in response){
+      var edge = new Object();
+      edge.from = response[line]["now"]
+      edge.to = response[line]["next"]
+      if(edge.to == edge.from)
+        continue;
+      edge.label = removeSmall(response[line]["exit"])
+      ds1.push(edge)
+    }
+    
+
+    console.log(ds1)
+    var edges = new vis.DataSet(ds1)
+
+    // create a network
+    var container = document.getElementById('mynetwork');
+    var data = {
+      nodes: nodes,
+      edges: edges
+    };
+
+    var options = {};
+    var network = new vis.Network(container, data, options); 
+    console.log("DRAW COMPLETE") 
+
+    console.log("LOOKUP TABLE:")
+    console.log(response)
+    network.on("click", function(properties){
+      var clicked = properties.nodes;
+      var exits =""
+      var entries=""
+      for (entry in response){
+        from = response[entry]["now"]
+        if(from == clicked){
+          if(response[entry]['next']==from)
+            continue;
+          exits+= response[entry]["next"] + " via " + response[entry]["exit"] + "\n"
+        }
+        to = response[entry]["next"]
+        if(to == clicked){
+          if(response[entry]['now']==to)
+            continue;
+          entries+= response[entry]["now"] + " via " + response[entry]["entry"] +"\n"
+        }
+
+
+      }
+      if(exits.length==0)
+        exits="THIS IS DESTINATION\n"
+      if(entries.length==0)
+        entries="THIS IS SOURCE\n"
+      alert("EXITS:\n" + exits  + "ENTRIES:\n" + entries)
+
+    });
+
+  }
+  
+  
+</script>
+
+
+</body>
+</html>

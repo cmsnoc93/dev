@@ -1,0 +1,38 @@
+
+
+
+
+
+src='10.7.13.13'
+dst='10.10.16.10'
+
+
+
+Entry interfaces 
+{'CHN--RC03': {'FastEthernet1/0 10.2.3.3'}, 'BGL--SC08': {'FastEthernet2/0 10.8.13.8'}, 'CHN--SC09': {'FastEthernet0/0 10.3.9.9'}, 'CHN--SA16': {'FastEthernet2/0 10.9.16.16'}, 'BGL--RC02': {'FastEthernet0/0 10.2.8.2'}, 'CHN--SC10': {'FastEthernet2/2 10.9.10.10', 'FastEthernet2/1 directly', 'FastEthernet0/0 10.4.10.10'}, 'CHN--RC04': {'FastEthernet2/0 10.3.4.4'}}
+
+ Exit  interfaces 
+{'CHN--RC03': {'FastEthernet2/0 10.3.4.4', 'FastEthernet0/0 10.3.9.9'}, 'CHN--SC10': {'FastEthernet2/1 directly'}, 'CHN--SC09': {'FastEthernet2/2 10.9.10.10', 'FastEthernet2/0 10.9.16.16'}, 'CHN--SA16': {'FastEthernet2/1 directly'}, 'BGL--RC02': {'FastEthernet1/0 10.2.3.3'}, 'BGL--SA13': {'FastEthernet2/0 10.8.13.8'}, 'BGL--SC08': {'FastEthernet0/0 10.2.8.2'}, 'CHN--RC04': {'FastEthernet0/0 10.4.10.10'}}
+
+ Entry Reverse 
+{'10.2.3.3': {'CHN--RC03 FastEthernet1/0'}, 'directly': {'CHN--SC10 FastEthernet2/1'}, '10.9.10.10': {'CHN--SC10 FastEthernet2/2'}, '10.9.16.16': {'CHN--SA16 FastEthernet2/0'}, '10.3.9.9': {'CHN--SC09 FastEthernet0/0'}, '10.8.13.8': {'BGL--SC08 FastEthernet2/0'}, '10.4.10.10': {'CHN--SC10 FastEthernet0/0'}, '10.3.4.4': {'CHN--RC04 FastEthernet2/0'}, '10.2.8.2': {'BGL--RC02 FastEthernet0/0'}}
+
+
+
+
+
+
+
+
+src='10.7.13.13'
+dst='10.11.17.17'
+
+
+Entry interfaces 
+{'MUM--SA17': {'FastEthernet2/0 10.12.17.17', 'FastEthernet2/1 directly'}, 'MUM--RC06': {'FastEthernet1/0 10.1.6.6'}, 'BGL--SC07': {'FastEthernet2/1 10.7.13.7'}, 'MUM--RC05': {'FastEthernet2/0 10.5.6.5'}, 'MUM--SC11': {'FastEthernet2/2 10.11.12.11', 'FastEthernet0/0 10.5.11.11'}, 'BGL--RC01': {'FastEthernet0/0 10.1.7.1'}, 'MUM--SC12': {'FastEthernet0/0 10.6.12.12'}}
+
+ Exit  interfaces 
+{'MUM--SA17': {'FastEthernet2/1 directly'}, 'MUM--RC06': {'FastEthernet0/0 10.6.12.12', 'FastEthernet2/0 10.5.6.5'}, 'BGL--SC07': {'FastEthernet0/0 10.1.7.1'}, 'MUM--RC05': {'FastEthernet0/0 10.5.11.11'}, 'BGL--SA13': {'FastEthernet2/1 10.7.13.7'}, 'MUM--SC11': {'FastEthernet2/1 directly'}, 'BGL--RC01': {'FastEthernet1/0 10.1.6.6'}, 'MUM--SC12': {'FastEthernet2/0 10.12.17.17', 'FastEthernet2/2 10.11.12.11'}}
+
+ Entry Reverse 
+{'10.6.12.12': {'MUM--SC12 FastEthernet0/0'}, '10.12.17.17': {'MUM--SA17 FastEthernet2/0'}, '10.7.13.7': {'BGL--SC07 FastEthernet2/1'}, '10.5.6.5': {'MUM--RC05 FastEthernet2/0'}, '10.1.6.6': {'MUM--RC06 FastEthernet1/0'}, 'directly': {'MUM--SA17 FastEthernet2/1'}, '10.1.7.1': {'BGL--RC01 FastEthernet0/0'}, '10.5.11.11': {'MUM--SC11 FastEthernet0/0'}, '10.11.12.11': {'MUM--SC11 FastEthernet2/2'}}
