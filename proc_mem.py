@@ -15,8 +15,13 @@ def percent(a,b):
     return round((int(a)/int(b)) * 100,2)
 
 memory = dict()
-vals = ret.split(' ')
-memory.update({'processor':{'total':mb(vals[4]),'used':mb(vals[8]),'free':mb(vals[11][0:-2]),'percent':percent(vals[8],vals[4])},'io':{'total':mb(vals[22]),'used':mb(vals[27]),'free':mb(vals[32]),'percent':percent(vals[27],vals[22])}})
+temp_vals = ret.split(' ')
+vals = []
+for string in temp_vals:
+    if len(string.strip())>0:
+        vals.append(string.strip("\n"))
+        
+memory.update({'processor':{'total':mb(vals[3]),'used':mb(vals[5]),'free':mb(vals[7]),'percent':percent(vals[5],vals[3])},'io':{'total':mb(vals[11]),'used':mb(vals[13]),'free':mb(vals[15]),'percent':percent(vals[13],vals[11])}})
 print(memory)
 
 
