@@ -16,7 +16,7 @@ arr = ret.split('\n')
 count=0
 syslog = dict()
 for line in arr:
-    if line.find('%')!=-1 and line.find("console by console")==-1:
+    if line.find('%')!=-1 and (line.find("NBRCHANGE")!=-1 or line.find("ADJCHANGE")!=-1 or line.find("UPDOWN")!=-1 or line.find("duplex")!=-1):
         syslog.update({count:line})
         count+=1
 
