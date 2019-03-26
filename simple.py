@@ -1,30 +1,32 @@
-﻿import subprocess
+﻿import re
 from netmiko import Netmiko
 
-src_ip = input("Enter source ip: ")
-dst_ip = input("Enter dst ip: ")
+src_ip = '10.1.7.1'
 
-#If tracerouting from jumphost to src
-#result = subprocess.call(['traceroute',src_ip]).split('\n')
+src = Netmiko(ip=src_ip,username="rit",password="pan",device_type="cisco_ios",)
 
-src = Netmiko(ip=src_ip,username="admin",password="noc",secret='noc',device_type="cisco_ios",)
+print("Connected")
 
-print(src.find_prompt())
-trace = src.send_command('traceroute '+dst_ip)
-path = trace.split('\n')[4:]
-path = [i.split()[1] for i in path]
-print("Hops: ",path)
+ret = src.send_command("show log | i down|Down|up|Up|err|fail|Fail|drop|crash|MALLOCFAIL|duplex")
+arr = ret.split('\n')
 
-devices = []
-for ip in path:
-    devices.append(Netmiko(ip=ip,username="admin",password="noc",device_type="cisco_ios",))
+count=0
+syslog = dict()
+for line in arr:
+    if line.find('%')!=-1:
+        syslog.update({count:line})
+        count+=1
 
-       
-for device in devices:
-    print(device.find_prompt())
-    print(device.send_command('show ip int br | include up'))
+print(syslog)
+	
+        
 
-src.disconnect()
-for r in devices:
-    r.disconnect()
-print("Disconnected from all devices")
+
+
+
+
+
+
+
+
+
