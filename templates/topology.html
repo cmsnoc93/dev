@@ -231,9 +231,8 @@
     }
 
     function populateHiddenDivs(clicked){
-      console.log(device_map[clicked]["Interface Dictionary"])
+      console.log(device_map[clicked])
       $('#general').html(asHtml(device_map[clicked]["General Node"],"general"))
-      $('#device').text();
       $('#interface').html(asHtml(device_map[clicked]["Interface Dictionary"],"interfaces"))
     }
    
