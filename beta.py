@@ -7,7 +7,7 @@ from netmiko import ConnectHandler
 #src=input(" Enter Source ")
 #dst=input(" Enter destination ")
 src='10.8.14.14'
-dst='10.10.16.16'
+dst='10.1.7.1'
 
 class router(object):
     def __init__(self,name):
