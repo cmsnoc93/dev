@@ -34,7 +34,7 @@ class router(object):
         if interf not in self.dictint.keys():
             self.dictint[interf]=dict()
         self.dictint[interf]['ip']=ip
-        
+
     def objprint(self):
         print(" Name "+self.name)
         print(" Entry interfaces ")
@@ -69,7 +69,6 @@ extract=set()
 p=''
 boo=True
 intojson=[]
-
 
 while(len(s)>0):
     now=ls[0]
@@ -669,9 +668,6 @@ for nme in setofnames:
 
 
 
-
-
-
     
 #-----------------------------------------Harshad------------------------------------------------------------------------------------------
     boo=True
@@ -751,7 +747,8 @@ for nme in setofnames:
                 res_template=textfsm.TextFSM(template)
                 ans_final=res_template.ParseText(ans)
                 boo=False
-            except:
+            except Exception as e:
+                print(e)
                 print("9-4 Exception in Textfsm, Trying again")
                 boo=True
         print(ans_final)
