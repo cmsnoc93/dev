@@ -7,29 +7,51 @@
   <script type="text/javascript" src="/static/vis1.0.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" rel="stylesheet" type="text/css" />
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- <img src="data:image/png;base64,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" align="right"> -->
   <style type="text/css">
+  body  {
+    background-color: #DFDBDA;
+  /* background-image: url("data:image/jpeg;base64,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") ; */
+}
+input[type=text] {
+  background-color: #EADDDA;
+  color: black;
+}
+#bottomright {
+  position: absolute;
+  bottom: 0;
+  right: 50;
+  font-size: 18px;
+}
     #mynetwork{      
       height: 500px;
-      border: 1px solid lightgray;
+      border: 4px solid black;
     }
     #popup{
-      height:500px;
-      border:1px solid lightgray;
-    }
+      height:1200px;
+      width:700px;
+      border:4px solid black;
+      background-color: #DFDBDA;
+      background:url("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUTExMWFhUXFRUXGBgYGBoaGhoXFRUXFxUXHRgYHSggHRolHRcVITEhJSkrLi4uFx8zODMtNygtLisBCgoKDQ0OFQ8PFS0dFR0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLTctN//AABEIAKgBKwMBIgACEQEDEQH/xAAYAAEBAQEBAAAAAAAAAAAAAAABAAIDB//EADEQAAECAgkDBAIDAQADAAAAAAEAEQJREiExQWFxgZHwobHBA9Hh8RNSIkJiMnKCov/EABcBAQEBAQAAAAAAAAAAAAAAAAABAwL/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwD1oQkn/pdKGJ39kUc91yoAta+HZYu3Vxd1dP48d61jd9ElrwSdFAsB/bb6WfyTOw7ppYPg6jHyxBChca9U0tskUw9YD51rR1CoCNsEFhaVojAcyUIsSMq/lAGi3/VSRtr4CnAsD7qLfr1QQbnuo8exI/8AEowQIhmW37KEIIt3UcRpUsGKSDRhAv2RCcSdOBUMf+ewTEZipBGIK6cyUDwKpX1lAkQn5qQAMuZpY3QjspjeNmQAHGQYR9po4eVUcT4QZ/jwAeymhwW3qsXOkJePtQbcCwopYnVQjH6lAMgqEqBCKWin4ftAm+sFFEYLXOVqijMvHdBkGGR3LLYGA3QHNoKq5A51IEHAoJB+HSeMUcevwgyABdbO3my2I8CgxHjhVchv8oMUTc+i2Ac+6IIT+3gd1VWBiggShi9vRUUI59IGZAwq7qDVDXdBjy3rTDCJvmlgL+aIAQmVWdaTAiq5+w8IiBGUlRsATU5m/RZJmfCqItdkDEYrju3ZBib4PyoRyPPKhxqkGjEZ6Pwop4as/lBhz1WXzQdIXmOZpJOPRcx6YNb81W6hYTs6C/k/0tcuQA/K9VCGTdfdBmhe6aNdqjiffZX48evhkEITmqMzLdUnOzPsy50AbCN69kC5PveVa81SC1hq5imnmEALqzzJVeI3WYg+G3dLYka/CBJnUZ2qAF7HogD/AEVMBM5oNcwVEVziEg6Q0hiygRSmO/QpBMw/LkVCyFhmSk136fCojAZ+OyqEV55mgaqcc90CRx/ZAgx6phhFw1qRGZmLugBDDIHMP9JJ/wBc2WSITYCcT8rVPE6VoIES7ppw2AHqg+obg2dXT3VFo3VAH1NsvZOizDGRe/foth6/49R7IMxQDgSwE9vZH8iHEIzI90ilJpoEQw462qsuVRUIhgeYIKlisH0xIundpAVd1CLDogapMclfjBr+OqREJOcUmMoMiETVTzPMVsRHgRTNx7IM0heSsgg1sX1HlbcyrzUXl77lACIS8nutRQ41JomZ6eVlkDCAgwyHZtgkRGfRVKu5BmGEa5JBEkudM1H1MXOA7mxBGJ7kNhulzy1APCUEMIQmkb4erIMRmwQfTidBoQZDMrJkiL0jf2fumhmEEMuaqIw7qAMuq0H+0GKv1i5mkQiW60Qbxr8OgxGXZAMJd1tx9rDqEVViDUUIkEQzA9lgQ4AY1LdF7/HZAxEm4dAuZ/8ARboSNU+WrJiMzzVQarvIaZU0n2DLLw8LdlDkt1RqqQ5isxDHZBgFvx1KgYZP1QTN/bq60A/9hos9JP7BaHpYvsoABuGpaMeHlBLfBTSVCNUOVkB1RNf7oIE/sTokRH6CP4mzwgR3AnZBqlyxapGYGaw2a0yCfF9PKWxWSYcjgEQgCx0Gmb+yQFh5BbZBEaZqAM+hbus6spgg1Ef9MiGM/soRC5+nepPTr1dACPHoiIE31aJhAuQTlsEC3+uZhFVzndNIH4WS1lwQItvWqPHWfyDgRFXWyDcbz2+UQvgcx9rJbHZZBEig0MCy2Q32iImUXQLAQbpyHNURE/SLMBioermdOxQT4e6ixxxVFkdkREm59D7sgKAuq5stiEYc0WCQLYQqnD+o2Cg2aq2DppkyxZYFLTdbNdoBVBDDINj7OoRRSKyRgTqtEGwd1AvFe6CMB3TD6R+vcpo8+VQQjDokZKESIjkEDXJhkoQ59FkZ9EUHrHdAxAy5orOFtK+ivxjVI4yCHPtTdJFEQVAXwQQif+q1SItHX3KjCZoBa/mSDT6LNJkwmVS0A1yoxbLr4VRw5rYtl/1RXIKCJN/RB1SInufr5S3+eaIMxYNspzZakxYKJyCAAikh4hlyajAZgqhhM3QI9Q49FRPeqIRS6qGPdAEYFD4lNSmE9kADFeTzFFIvawbqmj9W9FoQYgDk0AxuJ1+lCKRG61QH7ArJhxG6DTm8LNKK+zfogQY9kEQteeiBJIsZNKKWyxCMRh9q/GZ9kGnh58ocGYOHstGue1Sze1nL0AYxYHONjLQb9j1VTaqrMe6yY3ucTs+1AkC/z5UDDM7fCySRcNK1sRyBfXuqKlL5QDOE6/CSL2rUSZczQBgBwOyaF/n2VnzyoHBAiIYrNVy6DLord+XIMBFG+srqYufaxEWt7oMuJEmQWoaNrMdwgRPWwzSK7j18oB5DskDAJMJQRxygHHA60+fMHWXa8d1qEIClypQIuRFDiyoKj9INMs1X1a1rZOHNFmjmgBFDcIiqKLA7psv/APk/Cy+BdAiKWxTh0QCLyeyAxqZBow4dVmICUOV/RboyBCHPB72IOcTXDuklrId10pmQ0QCZbhACPgVRf5WrfhYYWVdX7IAiv/kHX4dIBNkAVHALg+PygwG8tmUGnuAboijjzdAeZ6BNGKZQbc47LLmfOyy+PUpoYoECKYTCIpvk3uVn8WLZe6zQg/Z8flQbEBEgtHXdZhjhm8qvpJNtb5lUUPqYnotPjzBYERas9tlEZ7+wQNY+a0Qm591QxYlsHbdMTM9YOVaBIxUIecKgB/p9kE4Og1R4flViyQ9ZLJDG85h/FSBL31a1oqe983QIWv1q2qVRNj1cyQIjBzUYTNigNyzskQ5IKv5B9igueBRBTqEF+MqRigwughEL/K1rs3lAFVpPMFCux/HdAgGY7KMLWNi/sswwzO3yqiMeZIGmoRk3KAaaImx3QRGQyVRN5VBELBzoowi8ugy+nJBaMT2V5oMYx5ooN9oHYZEqAawsEPgEmj8IIwte4Nsul6zDCbyGy+FCAS6laAzbEk90GTJ+i0Bx1qgFj8OXVA31CqaiQJ91AnBsK0ubBXp7IMVG4LTQ4KiiN45qgA3IEEXA+Ei25ABU0ggYoheqmJjoswg4CYt8LQeUIGIrQB9UXg7HuoagWV/NaX3mj8oeehZAgCx2yWiyCMAJlFdwCBJmN0EQn+y1C97ae6YoCVRzDXDVNGErQJFVTSVTGA2CgyGmVOOBlQiq7qUmIyGfwghEJKpV2IBiwUCUCSeMgGdqnOHVQgNzZsqGKKfN1mIv7LTRXnmqKJuIKgIG/Vlp2sWXiwUIefKAiixRCN911fLYLJOSAO2JsRp0WzCZ9Ffyn4QYBqZuijgmvDJ/YJifDR/KArxGigwt6nwEQl70kkWFAiP/ACOj7Ogtz4UTFwj3UfTe0lBmKLBTxSTDRuBKCg0Djsj1DExALFr544KLT0Q0OWTeUB6YqH8iag5sc6BMQimdK+ifUI/108LDzcd1Bokzrx9lB7zzJkwjhAW6I4yoxA9zPqttcSHWYzyoIowtb4QbMGJWHkz7/CyPTEn5iuggayrZACGLgW2wZcySJqfPNBqKGXZUHpmyooqFr9kNmEHSv9enysmEzA0RRBmdfZBcEyyQa11SYTMrIY3F0hggoYT8u6TDlzNZJBqZ00BKHevsgjCNUkxS2+UUy1XdDnnyqNfjcWdkUTdXr0QYRMjIeAksJ8yUARMMcwpucCRDjsK9ygk3Nnb5QLTZJa5u56FZhxG60z/1JybygzQ/024VuZVfKKAke6XH3V4QFAyIyvSRhqVRRtciGO+3BAmy5uqHAv3J91AC4dUiIXg9UBVMaoigEz46qiAP9X5siCK5lAun8g46iQbm3WgceqoyYjIKpgWhzktDMcwS5uKDNZsYZhWZ1U8Uxr7KrMu6CDTdOIWS0w2SD6jWF9wg3SN9WinkOnkrLE3nJvK0PTiu2+0AY8OaKbBsLeyWN/QBA9NvlAExCwamxbD3vncgnjrJpT6INRZOqGK6j5WRSFrFIijvbnRBESHN0CKb5rQOOiScUGYXNjJMIFZCDCVV5688IExQmfMEiAXDp3ZFGLAd+iKJmSgXGvRaiYWrnSl0SITlzEIKIjjhFDA7DgT/ACrr6WJMJIrcoCjLs/WxL4Kae1nW9VK4IIwiRJREB9OoAGzoEkRC9kAQb4dW90OP1YozJ6+U0jZXgT1QMMSIosHTHEQK0CLParsggctgiL12qPb5WiTgO+6mi/bmSgDHgOlYUYzL3UQWsO4HlZMO+pIQbBMgM6+xWDBgr0w9or5eLVp8TuVRppFkUT+zy4EKQRcXnQhFEmulVpwqUg0IGtcphilUhSCDmoxFMUJH9jqhSBZ/7bKMIn4UpACLJs0xQ49QpSCFfKuqmN52PspSoaRm+fugA3spSgiX0UCbihSCrnqeFLmZ50QpBoAzbmCGmScqkKQQBvbSvhRQNoB1UpBpsa0g4kIUqiiD2vuiD02sJ51UpFBpfs+BCaMU9PtSlBQg3WcuKiWvUpBDlbd0H05xdz5UpAn0jeXQzVUmwUpA1cCfxiXUe6lIP//Z" )
+       }
     .kpi{
     display: block;
     border:solid;
     
     }
+    .jumbotron {
+    background-color:#DFDBDA !important;
+    height:0px; 
+}
     #gen_head{
       border-color:#4cbb17;
     }
-
     #int_head{
       border-color:#ffbf00;
-
     }
-
     #qos_head{
       border-color:red;
     }
@@ -38,28 +60,44 @@
     }
     .hoverWrapper:hover .hoverShow{
     display: block;
-
     }
     .hoverWrapper .hoverShow {
     display: none;
     overflow:auto;
-    height:100px;
+    height:500px;
     }    
-
+    
+    /* #foot{
+      background-color: #B3A4A0;
+    } */
   </style>
 </head>
+<div class="jumbotron">
+  <div class="container text-center">
+    <h1>Network Maps for Enterprise Networks</h1>      
+    <p>By CMS HSBC Interns </p>
+  </div>
+</div>
 <body>
   <form action="/Topology" method="get">
-    <p>Source IP:
+  
+    <div class="form-group">
+        Source IP:
     <input type="text" name="src">  
+  
     Destination IP:
+ 
     <input type="text" name="dst">   
-    <input type="submit" value="Submit"></p>
+ 
+    <input type="submit" value="Submit">
+  </div>
   </form> 
   
-  <div id="mynetwork" style="width:70%;float:left"></div>
-  <div id="popup" style="width:28%;float:right;">
+  <div id="mynetwork" style="width:40%;float:left"></div>
+  
+  <div id="popup" class = "col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-8 col-xs-offset-2" style="width:60%;float:right;">
   <p id="popup-content"></p>
+  <div class = "container">
   <div class="kpi hoverWrapper" id="gen_head" onclick="alert()"><b>&nbsp;Device Health&nbsp;</b><img src="/static/checked.png" height="20" width="20"/>
     <div class="hoverShow" id="general">device level information</div></div>
   <div class="kpi hoverWrapper" id="int_head" onclick="alert()"><b>&nbsp;Interfaces&nbsp;</b><img src="/static/warning-t.png" height="20" width="20"/>
@@ -68,20 +106,20 @@
     <div class="hoverShow" id="qos">QOS INFORMATION</div></div>
   <div class="kpi hoverWrapper" id="prot_head" onclick="alert()"><b>&nbsp;Protocols&nbsp;</b><img src="/static/checked.png" height="20" width="20"/>
     <div class="hoverShow" id="protocol">PROTOCOL INFORMATION</div></div>
-  
-  
-
+   
   </div>
-
+  </div>
+     
+     
+  
+  <!-- <div class = "bottomright" style="width:70%;float:right">Bottom Right</div> -->
   <script type="text/javascript">
-
     var response = {{response | safe }}
     if(response != undefined){
  
       drawMap($.parseJSON(response.jsons[0]));
       makeTable($.parseJSON(response.jsons[1]))
     }
-
     // Utility Function to Abbreviate Interface Names
     function removeSmall(str){
         var temp=""
@@ -93,10 +131,9 @@
         }
         return temp.toLowerCase();
     }
-
     var nodes;
     function drawMap(response){     
-      
+      console.log(response)
       // Creating Nodes
       var ds = []
       var set = new Set();
@@ -179,41 +216,58 @@
                       entries+= response[entry]["now"] + " via " + response[entry]["entry"] +"<br>"
                     }
                   }
+                  var ex_appender = "Towards";
+                  var en_appender = "From";
                   if(exits.length==0){
                     exits="THIS IS DESTINATION<br>"
+                    ex_appender = " ";
                   }
                   if(entries.length==0){
                     entries="THIS IS SOURCE<br>"
+                    en_appender = " ";
                   }
                     var content=$("#popup-content")
                     var data="<h4>"+clicked+"</h4><br>";
-                    data+= "<b>EXITS:"+"</b><br>" +exits+ "<br>"+ "<b>ENTRIES:</b><br>" +entries+ "<br>";
+                    data+= "<b>EXITS:"+"</b><br>" + ex_appender  + " " + exits+ "<br>"+ "<b>ENTRIES:</b><br>" + en_appender + " "+ entries+ "<br>";
                     content.text("")
                     content.append(data);
                     populateHiddenDivs(clicked)
                     popup.css('display','inline');          
                   });
     }
-
     // Digests various kpi dictionaries and returns HTML for the divs
+   
     function asHtml(dict,kpi_name){
+      var bgp_obj = new Object();
+    var eigrp_obj = new Object();
       var html="";
       switch(String(kpi_name)){
-
         case "general":
                       for(key in dict){
                         if(!isNaN(key)){
                             html+="<b>PID:"+key+"</b><br>";
                             for(attrib in dict[key])
-                            html+=attrib+" : "+dict[key][attrib]+"<br>"
+                            html+=attrib+" : "+dict[key][attrib]+ ", "
+                            console.log(typeof html)
+                            html = html.slice(0, -2);
+                            html+="<br>"
                         }
                         else{
+                          if(key != "eigrp_neigh" && key!= "bgp_neigh"){
                           html+="<b>"+key+":"+"</b><br>";
                           for(attrib in dict[key])
-                          html+=attrib+" : "+dict[key][attrib]+"<br>"          
+                          if(typeof dict[key][attrib] != "object")
+                          html+=attrib+" : "+dict[key][attrib]+"<br>"
+                          else{
+                            Object.keys(dict[key][attrib]).forEach(key1 =>{
+                              html+= key1 + ":" + dict[key][attrib][key1] +"<br>"
+                            });
+                          }          
+                        }
                         }
                       }
                       return html;
+                     
         case "interfaces":
                          var details = "";
                          for(key in dict){
@@ -222,18 +276,50 @@
                             }
                          html+="<div class=\"kpi hoverWrapper\"><b>"+key+"</b><div class=\"hoverShow\">"+details+"</div></div>"                            
                          }
-
-
                       return html;
+          case "protocols":
+          for(key in dict){
+            if(isNaN(key))
+            {
+              //html+="<b>"+key+":"+"</b><br>";
+                          if(key == "bgp_neigh"){
+                            Object.assign(bgp_obj,dict[key]);
+                          }
+                          else if(key == "eigrp_neigh"){
+                            Object.assign(eigrp_obj,dict[key]);
+                          }
+            }
+          }
+              if(bgp_obj!=null){
+                html+="<b>"+"bgp_neigh"+":"+"</b><br>";
+                Object.keys(bgp_obj).forEach(key2 => {
+                  html+= "<i><u>" + key2+ ": " + " </u></i>" + "<br>"
+                  Object.keys(bgp_obj[key2]).forEach(key3 => {
+                    html+= key3+ ":" + bgp_obj[key2][key3] + "<br>"
+                  })
+
+                })
+        }
+          if(eigrp_obj!=null){
+            html+="<b>"+"eigrp_neigh"+":"+"</b><br>";
+                Object.keys(eigrp_obj).forEach(key2 => {
+                  html+="<i><u>" + key2+ ": " + " </u></i>" + "<br>"
+                  Object.keys(eigrp_obj[key2]).forEach(key3 => {
+                    html+= key3+ ":" + eigrp_obj[key2][key3] + "<br>"
+                  })
+                })
+          }
+          return html;
       }
 
       return "error"
     }
-
+   
     function populateHiddenDivs(clicked){
-      console.log(device_map[clicked])
       $('#general').html(asHtml(device_map[clicked]["General Node"],"general"))
+      $('#device').text();
       $('#interface').html(asHtml(device_map[clicked]["Interface Dictionary"],"interfaces"))
+      $("#protocol").html(asHtml(device_map[clicked]["General Node"],"protocols"))
     }
    
     var device_map;
@@ -244,7 +330,6 @@
         device_map[name] = devices[obj]
       }
       console.log(device_map)
-
     }
   
   
@@ -252,4 +337,5 @@
 
 
 </body>
+
 </html>

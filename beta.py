@@ -34,6 +34,7 @@ class router(object):
         if interf not in self.dictint.keys():
             self.dictint[interf]=dict()
         self.dictint[interf]['ip']=ip
+        
     def objprint(self):
         print(" Name "+self.name)
         print(" Entry interfaces ")
