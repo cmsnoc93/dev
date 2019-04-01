@@ -5,74 +5,1151 @@ app = Flask(__name__)
 if __name__ == '__main__' :
 	app.run()
 
-src=""
-dst=""
+class router(object):
+	    def __init__(self,name):
+	        self.name=name
+	        self.entry=set()
+	        self.exit=set()
+	        self.dictint=dict()
+	        self.gennodedict=dict()
+	        self.sship=''
 
-#Exit  interfaces 
-"""exit = {'CHN--RC03': {'FastEthernet2/0 10.3.4.4', 'FastEthernet0/0 10.3.9.9'}, 
-		'CHN--SC10': {'FastEthernet2/1 directly'}, 
-		'CHN--SC09': {'FastEthernet2/2 10.9.10.10', 'FastEthernet2/0 10.9.16.16'}, 
-		'CHN--SA16': {'FastEthernet2/1 directly'}, 
-		'BGL--RC02': {'FastEthernet1/0 10.2.3.3'},
-	    'BGL--SA13': {'FastEthernet2/0 10.8.13.8'},
-	    'BGL--SC08': {'FastEthernet0/0 10.2.8.2'}, 
-	    'CHN--RC04': {'FastEthernet0/0 10.4.10.10'}}
+	    def addentry(self,ent):
+	        self.entry.add(ent)
 
-#Entry Reverse 
-#reverse = {'10.2.3.3': {'CHN--RC03 FastEthernet1/0'}, 
-		   'directly': {'CHN--SC10 FastEthernet2/1'}, 
-		   '10.9.10.10': {'CHN--SC10 FastEthernet2/2'},
-		   '10.9.16.16': {'CHN--SA16 FastEthernet2/0'},
-		   '10.3.9.9': {'CHN--SC09 FastEthernet0/0'},
-		   '10.8.13.8': {'BGL--SC08 FastEthernet2/0'},
-		   '10.4.10.10': {'CHN--SC10 FastEthernet0/0'},
-		   '10.3.4.4': {'CHN--RC04 FastEthernet2/0'},
-		   '10.2.8.2': {'BGL--RC02 FastEthernet0/0'}}"""
- 
+	    def addconnect(self,conn):
+	        self.handle=conn
 
-#exit={'BGL--SA14': {'FastEthernet2/0 10.7.14.7'}, 'BGL--SC07': {'FastEthernet0/0 directly'}}
-#reverse={'directly': {'BGL--RC01 FastEthernet0/0'}, '10.7.14.7': {'BGL--SC07 FastEthernet2/0'}}
+	    def addsship(self,ipadd):
+	        self.sship=ipadd
+
+	    def addexit(self,ext):
+	        self.exit.add(ext)
+
+	    def adddictip(self,interf,ip):
+	        if interf not in self.dictint.keys():
+	            self.dictint[interf]=dict()
+	        self.dictint[interf]['ip']=ip
+
+	    def objprint(self):
+	        print(" Name "+self.name)
+	        print(" Entry interfaces ")
+	        print(self.entry)
+	        print(" Exit interfaces ")
+	        print(self.exit)
+	        print(" Interface Dictionary ")
+	        print(self.dictint)
+	        print()
+	        print(" General Node Information ")
+	        print(self.gennodedict)
+	        
+	        print("------------------------------")
+
+def backend(src,dst):
+	src='10.8.14.14"
+	dst='10.1.7.1'	
+	        
+	arr=[]
+	count=0
+
+	setofnames=set()
+	dictofnames={}
+	dictofobj={}
+
+	name=''
+	s={src}
+	now=src
+	honame=set()
+	exit=dict()
+	entry=dict()
+	entryrev=dict()
+	ls=[]
+	ls.append(now)
+	extract=set()
+	p=''
+	boo=True
+	intojson=[]
+
+	while(len(s)>0):
+	    now=ls[0]
+	    boo=True
+	    while boo:
+	        try:
+	            ssh=ConnectHandler(device_type="cisco_ios",host=now,username="rit",password="pan")
+	            boo=False
+	        except:
+	            boo=True
+	            print(" Connection error, trying again ")
 
 
-# AJAX RESPONSE FORMAT
-""" {[ {"this":"CHN--RC03", "exit":"fa2/0", "next":"CHN--RC04", entry:"fa2/0"},
-	   {"this":"CHN--RC03", "exit":"fa0/0", "next":"CHN-SC09", entry:"fa0/0"},
-    ]} """
+	    #ret=ssh.send_command("en")
+	    boo=True
+	    while boo:
+	        try:
+	            name=ssh.find_prompt()
+	            boo=False
+	        except Exception as e:
+	            print(str(e))
+	            print("Trying again")
+	            boo=True
+	        if not(re.match("^[A-Z]{3}-{2}[A-Z]{2}[0-9]{2}#{1}$",name)):
+	            boo=True
+	            print(" Name Received Incorrect- Trying again "+name)
+	    
+	    name=name[:-1]
 
 
-#kpijson = [{'General Node': {'100': {'proc_5_sec': '0.24', 'proc_5_min': '0.28', 'proc_1_min': '0.28', 'process': 'Spanning Tree    '}, 'cpu': {'cpu_5_sec': '1', 'cpu_5_min': '2', 'cpu_1_min': '3'}, '87': {'proc_5_sec': '0.16', 'proc_5_min': '0.18', 'proc_1_min': '0.20', 'process': 'IP ARP Retry Age '}, 'ip_route_00': {1: 'D       1.1.1.1 [90/412160] via 10.7.14.7, 00:57:32, FastEthernet2/0', 2: 'D       2.2.2.2 [90/412160] via 10.8.14.8, 00:57:24, FastEthernet2/1', 3: 'D EX    33.33.33.33 [170/25628416] via 10.8.14.8, 00:57:24, FastEthernet2/1', 4: 'D EX    3.3.3.3 [170/286720] via 10.8.14.8, 00:57:24, FastEthernet2/1', 5: 'D EX    4.4.4.4 [170/25628416] via 10.8.14.8, 00:57:24, FastEthernet2/1', 6: '                [170/25628416] via 10.7.14.7, 00:57:24, FastEthernet2/0', 7: 'D EX    55.55.55.55 [170/25628416] via 10.7.14.7, 00:57:32, FastEthernet2/0', 8: 'D EX    5.5.5.5 [170/25628416] via 10.8.14.8, 00:57:24, FastEthernet2/1', 9: '                [170/25628416] via 10.7.14.7, 00:57:24, FastEthernet2/0', 10: 'D EX    6.6.6.6 [170/286720] via 10.7.14.7, 00:57:32, FastEthernet2/0', 11: 'D EX    22.22.22.22 [170/25628416] via 10.8.14.8, 00:57:24, FastEthernet2/1', 12: 'D       10.7.13.0 [90/30720] via 10.7.14.7, 00:57:32, FastEthernet2/0', 13: 'D EX    10.6.12.0 [170/25628416] via 10.7.14.7, 00:57:32, FastEthernet2/0', 14: 'D EX    10.3.9.0 [170/25628416] via 10.8.14.8, 00:57:24, FastEthernet2/1', 15: 'D       10.2.8.0 [90/284160] via 10.8.14.8, 00:57:32, FastEthernet2/1', 16: 'D EX    10.5.11.0 [170/25628416] via 10.7.14.7, 00:57:32, FastEthernet2/0', 17: 'D EX    10.4.10.0 [170/25628416] via 10.8.14.8, 00:57:24, FastEthernet2/1', 18: 'D       10.7.8.0 [90/30720] via 10.8.14.8, 00:57:32, FastEthernet2/1', 19: '                 [90/30720] via 10.7.14.7, 00:57:32, FastEthernet2/0', 20: 'D EX    10.9.10.0 [170/25628416] via 10.8.14.8, 00:57:24, FastEthernet2/1', 21: 'D EX    10.5.6.0 [170/25628416] via 10.7.14.7, 00:57:32, FastEthernet2/0', 22: 'D       10.1.2.0 [90/286720] via 10.8.14.8, 00:57:24, FastEthernet2/1', 23: '                 [90/286720] via 10.7.14.7, 00:57:24, FastEthernet2/0', 24: 'D EX    10.4.5.0 [170/25628416] via 10.7.14.7, 00:57:32, FastEthernet2/0', 25: 'D EX    10.2.3.0 [170/25628416] via 10.8.14.8, 00:50:12, FastEthernet2/1', 26: 'D EX    10.9.15.0 [170/25628416] via 10.8.14.8, 00:57:24, FastEthernet2/1', 27: 'D       10.1.7.0 [90/284160] via 10.7.14.7, 00:57:32, FastEthernet2/0', 28: 'D EX    10.11.12.0 [170/25628416] via 10.7.14.7, 00:57:32, FastEthernet2/0', 29: 'D EX    10.3.4.0 [170/25628416] via 10.8.14.8, 00:57:24, FastEthernet2/1', 30: 'D EX    10.1.6.0 [170/25628416] via 10.7.14.7, 00:57:32, FastEthernet2/0', 31: 'D EX    10.10.15.0 [170/25628416] via 10.8.14.8, 00:57:24, FastEthernet2/1', 32: 'D       10.8.13.0 [90/30720] via 10.8.14.8, 00:57:32, FastEthernet2/1', 33: 'D EX    10.11.17.0 [170/25628416] via 10.7.14.7, 00:57:32, FastEthernet2/0', 34: 'D EX    10.10.16.0 [170/25628416] via 10.8.14.8, 00:57:24, FastEthernet2/1', 35: 'D EX    10.11.18.0 [170/25628416] via 10.7.14.7, 00:57:32, FastEthernet2/0', 36: 'D EX    10.9.16.0 [170/25628416] via 10.8.14.8, 00:57:24, FastEthernet2/1', 37: 'D       10.13.19.0 [90/33280] via 10.8.14.8, 00:57:32, FastEthernet2/1', 38: '                   [90/33280] via 10.7.14.7, 00:57:32, FastEthernet2/0', 39: 'D EX    10.12.18.0 [170/25628416] via 10.7.14.7, 00:57:31, FastEthernet2/0', 40: 'D EX    10.12.17.0 [170/25628416] via 10.7.14.7, 00:57:31, FastEthernet2/0'}, '47': {'proc_5_sec': '0.24', 'proc_5_min': '0.21', 'proc_1_min': '0.19', 'process': 'Compute load avg '}}, 'Interface Dictionary': {'FastEthernet2/0': {'rxload': '1/255', 'output_drops': '89', 'duplex': '', 'late_collision': '0', 'collisions': '0', 'speed': '', 'reliability': '255/255', 'bandwidth': '100000 Kbit', 'input_errors': '0', 'txload': '1/255', 'output_errors': '0', 'ignored': '0', 'interf_reset': '4', 'frame': '0', 'crc': '0', 'ip': '10.7.14.14', 'overrun': '0'}}, 'Name': {'0': 'BGL--SA14'}}, {'General Node': {'cpu': {'cpu_5_sec': '0', 'cpu_5_min': '2', 'cpu_1_min': '4'}, '87': {'proc_5_sec': '0.16', 'proc_5_min': '0.18', 'proc_1_min': '0.20', 'process': 'IP ARP Retry Age '}, '83': {'proc_5_sec': '0.16', 'proc_5_min': '0.22', 'proc_1_min': '0.22', 'process': 'ACCT Periodic Pr '}, 'ip_route_00': {1: 'D EX    10.2.3.0 [170/25628416] via 10.7.8.8, 00:56:01, FastEthernet2/2'}}, 'Interface Dictionary': {'FastEthernet0/0': {'rxload': '1/255', 'output_drops': '0', 'duplex': 'Half-duplex', 'late_collision': '0', 'collisions': '0', 'speed': '10Mb/s', 'reliability': '255/255', 'bandwidth': '10000 Kbit', 'input_errors': '0', 'txload': '1/255', 'output_errors': '0', 'ignored': '0', 'interf_reset': '6', 'frame': '0', 'crc': '0', 'ip': '10.1.7.7', 'overrun': '0'}, 'FastEthernet2/0': {'rxload': '1/255', 'output_drops': '0', 'duplex': '', 'late_collision': '0', 'collisions': '0', 'speed': '', 'reliability': '255/255', 'bandwidth': '100000 Kbit', 'input_errors': '0', 'txload': '1/255', 'output_errors': '0', 'ignored': '0', 'interf_reset': '4', 'frame': '0', 'crc': '0', 'ip': '10.7.14.7', 'overrun': '0'}}, 'Name': {'0': 'BGL--SC07'}}, {'General Node': {'139': {'proc_5_sec': '0.95', 'proc_5_min': '0.94', 'proc_1_min': '0.94', 'process': 'HQF Shaper Backg '}, 'cpu': {'cpu_5_sec': '1', 'cpu_5_min': '2', 'cpu_1_min': '2'}, '41': {'proc_5_sec': '0.31', 'proc_5_min': '0.39', 'proc_1_min': '0.37', 'process': 'Per-Second Jobs  '}, 'ip_route_00': {}}, 'Interface Dictionary': {'FastEthernet0/0': {'rxload': '1/255', 'output_drops': '0', 'duplex': 'Half-duplex', 'late_collision': '0', 'collisions': '0', 'speed': '100Mb/s', 'reliability': '255/255', 'bandwidth': '100000 Kbit', 'input_errors': '0', 'txload': '1/255', 'output_errors': '0', 'ignored': '0', 'interf_reset': '0', 'frame': '0', 'crc': '0', 'ip': '10.1.7.1', 'overrun': '0'}}, 'Name': {'0': 'BGL--RC01'}}] 
-#kpijson=[{'Interface Dictionary': {'FastEthernet2/0': {'bandwidth': '100000 Kbit', 'speed': '', 'output_errors': '0', 'collisions': '0', 'input_errors': '0', 'duplex': '', 'overrun': '0', 'ip': '10.7.14.7', 'output_drops': '0', 'crc': '0', 'txload': '1/255', 'late_collision': '0', 'ignored': '0', 'frame': '0', 'reliability': '255/255', 'rxload': '1/255', 'interf_reset': '4'}, 'FastEthernet0/0': {'bandwidth': '10000 Kbit', 'speed': '10Mb/s', 'output_errors': '0', 'collisions': '0', 'input_errors': '0', 'duplex': 'Half-duplex', 'overrun': '0', 'ip': '10.1.7.7', 'output_drops': '0', 'crc': '0', 'txload': '1/255', 'late_collision': '0', 'ignored': '0', 'frame': '0', 'reliability': '255/255', 'rxload': '1/255', 'interf_reset': '0'}}, 'Name': {'0': 'BGL--SC07'}, 'General Node': {'87': {'proc_5_min': '0.23', 'proc_5_sec': '0.16', 'process': 'IP ARP Retry Age ', 'proc_1_min': '0.25'}, 'log': {}, 'ip_route_00': {1: 'D       1.1.1.1 [90/409600] via 10.1.7.1, 00:19:59, FastEthernet0/0', 2: 'D       2.2.2.2 [90/412160] via 10.7.8.8, 00:02:04, FastEthernet2/2', 3: '                [90/412160] via 10.1.7.1, 00:02:04, FastEthernet0/0', 4: 'D EX    3.3.3.3 [170/286720] via 10.7.8.8, 00:02:04, FastEthernet2/2', 5: '                [170/286720] via 10.1.7.1, 00:02:04, FastEthernet0/0', 6: 'D EX    4.4.4.4 [170/25625856] via 10.1.7.1, 00:33:02, FastEthernet0/0', 7: 'D EX    55.55.55.55 [170/25625856] via 10.1.7.1, 00:33:02, FastEthernet0/0', 8: 'D EX    5.5.5.5 [170/25625856] via 10.1.7.1, 00:33:02, FastEthernet0/0', 9: 'D EX    6.6.6.6 [170/284160] via 10.1.7.1, 00:19:59, FastEthernet0/0', 10: 'D EX    22.22.22.22 [170/25628416] via 10.7.8.8, 00:02:04, FastEthernet2/2', 11: '                    [170/25628416] via 10.1.7.1, 00:02:04, FastEthernet0/0', 12: 'D EX    10.6.12.0 [170/25625856] via 10.1.7.1, 00:33:02, FastEthernet0/0', 13: 'D       10.2.8.0 [90/284160] via 10.7.8.8, 00:02:04, FastEthernet2/2', 14: 'D EX    10.5.11.0 [170/25625856] via 10.1.7.1, 00:33:02, FastEthernet0/0', 15: 'D EX    10.5.6.0 [170/25625856] via 10.1.7.1, 00:33:02, FastEthernet0/0', 16: 'D       10.1.2.0 [90/284160] via 10.1.7.1, 00:19:59, FastEthernet0/0', 17: 'D       10.8.14.0 [90/30720] via 10.7.14.14, 00:19:59, FastEthernet2/0', 18: '                  [90/30720] via 10.7.8.8, 00:19:59, FastEthernet2/2', 19: 'D EX    10.11.12.0 [170/25625856] via 10.1.7.1, 00:33:02, FastEthernet0/0', 20: 'D EX    10.1.6.0 [170/25625856] via 10.1.7.1, 00:31:32, FastEthernet0/0', 21: 'D EX    10.17.21.0 [170/25625856] via 10.1.7.1, 00:33:02, FastEthernet0/0', 22: 'D       10.8.13.0 [90/30720] via 10.7.8.8, 00:02:04, FastEthernet2/2', 23: 'D       10.14.20.0 [90/30720] via 10.7.14.14, 00:02:04, FastEthernet2/0', 24: 'D EX    10.11.17.0 [170/25625856] via 10.1.7.1, 00:33:02, FastEthernet0/0', 25: 'D EX    10.11.18.0 [170/25625856] via 10.1.7.1, 00:33:02, FastEthernet0/0', 26: 'D EX    10.12.18.0 [170/25625856] via 10.1.7.1, 00:33:02, FastEthernet0/0', 27: 'D EX    10.12.17.0 [170/25625856] via 10.1.7.1, 00:33:02, FastEthernet0/0'}, 'eigrp_neigh': {'10.1.7.1': {'srtt': '44', 'neighbor': '10.1.7.1', 'uptime': '00:33:54', 'rto': '264'}}, '47': {'proc_5_min': '0.16', 'proc_5_sec': '0.16', 'process': 'Compute load avg ', 'proc_1_min': '0.14'}, 'Process_Memory': {'io': {'total': 1, 'used': 1, 'percent': 2, 'free': 1}, 'processor': {'total': 1, 'used': 1, 'percent': 2, 'free': 1}}, 'cpu': {'cpu_1_min': '5', 'cpu_5_min': '4', 'cpu_5_sec': '1'}, '83': {'proc_5_min': '0.18', 'proc_5_sec': '0.16', 'process': 'ACCT Periodic Pr ', 'proc_1_min': '0.19'}, '5': {'proc_5_min': '0.62', 'proc_5_sec': '0.40', 'process': 'Check heaps      ', 'proc_1_min': '0.81'}}}, {'Interface Dictionary': {'FastEthernet0/0': {'bandwidth': '100000 Kbit', 'speed': '100Mb/s', 'output_errors': '0', 'collisions': '0', 'input_errors': '0', 'duplex': 'Half-duplex', 'overrun': '0', 'ip': '10.1.7.1', 'output_drops': '0', 'crc': '0', 'txload': '1/255', 'late_collision': '0', 'ignored': '0', 'frame': '0', 'reliability': '255/255', 'rxload': '1/255', 'interf_reset': '0'}}, 'Name': {'0': 'BGL--RC01'}, 'General Node': {'41': {'proc_5_min': '0.20', 'proc_5_sec': '0.15', 'process': 'Per-Second Jobs  ', 'proc_1_min': '0.20'}, 'ip_route_00': {1: 'D       2.2.2.2 [100/156160] via 10.1.2.2, 00:41:28, FastEthernet2/0', 2: 'D EX    3.3.3.3 [210/30720] via 10.1.2.2, 00:41:28, FastEthernet2/0', 3: 'B       4.4.4.4 [20/30720] via 6.6.6.6, 00:40:19', 4: 'B       55.55.55.55 [20/25602816] via 6.6.6.6, 00:40:19', 5: 'B       5.5.5.5 [20/156160] via 6.6.6.6, 00:40:19', 6: 'D EX    22.22.22.22 [210/25602816] via 10.1.2.2, 00:41:28, FastEthernet2/0', 7: 'D       10.7.13.0 [100/30720] via 10.1.7.7, 00:41:24, FastEthernet0/0', 8: 'B       10.6.12.0 [20/0] via 6.6.6.6, 00:40:19', 9: 'D       10.2.8.0 [100/30720] via 10.1.2.2, 00:26:16, FastEthernet2/0', 10: 'D       10.7.14.0 [100/30720] via 10.1.7.7, 00:41:24, FastEthernet0/0', 11: 'B       10.5.11.0 [20/30720] via 6.6.6.6, 00:40:19', 12: 'D       10.7.8.0 [100/30720] via 10.1.7.7, 00:41:24, FastEthernet0/0', 13: 'B       10.5.6.0 [20/0] via 6.6.6.6, 00:40:19', 14: 'D       10.8.14.0 [100/33280] via 10.1.7.7, 00:41:20, FastEthernet0/0', 15: '                  [100/33280] via 10.1.2.2, 00:41:20, FastEthernet2/0', 16: 'B       10.11.12.0 [20/30720] via 6.6.6.6, 00:40:19', 17: 'B       10.17.21.0 [20/33280] via 6.6.6.6, 00:40:19', 18: 'D       10.8.13.0 [100/33280] via 10.1.7.7, 00:26:16, FastEthernet0/0', 19: '                  [100/33280] via 10.1.2.2, 00:26:16, FastEthernet2/0', 20: 'D       10.14.20.0 [100/33280] via 10.1.7.7, 00:02:29, FastEthernet0/0', 21: 'B       10.11.17.0 [20/33280] via 6.6.6.6, 00:40:19', 22: 'B       10.11.18.0 [20/33280] via 6.6.6.6, 00:40:19', 23: 'B       10.12.18.0 [20/30720] via 6.6.6.6, 00:40:19', 24: 'B       10.12.17.0 [20/30720] via 6.6.6.6, 00:40:19'}, 'eigrp_neigh': {'10.1.2.2': {'srtt': '32', 'neighbor': '10.1.2.2', 'uptime': '00:41:31', 'rto': '200'}}, 'bgp_neigh': {'6.6.6.6': {'AS': '300', 'neighbor': '6.6.6.6', 'up/down': '14'}}, 'Process_Memory': {'io': {'total': 1, 'used': 1, 'percent': 2, 'free': 1}, 'processor': {'total': 1, 'used': 1, 'percent': 2, 'free': 1}}, 'log': {0: '*Mar 26 06:55:36.087: % Error opening nvram:/ifIndex-table No such file or directory', 1: '*Mar 26 06:55:36.543: %PLATFORM-3-PACONFIG: Exceeds 600 bandwidth points for slots 0, 1, 3 & 5', 2: '*Mar 26 06:55:53.851: %LINEPROTO-5-UPDOWN: Line protocol on Interface VoIP-Null0, changed state to up', 3: '*Mar 26 06:55:53.855: %LINK-3-UPDOWN: Interface FastEthernet0/0, changed state to up', 4: '*Mar 26 06:55:53.859: %LINK-3-UPDOWN: Interface FastEthernet1/0, changed state to up', 5: '*Mar 26 06:55:53.867: %LINK-3-UPDOWN: Interface FastEthernet2/0, changed state to up', 6: '*Mar 26 06:55:53.871: %LINK-3-UPDOWN: Interface FastEthernet3/0, changed state to up', 7: '*Mar 26 06:55:53.875: %LINK-3-UPDOWN: Interface FastEthernet4/0, changed state to up', 8: '*Mar 26 06:55:53.879: %LINK-3-UPDOWN: Interface FastEthernet5/0, changed state to up', 9: '*Mar 26 06:55:53.887: %LINK-3-UPDOWN: Interface FastEthernet6/0, changed state to up', 10: '*Mar 26 06:55:55.307: %SYS-5-CONFIG_I: Configured from memory by console', 11: '*Mar 26 06:55:55.567: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/0, changed state to up', 12: '*Mar 26 06:55:55.571: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet1/0, changed state to up', 13: '*Mar 26 06:55:55.571: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet2/0, changed state to up', 14: '*Mar 26 06:55:55.571: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet3/0, changed state to down', 15: '*Mar 26 06:55:55.575: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet4/0, changed state to down', 16: '*Mar 26 06:55:55.575: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet5/0, changed state to down', 17: '*Mar 26 06:55:55.575: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet6/0, changed state to down', 18: '*Mar 26 06:55:55.579: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback0, changed state to up', 19: '*Mar 26 06:55:55.803: %SYS-5-RESTART: System restarted --', 20: '*Mar 26 06:55:55.903: %SSH-5-ENABLED: SSH 1.99 has been enabled', 21: '*Mar 26 06:55:56.003: %CRYPTO-6-ISAKMP_ON_OFF: ISAKMP is OFF', 22: '*Mar 26 06:55:56.007: %CRYPTO-6-GDOI_ON_OFF: GDOI is OFF', 23: '*Mar 26 06:55:56.167: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 100: Neighbor 10.1.2.2 (FastEthernet2/0) is up: new adjacency', 24: '*Mar 26 06:55:56.239: %SNMP-5-COLDSTART: SNMP agent on host BGL--RC01 is undergoing a cold start', 25: '*Mar 26 06:55:56.971: %LINK-5-CHANGED: Interface FastEthernet3/0, changed state to administratively down', 26: '*Mar 26 06:55:57.011: %LINK-5-CHANGED: Interface FastEthernet4/0, changed state to administratively down', 27: '*Mar 26 06:55:57.023: %LINK-5-CHANGED: Interface FastEthernet5/0, changed state to administratively down', 28: '*Mar 26 06:55:57.031: %LINK-5-CHANGED: Interface FastEthernet6/0, changed state to administratively down', 29: '*Mar 26 06:56:01.475: %BGP-5-ADJCHANGE: neighbor 2.2.2.2 Up ', 30: '*Mar 26 06:56:01.883: %BGP-5-ADJCHANGE: neighbor 6.6.6.6 Up ', 31: '*Mar 26 06:56:03.291: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 100: Neighbor 10.1.2.2 (FastEthernet2/0) is down: Interface Goodbye received', 32: '*Mar 26 06:56:06.155: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 100: Neighbor 10.1.2.2 (FastEthernet2/0) is up: new adjacency', 33: '*Mar 26 06:56:08.219: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 100: Neighbor 10.1.7.7 (FastEthernet0/0) is up: new adjacency'}, '139': {'proc_5_min': '0.38', 'proc_5_sec': '0.31', 'process': 'HQF Shaper Backg ', 'proc_1_min': '0.37'}, 'cpu': {'cpu_1_min': '1', 'cpu_5_min': '1', 'cpu_5_sec': '0'}}}, {'Interface Dictionary': {'FastEthernet2/0': {'bandwidth': '100000 Kbit', 'speed': '', 'output_errors': '0', 'collisions': '0', 'input_errors': '0', 'duplex': '', 'overrun': '0', 'ip': '10.7.14.14', 'output_drops': '0', 'crc': '0', 'txload': '1/255', 'late_collision': '0', 'ignored': '0', 'frame': '0', 'reliability': '255/255', 'rxload': '1/255', 'interf_reset': '4'}}, 'Name': {'0': 'BGL--SA14'}, 'General Node': {'87': {'proc_5_min': '0.22', 'proc_5_sec': '0.24', 'process': 'IP ARP Retry Age ', 'proc_1_min': '0.22'}, 'ip_route_00': {1: 'D       1.1.1.1 [90/412160] via 10.7.14.7, 00:02:30, FastEthernet2/0', 2: 'D       2.2.2.2 [90/412160] via 10.8.14.8, 00:02:30, FastEthernet2/1', 3: 'D EX    3.3.3.3 [170/286720] via 10.8.14.8, 00:02:30, FastEthernet2/1', 4: 'D EX    4.4.4.4 [170/25628416] via 10.7.14.7, 00:02:30, FastEthernet2/0', 5: 'D EX    55.55.55.55 [170/25628416] via 10.7.14.7, 00:02:30, FastEthernet2/0', 6: 'D EX    5.5.5.5 [170/25628416] via 10.7.14.7, 00:02:30, FastEthernet2/0', 7: 'D EX    6.6.6.6 [170/286720] via 10.7.14.7, 00:02:30, FastEthernet2/0', 8: 'D EX    22.22.22.22 [170/25628416] via 10.8.14.8, 00:02:30, FastEthernet2/1', 9: 'D       10.7.13.0 [90/30720] via 10.7.14.7, 00:02:30, FastEthernet2/0', 10: 'D EX    10.6.12.0 [170/25628416] via 10.7.14.7, 00:02:30, FastEthernet2/0', 11: 'D       10.2.8.0 [90/284160] via 10.8.14.8, 00:02:30, FastEthernet2/1', 12: 'D EX    10.5.11.0 [170/25628416] via 10.7.14.7, 00:02:30, FastEthernet2/0', 13: 'D       10.7.8.0 [90/30720] via 10.8.14.8, 00:02:30, FastEthernet2/1', 14: '                 [90/30720] via 10.7.14.7, 00:02:30, FastEthernet2/0', 15: 'D EX    10.5.6.0 [170/25628416] via 10.7.14.7, 00:02:30, FastEthernet2/0', 16: 'D       10.1.2.0 [90/286720] via 10.8.14.8, 00:02:30, FastEthernet2/1', 17: '                 [90/286720] via 10.7.14.7, 00:02:30, FastEthernet2/0', 18: 'D       10.1.7.0 [90/284160] via 10.7.14.7, 00:02:30, FastEthernet2/0', 19: 'D EX    10.11.12.0 [170/25628416] via 10.7.14.7, 00:02:30, FastEthernet2/0', 20: 'D EX    10.1.6.0 [170/25628416] via 10.7.14.7, 00:02:30, FastEthernet2/0', 21: 'D EX    10.17.21.0 [170/25628416] via 10.7.14.7, 00:02:30, FastEthernet2/0', 22: 'D       10.8.13.0 [90/30720] via 10.8.14.8, 00:02:30, FastEthernet2/1', 23: 'D EX    10.11.17.0 [170/25628416] via 10.7.14.7, 00:02:30, FastEthernet2/0', 24: 'D EX    10.11.18.0 [170/25628416] via 10.7.14.7, 00:02:30, FastEthernet2/0', 25: 'D EX    10.12.18.0 [170/25628416] via 10.7.14.7, 00:02:30, FastEthernet2/0', 26: 'D EX    10.12.17.0 [170/25628416] via 10.7.14.7, 00:02:30, FastEthernet2/0'}, 'eigrp_neigh': {'10.7.14.7': {'srtt': '111', 'neighbor': '10.7.14.7', 'uptime': '00:36:21', 'rto': '666'}}, '47': {'proc_5_min': '0.18', 'proc_5_sec': '0.24', 'process': 'Compute load avg ', 'proc_1_min': '0.13'}, 'Process_Memory': {'io': {'total': 1, 'used': 1, 'percent': 2, 'free': 1}, 'processor': {'total': 1, 'used': 1, 'percent': 2, 'free': 1}}, 'log': {}, 'cpu': {'cpu_1_min': '3', 'cpu_5_min': '3', 'cpu_5_sec': '2'}}}]
+	    if name not in setofnames:
+	        setofnames.add(name)
+	        dictofnames[name]=count
+	        k=router(name)
+	        arr.append(k)
+	        dictofobj[name]=k
+	        dictofobj[name].addconnect(ssh)
+	        dictofobj[name].addsship(now)
+	        count+=1
+	        
+	    
+	    print(name)
+	    honame.add(name)
+	    print("dict of names ")
+	    print(dictofnames)
+	    boo2=True
+	    while boo2:
+	        
+	    
+	        boo=True
+	        while boo:
+	            try:
+	                ret=ssh.send_command("sh ip route "+dst+" | include Known via")
+	                boo=False
+	            except Exception as e:
+	                boo=True
+	                print("1 Exception Handled- Trying again")
+	            print(" return from sh ip route | inc known via ")
+	            print(ret)
+	            if not ret:
+	                print("1 Trying again")
+	                boo=True
+	            elif isinstance(ret,list):
+	                print("1 Return from sh ip route is a list, trying again")
+	                boo=True
+	            elif len(ret.split())>=3:
+	                boo=False
+	            else:
+	                print("1 Trying Again sh ip route")
+	                boo=True
+	        print(" Name "+name+" show ip route | i known via")
+	        print(ret)
+	        ret=ret.split()
+	        prot=ret[2][1:]
+	        print("PROT- "+prot)
+	        if prot!='bgp' and prot !='connected",' and prot!='eigrp':
+	            boo2=True
+	            print(" Protocol received isn't correct. Trying Again ")
+	        else:
+	            boo2=False
+	            
 
-#Exit  interfaces 
-#exit={'MUM--RC06': {'FastEthernet0/0 10.6.12.12'}, 'BGL--RC01': {'FastEthernet1/0 10.1.6.6'}, 'MUM--SC12': {'FastEthernet2/1 directly'}, 'BGL--SC07': {'FastEthernet0/0 10.1.7.1'}}
 
- #Entry Reverse 
-#reverse={'10.1.6.6': {'MUM--RC06 FastEthernet1/0'}, '10.1.7.1': {'BGL--RC01 FastEthernet0/0'}, 'directly': {'MUM--SA18 FastEthernet2/1'}, '10.6.12.12': {'MUM--SC12 FastEthernet0/0'}}
+	    
+	    if prot=='bgp':
+	        dst1=dst
+	        fl=0
+	        print("Prot BGP")
+	        while fl!=2:
+	            boo=True
+	            while boo:
+	                try:
+	                    ret=ssh.send_command("sh ip route "+dst1)
+	                    boo=False
+	                except:
+	                    boo=True
+	                    print("2 Exception Handled- Trying again")
+
+	                if not ret:
+	                    boo=True
+	                    print("2 Trying again")
+	                elif isinstance(ret,list):
+	                    print("2 Return from sh ip route is a list, trying again")
+	                    boo=True
+	                elif len(ret.split())>3:
+	                    boo=False
+	                else:
+	                    boo=True
+	                    print("2 Trying again")
+	            print("\tBGP- sh ip route for dst "+dst1)
+	            print(ret)
+	            ret=ret.split("\n")
+	            fl=0
+	            for i in ret:
+	                i=i.split()
+	                print("splitting ret")
+	                print(i)
+	                if i[0]=='*':
+	                    nxt=i[1]
+	                    if nxt=='directly':
+	                        x=i.index('via')
+	                        hop=i[x+1]
+	                        fl=2
+	                        break
+	                    elif re.match('^(?:[0-9]{1,3}\.){3}([0-9]{1,3})',nxt):
+	                        dst1=nxt
+	                        if nxt[-1]==',':
+	                            dst1=nxt[:-1]
+
+	                        fl=1
+	                        break
+	        print("Name "+name+" BGP: next hop "+dst1+" exit interface "+hop)
+	        extract.add(dst1)
+	        s.add(dst1)
+	        ls.append(dst1)
+	        p=''
+	        p=hop+' '+dst1
+	        if name not in exit.keys():
+	            exit[name]=set()
+	        exit[name].add(p)
+	        boo=True
+	        while boo:
+	            try:    
+	                ret=ssh.send_command("sh ip int brief | include "+hop)
+	                boo=False
+	            except:
+	                print("3 Exception Handled- Trying again")
+	                boo=True
+	            if not ret:
+	                boo=True
+	            elif not(re.match('^FastEthernet\d\/\d$',ret.split()[0])):
+	                boo=True
+	                print("3-1 Trying again")
+	            elif isinstance(ret,list):
+	                print("3 Return from sh ip int brief is a list, trying again")
+	                boo=True
+	            elif len(ret.split())<6:
+	                boo=True
+	            else:
+	                boo=False
+	                
+	        ip=ret.split()[1]
 
 
-#Exit  interfaces 
-exit={'MUM--RC06': {'FastEthernet2/0 10.5.6.5'}, 'MUM--RC05': {'FastEthernet0/0 directly'}, 'BGL--SC07': {'FastEthernet0/0 10.1.7.1'}, 'BGL--SA14': {'FastEthernet2/0 10.7.14.7'}, 'BGL--RC01': {'FastEthernet1/0 10.1.6.6'}}
 
-#Entry Reverse 
-reverse={'10.5.6.5': {'MUM--RC05 FastEthernet2/0'}, 'directly': {'MUM--SC11 FastEthernet0/0'}, '10.7.14.7': {'BGL--SC07 FastEthernet2/0'}, '10.1.6.6': {'MUM--RC06 FastEthernet1/0'}, '10.1.7.1': {'BGL--RC01 FastEthernet0/0'}}
-
-
-
-#Json Object
-kpijson=[{'Name': {'0': 'BGL--RC01'}, 'Interface Dictionary': {'FastEthernet1/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': 'Half-duplex', 'ip': '10.1.6.1', 'txload': '1/255', 'interf_reset': '0', 'bandwidth': '100000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '100Mb/s', 'output_drops': '0'}, 'FastEthernet0/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': 'Half-duplex', 'ip': '10.1.7.1', 'txload': '1/255', 'interf_reset': '0', 'bandwidth': '100000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '100Mb/s', 'output_drops': '0'}}, 'General Node': {'log': {0: '*Mar 29 06:43:12.763: %LINEPROTO-5-UPDOWN: Line protocol on Interface VoIP-Null0, changed state to up', 1: '*Mar 29 06:43:12.771: %LINK-3-UPDOWN: Interface FastEthernet0/0, changed state to up', 2: '*Mar 29 06:43:12.775: %LINK-3-UPDOWN: Interface FastEthernet1/0, changed state to up', 3: '*Mar 29 06:43:12.779: %LINK-3-UPDOWN: Interface FastEthernet2/0, changed state to up', 4: '*Mar 29 06:43:12.783: %LINK-3-UPDOWN: Interface FastEthernet3/0, changed state to up', 5: '*Mar 29 06:43:12.791: %LINK-3-UPDOWN: Interface FastEthernet4/0, changed state to up', 6: '*Mar 29 06:43:12.795: %LINK-3-UPDOWN: Interface FastEthernet5/0, changed state to up', 7: '*Mar 29 06:43:12.799: %LINK-3-UPDOWN: Interface FastEthernet6/0, changed state to up', 8: '*Mar 29 06:43:13.923: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/0, changed state to up', 9: '*Mar 29 06:43:13.927: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet1/0, changed state to up', 10: '*Mar 29 06:43:13.927: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet2/0, changed state to up', 11: '*Mar 29 06:43:13.931: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet3/0, changed state to up', 12: '*Mar 29 06:43:13.931: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet4/0, changed state to up', 13: '*Mar 29 06:43:13.931: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet5/0, changed state to up', 14: '*Mar 29 06:43:13.935: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet6/0, changed state to up', 15: '*Mar 29 06:43:14.871: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback0, changed state to up', 16: '*Mar 29 06:43:15.663: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 100: Neighbor 10.1.2.2 (FastEthernet2/0) is up: new adjacency', 17: '*Mar 29 06:43:17.183: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet3/0, changed state to down', 18: '*Mar 29 06:43:17.231: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet4/0, changed state to down', 19: '*Mar 29 06:43:17.231: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet5/0, changed state to down', 20: '*Mar 29 06:43:17.231: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet6/0, changed state to down', 21: '*Mar 29 06:43:20.763: %BGP-5-ADJCHANGE: neighbor 2.2.2.2 Up ', 22: '*Mar 29 06:43:22.163: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 100: Neighbor 10.1.2.2 (FastEthernet2/0) is down: Interface Goodbye received', 23: '*Mar 29 06:43:24.659: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 100: Neighbor 10.1.2.2 (FastEthernet2/0) is up: new adjacency', 24: '*Mar 29 06:43:31.827: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 100: Neighbor 10.1.7.7 (FastEthernet0/0) is up: new adjacency', 25: '*Mar 29 06:54:28.719: %BGP-5-ADJCHANGE: neighbor 6.6.6.6 Up '}, 'eigrp_neigh': {'10.1.7.7': {'rto': '210', 'neighbor': '10.1.7.7', 'srtt': '35', 'uptime': '00:45:55'}, '10.1.2.2': {'rto': '522', 'neighbor': '10.1.2.2', 'srtt': '87', 'uptime': '00:46:02'}}, 'ip_route_00': {1: 'D       2.2.2.2 [100/156160] via 10.1.2.2, 00:45:59, FastEthernet2/0', 2: 'D EX    3.3.3.3 [210/30720] via 10.1.2.2, 00:45:59, FastEthernet2/0', 3: 'B       4.4.4.4 [20/30720] via 6.6.6.6, 00:34:03', 4: 'B       55.55.55.55 [20/25602816] via 6.6.6.6, 00:34:03', 5: 'B       5.5.5.5 [20/156160] via 6.6.6.6, 00:34:03', 6: 'D EX    22.22.22.22 [210/25602816] via 10.1.2.2, 00:45:59, FastEthernet2/0', 7: 'D       10.7.13.0 [100/30720] via 10.1.7.7, 00:45:50, FastEthernet0/0', 8: 'B       10.6.12.0 [20/0] via 6.6.6.6, 00:34:03', 9: 'D       10.2.8.0 [100/30720] via 10.1.2.2, 00:45:48, FastEthernet2/0', 10: 'D       10.7.14.0 [100/30720] via 10.1.7.7, 00:45:50, FastEthernet0/0', 11: 'B       10.5.11.0 [20/30720] via 6.6.6.6, 00:34:03', 12: 'D       10.7.8.0 [100/30720] via 10.1.7.7, 00:45:50, FastEthernet0/0', 13: 'B       10.5.6.0 [20/0] via 6.6.6.6, 00:34:03', 14: 'D       10.8.14.0 [100/33280] via 10.1.7.7, 00:45:48, FastEthernet0/0', 15: '                  [100/33280] via 10.1.2.2, 00:45:48, FastEthernet2/0', 16: 'B       10.11.12.0 [20/30720] via 6.6.6.6, 00:34:03', 17: 'B       10.17.21.0 [20/33280] via 6.6.6.6, 00:33:32', 18: 'D       10.8.13.0 [100/33280] via 10.1.7.7, 00:45:48, FastEthernet0/0', 19: '                  [100/33280] via 10.1.2.2, 00:45:48, FastEthernet2/0', 20: 'D       10.14.20.0 [100/33280] via 10.1.7.7, 00:45:48, FastEthernet0/0', 21: 'B       10.11.17.0 [20/33280] via 6.6.6.6, 00:34:03', 22: 'B       10.11.18.0 [20/33280] via 6.6.6.6, 00:34:03', 23: 'B       10.12.18.0 [20/30720] via 6.6.6.6, 00:34:03', 24: 'B       10.12.17.0 [20/30720] via 6.6.6.6, 00:34:03'}, '139': {'proc_5_min': '0.26', 'proc_5_sec': '0.23', 'proc_1_min': '0.22', 'process': 'HQF Shaper Backg '}, 'Process_Memory': {'io': {'total': 32.0, 'free': 28.58, 'used': 3.42, 'percent': 10.69}, 'processor': {'total': 367.08, 'free': 338.33, 'used': 28.75, 'percent': 7.83}}, 'bgp_neigh': {'6.6.6.6': {'AS': '300', 'neighbor': '6.6.6.6', 'up/down': '00:34:59'}, '2.2.2.2': {'AS': '100', 'neighbor': '2.2.2.2', 'up/down': '00:46:07'}}, 'version': {'hardware': '7206VXR', 'uptime': '46 minutes', 'version': '12.4(24)T8', 'reload_reason': 'unknown reload cause - suspect boot_data[BOOT_COUNT] 0x0, BOOT_COUNT 0, BOOTDATA 19', 'soft_ver': 'Cisco IOS'}, 'CPU': {'cpu_5_sec': '0', 'cpu_1_min': '0', 'cpu_5_min': '0'}, 'interface_counters_errors': {}, 'spanning_tree': {}}}, {'Name': {'0': 'BGL--SC07'}, 'Interface Dictionary': {'FastEthernet2/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': '', 'ip': '10.7.14.7', 'txload': '1/255', 'interf_reset': '4', 'bandwidth': '100000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '', 'output_drops': '0'}, 'FastEthernet0/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': 'Half-duplex', 'ip': '10.1.7.7', 'txload': '1/255', 'interf_reset': '0', 'bandwidth': '10000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '10Mb/s', 'output_drops': '0'}}, 'General Node': {'log': {}, 'eigrp_neigh': {'10.1.7.1': {'rto': '1284', 'neighbor': '10.1.7.1', 'srtt': '214', 'uptime': '00:39:24'}, '10.7.14.14': {'rto': '3612', 'neighbor': '10.7.14.14', 'srtt': '602', 'uptime': '00:39:23'}, '10.7.8.8': {'rto': '1650', 'neighbor': '10.7.8.8', 'srtt': '275', 'uptime': '00:39:24'}}, 'ip_route_00': {1: 'D       1.1.1.1 [90/409600] via 10.1.7.1, 00:37:32, FastEthernet0/0', 2: 'D       2.2.2.2 [90/412160] via 10.7.8.8, 00:37:32, FastEthernet2/2', 3: '                [90/412160] via 10.1.7.1, 00:37:32, FastEthernet0/0', 4: 'D EX    3.3.3.3 [170/286720] via 10.7.8.8, 00:37:32, FastEthernet2/2', 5: '                [170/286720] via 10.1.7.1, 00:37:32, FastEthernet0/0', 6: 'D EX    4.4.4.4 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 7: 'D EX    55.55.55.55 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 8: 'D EX    5.5.5.5 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 9: 'D EX    6.6.6.6 [170/284160] via 10.1.7.1, 00:37:32, FastEthernet0/0', 10: 'D EX    22.22.22.22 [170/25628416] via 10.7.8.8, 00:37:32, FastEthernet2/2', 11: '                    [170/25628416] via 10.1.7.1, 00:37:32, FastEthernet0/0', 12: 'D EX    10.6.12.0 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 13: 'D       10.2.8.0 [90/284160] via 10.7.8.8, 00:37:32, FastEthernet2/2', 14: 'D EX    10.5.11.0 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 15: 'D EX    10.5.6.0 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 16: 'D       10.1.2.0 [90/284160] via 10.1.7.1, 00:37:32, FastEthernet0/0', 17: 'D       10.8.14.0 [90/30720] via 10.7.14.14, 00:37:33, FastEthernet2/0', 18: '                  [90/30720] via 10.7.8.8, 00:37:33, FastEthernet2/2', 19: 'D EX    10.11.12.0 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 20: 'D EX    10.1.6.0 [170/25625856] via 10.1.7.1, 00:27:39, FastEthernet0/0', 21: 'D EX    10.17.21.0 [170/25625856] via 10.1.7.1, 00:25:56, FastEthernet0/0', 22: 'D       10.8.13.0 [90/30720] via 10.7.8.8, 00:37:32, FastEthernet2/2', 23: 'D       10.14.20.0 [90/30720] via 10.7.14.14, 00:37:32, FastEthernet2/0', 24: 'D EX    10.11.17.0 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 25: 'D EX    10.11.18.0 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 26: 'D EX    10.12.18.0 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 27: 'D EX    10.12.17.0 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0'}, 'spanning_tree': {}, 'Process_Memory': {'io': {'total': 12.0, 'free': 6.58, 'used': 5.42, 'percent': 45.14}, 'processor': {'total': 148.81, 'free': 129.14, 'used': 19.67, 'percent': 13.22}}, 'version': {'hardware': '3725', 'uptime': '37 minutes', 'version': '12.4(15)T14', 'reload_reason': 'unknown reload cause - suspect boot_data[BOOT_COUNT] 0x0, BOOT_COUNT 0, BOOTDATA 19', 'soft_ver': 'Cisco IOS'}, 'CPU': {'cpu_5_sec': '1', 'cpu_1_min': '2', 'cpu_5_min': '2'}, 'interface_counters_errors': {}, '47': {'proc_5_min': '0.15', 'proc_5_sec': '0.16', 'proc_1_min': '0.13', 'process': 'Compute load avg '}}}, {'Name': {'0': 'MUM--RC06'}, 'Interface Dictionary': {'FastEthernet2/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': 'Half-duplex', 'ip': '10.5.6.6', 'txload': '1/255', 'interf_reset': '0', 'bandwidth': '100000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '100Mb/s', 'output_drops': '0'}, 'FastEthernet1/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': 'Half-duplex', 'ip': '10.1.6.6', 'txload': '1/255', 'interf_reset': '0', 'bandwidth': '100000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '100Mb/s', 'output_drops': '0'}}, 'General Node': {'log': {0: '*Mar 29 06:54:20.995: %LINEPROTO-5-UPDOWN: Line protocol on Interface VoIP-Null0, changed state to up', 1: '*Mar 29 06:54:20.999: %LINK-3-UPDOWN: Interface FastEthernet0/0, changed state to up', 2: '*Mar 29 06:54:21.007: %LINK-3-UPDOWN: Interface FastEthernet1/0, changed state to up', 3: '*Mar 29 06:54:21.011: %LINK-3-UPDOWN: Interface FastEthernet2/0, changed state to up', 4: '*Mar 29 06:54:21.015: %LINK-3-UPDOWN: Interface FastEthernet3/0, changed state to up', 5: '*Mar 29 06:54:21.019: %LINK-3-UPDOWN: Interface FastEthernet4/0, changed state to up', 6: '*Mar 29 06:54:21.027: %LINK-3-UPDOWN: Interface FastEthernet5/0, changed state to up', 7: '*Mar 29 06:54:21.031: %LINK-3-UPDOWN: Interface FastEthernet6/0, changed state to up', 8: '*Mar 29 06:54:22.059: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/0, changed state to up', 9: '*Mar 29 06:54:22.063: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet1/0, changed state to up', 10: '*Mar 29 06:54:22.063: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet2/0, changed state to up', 11: '*Mar 29 06:54:22.067: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet3/0, changed state to up', 12: '*Mar 29 06:54:22.067: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet4/0, changed state to up', 13: '*Mar 29 06:54:22.071: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet5/0, changed state to up', 14: '*Mar 29 06:54:22.071: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet6/0, changed state to up', 15: '*Mar 29 06:54:22.847: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback0, changed state to up', 16: '*Mar 29 06:54:24.651: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.5 (FastEthernet2/0) is up: new adjacency', 17: '*Mar 29 06:54:25.307: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet3/0, changed state to down', 18: '*Mar 29 06:54:25.507: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet4/0, changed state to down', 19: '*Mar 29 06:54:25.511: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet5/0, changed state to down', 20: '*Mar 29 06:54:25.515: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet6/0, changed state to down', 21: '*Mar 29 06:54:28.271: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.6.12.12 (FastEthernet0/0) is up: new adjacency', 22: '*Mar 29 06:54:28.379: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.5 (FastEthernet2/0) is down: Interface Goodbye received', 23: '*Mar 29 06:54:28.915: %BGP-5-ADJCHANGE: neighbor 1.1.1.1 Up ', 24: '*Mar 29 06:54:29.239: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.5 (FastEthernet2/0) is up: new adjacency', 25: '*Mar 29 06:54:30.743: %BGP-5-ADJCHANGE: neighbor 5.5.5.5 Up ', 26: '*Mar 29 06:54:32.475: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.5 (FastEthernet2/0) is down: route configuration changed', 27: '*Mar 29 06:54:32.475: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.6.12.12 (FastEthernet0/0) is down: route configuration changed', 28: '*Mar 29 06:54:33.859: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.5 (FastEthernet2/0) is up: new adjacency', 29: '*Mar 29 06:54:37.179: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.6.12.12 (FastEthernet0/0) is up: new adjacency'}, 'eigrp_neigh': {'10.5.6.5': {'rto': '396', 'neighbor': '10.5.6.5', 'srtt': '44', 'uptime': '00:39:57'}, '10.6.12.12': {'rto': '1266', 'neighbor': '10.6.12.12', 'srtt': '211', 'uptime': '00:39:53'}}, 'ip_route_00': {1: 'B       2.2.2.2 [20/156160] via 1.1.1.1, 00:38:42', 2: 'B       3.3.3.3 [20/30720] via 1.1.1.1, 00:38:42', 3: 'D EX    4.4.4.4 [210/30720] via 10.5.6.5, 00:39:53, FastEthernet2/0', 4: 'D EX    55.55.55.55 [210/25602816] via 10.5.6.5, 00:39:53, FastEthernet2/0', 5: 'D       5.5.5.5 [100/156160] via 10.5.6.5, 00:39:53, FastEthernet2/0', 6: 'B       22.22.22.22 [20/25602816] via 1.1.1.1, 00:38:42', 7: 'B       10.7.13.0 [20/30720] via 1.1.1.1, 00:38:42', 8: 'B       10.2.8.0 [20/30720] via 1.1.1.1, 00:38:42', 9: 'B       10.7.14.0 [20/30720] via 1.1.1.1, 00:38:42', 10: 'D       10.5.11.0 [100/30720] via 10.5.6.5, 00:39:48, FastEthernet2/0', 11: 'B       10.7.8.0 [20/30720] via 1.1.1.1, 00:38:42', 12: 'B       10.1.2.0 [20/0] via 1.1.1.1, 00:38:42', 13: 'B       10.8.14.0 [20/33280] via 1.1.1.1, 00:38:42', 14: 'B       10.1.7.0 [20/0] via 1.1.1.1, 00:38:42', 15: 'D       10.11.12.0 [100/30720] via 10.6.12.12, 00:39:48, FastEthernet0/0', 16: 'D       10.17.21.0 [100/33280] via 10.6.12.12, 00:38:48, FastEthernet0/0', 17: 'B       10.8.13.0 [20/33280] via 1.1.1.1, 00:38:42', 18: 'B       10.14.20.0 [20/33280] via 1.1.1.1, 00:38:42', 19: 'D       10.11.17.0 [100/33280] via 10.6.12.12, 00:39:48, FastEthernet0/0', 20: '                   [100/33280] via 10.5.6.5, 00:39:48, FastEthernet2/0', 21: 'D       10.11.18.0 [100/33280] via 10.6.12.12, 00:39:48, FastEthernet0/0', 22: '                   [100/33280] via 10.5.6.5, 00:39:48, FastEthernet2/0', 23: 'D       10.12.18.0 [100/30720] via 10.6.12.12, 00:39:48, FastEthernet0/0', 24: 'D       10.12.17.0 [100/30720] via 10.6.12.12, 00:39:48, FastEthernet0/0'}, '139': {'proc_5_min': '0.32', 'proc_5_sec': '0.47', 'proc_1_min': '0.44', 'process': 'HQF Shaper Backg '}, 'Process_Memory': {'io': {'total': 32.0, 'free': 28.58, 'used': 3.42, 'percent': 10.7}, 'processor': {'total': 367.08, 'free': 338.33, 'used': 28.75, 'percent': 7.83}}, 'bgp_neigh': {'1.1.1.1': {'AS': '100', 'neighbor': '1.1.1.1', 'up/down': '00:40:03'}, '5.5.5.5': {'AS': '300', 'neighbor': '5.5.5.5', 'up/down': '00:40:01'}}, 'version': {'hardware': '7206VXR', 'uptime': '40 minutes', 'version': '12.4(24)T8', 'reload_reason': 'unknown reload cause - suspect boot_data[BOOT_COUNT] 0x0, BOOT_COUNT 0, BOOTDATA 19', 'soft_ver': 'Cisco IOS'}, 'CPU': {'cpu_5_sec': '1', 'cpu_1_min': '0', 'cpu_5_min': '0'}, 'interface_counters_errors': {}, '41': {'proc_5_min': '0.19', 'proc_5_sec': '0.31', 'proc_1_min': '0.24', 'process': 'Per-Second Jobs  '}, 'spanning_tree': {}}}, {'Name': {'0': 'MUM--RC05'}, 'Interface Dictionary': {'FastEthernet2/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': 'Half-duplex', 'ip': '10.5.6.5', 'txload': '1/255', 'interf_reset': '0', 'bandwidth': '100000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '100Mb/s', 'output_drops': '0'}, 'FastEthernet0/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': 'Half-duplex', 'ip': '10.5.11.5', 'txload': '1/255', 'interf_reset': '0', 'bandwidth': '100000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '100Mb/s', 'output_drops': '0'}}, 'General Node': {'log': {0: '*Mar 29 06:54:16.111: %LINEPROTO-5-UPDOWN: Line protocol on Interface VoIP-Null0, changed state to up', 1: '*Mar 29 06:54:16.115: %LINK-3-UPDOWN: Interface FastEthernet0/0, changed state to up', 2: '*Mar 29 06:54:16.119: %LINK-3-UPDOWN: Interface FastEthernet1/0, changed state to up', 3: '*Mar 29 06:54:16.123: %LINK-3-UPDOWN: Interface FastEthernet2/0, changed state to up', 4: '*Mar 29 06:54:16.131: %LINK-3-UPDOWN: Interface FastEthernet3/0, changed state to up', 5: '*Mar 29 06:54:16.135: %LINK-3-UPDOWN: Interface FastEthernet4/0, changed state to up', 6: '*Mar 29 06:54:16.139: %LINK-3-UPDOWN: Interface FastEthernet5/0, changed state to up', 7: '*Mar 29 06:54:16.143: %LINK-3-UPDOWN: Interface FastEthernet6/0, changed state to up', 8: '*Mar 29 06:54:19.687: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/0, changed state to up', 9: '*Mar 29 06:54:19.691: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet1/0, changed state to up', 10: '*Mar 29 06:54:19.691: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet2/0, changed state to up', 11: '*Mar 29 06:54:19.695: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet3/0, changed state to down', 12: '*Mar 29 06:54:19.695: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet4/0, changed state to down', 13: '*Mar 29 06:54:19.695: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet5/0, changed state to down', 14: '*Mar 29 06:54:19.699: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet6/0, changed state to down', 15: '*Mar 29 06:54:19.699: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback0, changed state to up', 16: '*Mar 29 06:54:19.703: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback1, changed state to up', 17: '*Mar 29 06:54:19.707: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback2, changed state to up', 18: '*Mar 29 06:54:24.831: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.6 (FastEthernet2/0) is up: new adjacency', 19: '*Mar 29 06:54:28.699: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.6 (FastEthernet2/0) is down: route configuration changed', 20: '*Mar 29 06:54:29.511: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.6 (FastEthernet2/0) is up: new adjacency', 21: '*Mar 29 06:54:31.039: %BGP-5-ADJCHANGE: neighbor 6.6.6.6 Up ', 22: '*Mar 29 06:54:32.531: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.11.11 (FastEthernet0/0) is up: new adjacency', 23: '*Mar 29 06:54:32.759: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.6 (FastEthernet2/0) is down: Interface Goodbye received', 24: '*Mar 29 06:54:34.155: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.6 (FastEthernet2/0) is up: new adjacency'}, 'eigrp_neigh': {'10.5.11.11': {'rto': '200', 'neighbor': '10.5.11.11', 'srtt': '15', 'uptime': '00:40:12'}, '10.5.6.6': {'rto': '1164', 'neighbor': '10.5.6.6', 'srtt': '194', 'uptime': '00:40:10'}}, 'ip_route_00': {1: 'D EX    1.1.1.1 [210/30720] via 10.5.6.6, 00:40:06, FastEthernet2/0', 2: 'B       2.2.2.2 [200/156160] via 6.6.6.6, 00:38:54', 3: 'B       3.3.3.3 [200/30720] via 6.6.6.6, 00:38:54', 4: 'D       6.6.6.6 [100/156160] via 10.5.6.6, 00:40:06, FastEthernet2/0', 5: 'B       22.22.22.22 [200/25602816] via 6.6.6.6, 00:38:54', 6: 'B       10.7.13.0 [200/30720] via 6.6.6.6, 00:38:54', 7: 'D       10.6.12.0 [100/30720] via 10.5.6.6, 00:40:03, FastEthernet2/0', 8: 'B       10.2.8.0 [200/30720] via 6.6.6.6, 00:38:54', 9: 'B       10.7.14.0 [200/30720] via 6.6.6.6, 00:38:54', 10: 'B       10.7.8.0 [200/30720] via 6.6.6.6, 00:38:54', 11: 'B       10.1.2.0 [200/0] via 6.6.6.6, 00:38:54', 12: 'B       10.8.14.0 [200/33280] via 6.6.6.6, 00:38:54', 13: 'B       10.1.7.0 [200/0] via 6.6.6.6, 00:38:54', 14: 'D       10.11.12.0 [100/30720] via 10.5.11.11, 00:40:01, FastEthernet0/0', 15: 'B       10.1.6.0 [200/0] via 6.6.6.6, 00:38:59', 16: 'D       10.17.21.0 [100/33280] via 10.5.11.11, 00:39:02, FastEthernet0/0', 17: 'B       10.8.13.0 [200/33280] via 6.6.6.6, 00:38:54', 18: 'B       10.14.20.0 [200/33280] via 6.6.6.6, 00:38:54', 19: 'D       10.11.17.0 [100/30720] via 10.5.11.11, 00:40:06, FastEthernet0/0', 20: 'D       10.11.18.0 [100/30720] via 10.5.11.11, 00:40:06, FastEthernet0/0', 21: 'D       10.12.18.0 [100/33280] via 10.5.11.11, 00:40:01, FastEthernet0/0', 22: '                   [100/33280] via 10.5.6.6, 00:40:01, FastEthernet2/0', 23: 'D       10.12.17.0 [100/33280] via 10.5.11.11, 00:40:01, FastEthernet0/0', 24: '                   [100/33280] via 10.5.6.6, 00:40:01, FastEthernet2/0'}, '139': {'proc_5_min': '0.35', 'proc_5_sec': '0.55', 'proc_1_min': '0.48', 'process': 'HQF Shaper Backg '}, 'Process_Memory': {'io': {'total': 32.0, 'free': 28.58, 'used': 3.42, 'percent': 10.7}, 'processor': {'total': 367.08, 'free': 338.28, 'used': 28.8, 'percent': 7.84}}, 'bgp_neigh': {'4.4.4.4': {'AS': '200', 'neighbor': '4.4.4.4', 'up/down': 'never'}, '6.6.6.6': {'AS': '300', 'neighbor': '6.6.6.6', 'up/down': '00:40:14'}}, 'version': {'hardware': '7206VXR', 'uptime': '41 minutes', 'version': '12.4(24)T8', 'reload_reason': 'unknown reload cause - suspect boot_data[BOOT_COUNT] 0x0, BOOT_COUNT 0, BOOTDATA 19', 'soft_ver': 'Cisco IOS'}, 'CPU': {'cpu_5_sec': '1', 'cpu_1_min': '1', 'cpu_5_min': '0'}, 'interface_counters_errors': {}, '41': {'proc_5_min': '0.18', 'proc_5_sec': '0.23', 'proc_1_min': '0.23', 'process': 'Per-Second Jobs  '}, 'spanning_tree': {}}}, {'Name': {'0': 'MUM--SC11'}, 'Interface Dictionary': {'FastEthernet0/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': 'Half-duplex', 'ip': '10.5.11.11', 'txload': '1/255', 'interf_reset': '0', 'bandwidth': '10000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '10Mb/s', 'output_drops': '0'}}, 'General Node': {'log': {}, '87': {'proc_5_min': '0.21', 'proc_5_sec': '0.16', 'proc_1_min': '0.19', 'process': 'IP ARP Retry Age '}, 'ip_route_00': {1: 'D EX    1.1.1.1 [170/286720] via 10.11.12.12, 00:32:18, FastEthernet2/2', 2: '                [170/286720] via 10.5.11.5, 00:32:18, FastEthernet0/0', 3: 'D EX    2.2.2.2 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 4: 'D EX    3.3.3.3 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 5: 'D EX    4.4.4.4 [170/284160] via 10.5.11.5, 00:33:00, FastEthernet0/0', 6: 'D EX    55.55.55.55 [170/25625856] via 10.5.11.5, 00:33:00, FastEthernet0/0', 7: 'D       5.5.5.5 [90/409600] via 10.5.11.5, 00:33:00, FastEthernet0/0', 8: 'D       6.6.6.6 [90/412160] via 10.11.12.12, 00:32:18, FastEthernet2/2', 9: '                [90/412160] via 10.5.11.5, 00:32:18, FastEthernet0/0', 10: 'D EX    22.22.22.22 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 11: 'D EX    10.7.13.0 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 12: 'D       10.6.12.0 [90/284160] via 10.11.12.12, 00:32:18, FastEthernet2/2', 13: 'D EX    10.2.8.0 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 14: 'D EX    10.7.14.0 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 15: 'D EX    10.7.8.0 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 16: 'D       10.5.6.0 [90/284160] via 10.5.11.5, 00:32:56, FastEthernet0/0', 17: 'D EX    10.1.2.0 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 18: 'D EX    10.8.14.0 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 19: 'D EX    10.1.7.0 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 20: 'D       10.17.21.0 [90/30720] via 10.11.17.17, 00:32:18, FastEthernet2/1', 21: 'D EX    10.8.13.0 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 22: 'D EX    10.14.20.0 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 23: 'D       10.12.18.0 [90/30720] via 10.11.18.18, 00:32:18, FastEthernet2/0', 24: '                   [90/30720] via 10.11.12.12, 00:32:18, FastEthernet2/2', 25: 'D       10.12.17.0 [90/30720] via 10.11.17.17, 00:32:20, FastEthernet2/1', 26: '                   [90/30720] via 10.11.12.12, 00:32:20, FastEthernet2/2'}, 'Process_Memory': {'io': {'total': 12.0, 'free': 6.59, 'used': 5.41, 'percent': 45.06}, 'processor': {'total': 148.81, 'free': 128.95, 'used': 19.85, 'percent': 13.34}}, 'spanning_tree': {}, 'eigrp_neigh': {'10.11.18.18': {'rto': '1422', 'neighbor': '10.11.18.18', 'srtt': '237', 'uptime': '00:32:28'}, '10.11.12.12': {'rto': '2226', 'neighbor': '10.11.12.12', 'srtt': '371', 'uptime': '00:33:05'}, '10.11.17.17': {'rto': '3564', 'neighbor': '10.11.17.17', 'srtt': '594', 'uptime': '00:32:26'}, '10.5.11.5': {'rto': '390', 'neighbor': '10.5.11.5', 'srtt': '65', 'uptime': '00:33:06'}}, 'version': {'hardware': '3725', 'uptime': '33 minutes', 'version': '12.4(15)T14', 'reload_reason': 'unknown reload cause - suspect boot_data[BOOT_COUNT] 0x0, BOOT_COUNT 0, BOOTDATA 19', 'soft_ver': 'Cisco IOS'}, '83': {'proc_5_min': '0.21', 'proc_5_sec': '0.16', 'proc_1_min': '0.18', 'process': 'ACCT Periodic Pr '}, 'CPU': {'cpu_5_sec': '1', 'cpu_1_min': '1', 'cpu_5_min': '1'}, 'interface_counters_errors': {}, '47': {'proc_5_min': '0.15', 'proc_5_sec': '0.16', 'proc_1_min': '0.14', 'process': 'Compute load avg '}}}, {'Name': {'0': 'BGL--SA14'}, 'Interface Dictionary': {'FastEthernet2/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': '', 'ip': '10.7.14.14', 'txload': '1/255', 'interf_reset': '4', 'bandwidth': '100000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '', 'output_drops': '1'}}, 'General Node': {'log': {}, '87': {'proc_5_min': '0.21', 'proc_5_sec': '0.24', 'proc_1_min': '0.21', 'process': 'IP ARP Retry Age '}, 'ip_route_00': {1: 'D       1.1.1.1 [90/412160] via 10.7.14.7, 00:47:25, FastEthernet2/0', 2: 'D       2.2.2.2 [90/412160] via 10.8.14.8, 00:47:25, FastEthernet2/1', 3: 'D EX    3.3.3.3 [170/286720] via 10.8.14.8, 00:47:25, FastEthernet2/1', 4: 'D EX    4.4.4.4 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 5: 'D EX    55.55.55.55 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 6: 'D EX    5.5.5.5 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 7: 'D EX    6.6.6.6 [170/286720] via 10.7.14.7, 00:47:25, FastEthernet2/0', 8: 'D EX    22.22.22.22 [170/25628416] via 10.8.14.8, 00:47:25, FastEthernet2/1', 9: 'D       10.7.13.0 [90/30720] via 10.7.14.7, 00:47:24, FastEthernet2/0', 10: 'D EX    10.6.12.0 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 11: 'D       10.2.8.0 [90/284160] via 10.8.14.8, 00:47:25, FastEthernet2/1', 12: 'D EX    10.5.11.0 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 13: 'D       10.7.8.0 [90/30720] via 10.8.14.8, 00:47:25, FastEthernet2/1', 14: '                 [90/30720] via 10.7.14.7, 00:47:25, FastEthernet2/0', 15: 'D EX    10.5.6.0 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 16: 'D       10.1.2.0 [90/286720] via 10.8.14.8, 00:47:25, FastEthernet2/1', 17: '                 [90/286720] via 10.7.14.7, 00:47:25, FastEthernet2/0', 18: 'D       10.1.7.0 [90/284160] via 10.7.14.7, 00:47:24, FastEthernet2/0', 19: 'D EX    10.11.12.0 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 20: 'D EX    10.1.6.0 [170/25628416] via 10.7.14.7, 00:37:16, FastEthernet2/0', 21: 'D EX    10.17.21.0 [170/25628416] via 10.7.14.7, 00:36:15, FastEthernet2/0', 22: 'D       10.8.13.0 [90/30720] via 10.8.14.8, 00:47:25, FastEthernet2/1', 23: 'D EX    10.11.17.0 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 24: 'D EX    10.11.18.0 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 25: 'D EX    10.12.18.0 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 26: 'D EX    10.12.17.0 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0'}, 'Process_Memory': {'io': {'total': 12.0, 'free': 6.45, 'used': 5.55, 'percent': 46.26}, 'processor': {'total': 148.81, 'free': 129.16, 'used': 19.64, 'percent': 13.2}}, 'spanning_tree': {}, 'eigrp_neigh': {'10.8.14.8': {'rto': '624', 'neighbor': '10.8.14.8', 'srtt': '104', 'uptime': '00:47:35'}, '10.7.14.7': {'rto': '504', 'neighbor': '10.7.14.7', 'srtt': '56', 'uptime': '00:47:31'}}, 'version': {'hardware': '3725', 'uptime': '53 minutes', 'version': '12.4(15)T14', 'reload_reason': 'unknown reload cause - suspect boot_data[BOOT_COUNT] 0x0, BOOT_COUNT 0, BOOTDATA 19', 'soft_ver': 'Cisco IOS'}, '83': {'proc_5_min': '0.21', 'proc_5_sec': '0.16', 'proc_1_min': '0.20', 'process': 'ACCT Periodic Pr '}, 'CPU': {'cpu_5_sec': '2', 'cpu_1_min': '1', 'cpu_5_min': '1'}, 'interface_counters_errors': {}}}]
-#[{'Name': {'0': 'BGL--RC01'}, 'Interface Dictionary': {'FastEthernet1/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': 'Half-duplex', 'ip': '10.1.6.1', 'txload': '1/255', 'interf_reset': '0', 'bandwidth': '100000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '100Mb/s', 'output_drops': '0'}, 'FastEthernet0/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': 'Half-duplex', 'ip': '10.1.7.1', 'txload': '1/255', 'interf_reset': '0', 'bandwidth': '100000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '100Mb/s', 'output_drops': '0'}}, 'General Node': {'log': {0: '*Mar 29 06:43:12.763: %LINEPROTO-5-UPDOWN: Line protocol on Interface VoIP-Null0, changed state to up', 1: '*Mar 29 06:43:12.771: %LINK-3-UPDOWN: Interface FastEthernet0/0, changed state to up', 2: '*Mar 29 06:43:12.775: %LINK-3-UPDOWN: Interface FastEthernet1/0, changed state to up', 3: '*Mar 29 06:43:12.779: %LINK-3-UPDOWN: Interface FastEthernet2/0, changed state to up', 4: '*Mar 29 06:43:12.783: %LINK-3-UPDOWN: Interface FastEthernet3/0, changed state to up', 5: '*Mar 29 06:43:12.791: %LINK-3-UPDOWN: Interface FastEthernet4/0, changed state to up', 6: '*Mar 29 06:43:12.795: %LINK-3-UPDOWN: Interface FastEthernet5/0, changed state to up', 7: '*Mar 29 06:43:12.799: %LINK-3-UPDOWN: Interface FastEthernet6/0, changed state to up', 8: '*Mar 29 06:43:13.923: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/0, changed state to up', 9: '*Mar 29 06:43:13.927: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet1/0, changed state to up', 10: '*Mar 29 06:43:13.927: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet2/0, changed state to up', 11: '*Mar 29 06:43:13.931: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet3/0, changed state to up', 12: '*Mar 29 06:43:13.931: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet4/0, changed state to up', 13: '*Mar 29 06:43:13.931: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet5/0, changed state to up', 14: '*Mar 29 06:43:13.935: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet6/0, changed state to up', 15: '*Mar 29 06:43:14.871: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback0, changed state to up', 16: '*Mar 29 06:43:15.663: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 100: Neighbor 10.1.2.2 (FastEthernet2/0) is up: new adjacency', 17: '*Mar 29 06:43:17.183: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet3/0, changed state to down', 18: '*Mar 29 06:43:17.231: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet4/0, changed state to down', 19: '*Mar 29 06:43:17.231: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet5/0, changed state to down', 20: '*Mar 29 06:43:17.231: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet6/0, changed state to down', 21: '*Mar 29 06:43:20.763: %BGP-5-ADJCHANGE: neighbor 2.2.2.2 Up ', 22: '*Mar 29 06:43:22.163: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 100: Neighbor 10.1.2.2 (FastEthernet2/0) is down: Interface Goodbye received', 23: '*Mar 29 06:43:24.659: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 100: Neighbor 10.1.2.2 (FastEthernet2/0) is up: new adjacency', 24: '*Mar 29 06:43:31.827: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 100: Neighbor 10.1.7.7 (FastEthernet0/0) is up: new adjacency', 25: '*Mar 29 06:54:28.719: %BGP-5-ADJCHANGE: neighbor 6.6.6.6 Up '}, 'eigrp_neigh': {'10.1.7.7': {'rto': '210', 'neighbor': '10.1.7.7', 'srtt': '35', 'uptime': '00:45:55'}, '10.1.2.2': {'rto': '522', 'neighbor': '10.1.2.2', 'srtt': '87', 'uptime': '00:46:02'}}, 'ip_route_00': {1: 'D       2.2.2.2 [100/156160] via 10.1.2.2, 00:45:59, FastEthernet2/0', 2: 'D EX    3.3.3.3 [210/30720] via 10.1.2.2, 00:45:59, FastEthernet2/0', 3: 'B       4.4.4.4 [20/30720] via 6.6.6.6, 00:34:03', 4: 'B       55.55.55.55 [20/25602816] via 6.6.6.6, 00:34:03', 5: 'B       5.5.5.5 [20/156160] via 6.6.6.6, 00:34:03', 6: 'D EX    22.22.22.22 [210/25602816] via 10.1.2.2, 00:45:59, FastEthernet2/0', 7: 'D       10.7.13.0 [100/30720] via 10.1.7.7, 00:45:50, FastEthernet0/0', 8: 'B       10.6.12.0 [20/0] via 6.6.6.6, 00:34:03', 9: 'D       10.2.8.0 [100/30720] via 10.1.2.2, 00:45:48, FastEthernet2/0', 10: 'D       10.7.14.0 [100/30720] via 10.1.7.7, 00:45:50, FastEthernet0/0', 11: 'B       10.5.11.0 [20/30720] via 6.6.6.6, 00:34:03', 12: 'D       10.7.8.0 [100/30720] via 10.1.7.7, 00:45:50, FastEthernet0/0', 13: 'B       10.5.6.0 [20/0] via 6.6.6.6, 00:34:03', 14: 'D       10.8.14.0 [100/33280] via 10.1.7.7, 00:45:48, FastEthernet0/0', 15: '                  [100/33280] via 10.1.2.2, 00:45:48, FastEthernet2/0', 16: 'B       10.11.12.0 [20/30720] via 6.6.6.6, 00:34:03', 17: 'B       10.17.21.0 [20/33280] via 6.6.6.6, 00:33:32', 18: 'D       10.8.13.0 [100/33280] via 10.1.7.7, 00:45:48, FastEthernet0/0', 19: '                  [100/33280] via 10.1.2.2, 00:45:48, FastEthernet2/0', 20: 'D       10.14.20.0 [100/33280] via 10.1.7.7, 00:45:48, FastEthernet0/0', 21: 'B       10.11.17.0 [20/33280] via 6.6.6.6, 00:34:03', 22: 'B       10.11.18.0 [20/33280] via 6.6.6.6, 00:34:03', 23: 'B       10.12.18.0 [20/30720] via 6.6.6.6, 00:34:03', 24: 'B       10.12.17.0 [20/30720] via 6.6.6.6, 00:34:03'}, '139': {'proc_5_min': '0.26', 'proc_5_sec': '0.23', 'proc_1_min': '0.22', 'process': 'HQF Shaper Backg '}, 'Process_Memory': {'io': {'total': 32.0, 'free': 28.58, 'used': 3.42, 'percent': 10.69}, 'processor': {'total': 367.08, 'free': 338.33, 'used': 28.75, 'percent': 7.83}}, 'bgp_neigh': {'6.6.6.6': {'AS': '300', 'neighbor': '6.6.6.6', 'up/down': '00:34:59'}, '2.2.2.2': {'AS': '100', 'neighbor': '2.2.2.2', 'up/down': '00:46:07'}}, 'version': {'hardware': '7206VXR', 'uptime': '46 minutes', 'version': '12.4(24)T8', 'reload_reason': 'unknown reload cause - suspect boot_data[BOOT_COUNT] 0x0, BOOT_COUNT 0, BOOTDATA 19', 'soft_ver': 'Cisco IOS'}, 'CPU': {'cpu_5_sec': '0', 'cpu_1_min': '0', 'cpu_5_min': '0'}, 'interface_counters_errors': {}, 'spanning_tree': {}}}, {'Name': {'0': 'BGL--SC07'}, 'Interface Dictionary': {'FastEthernet2/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': '', 'ip': '10.7.14.7', 'txload': '1/255', 'interf_reset': '4', 'bandwidth': '100000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '', 'output_drops': '0'}, 'FastEthernet0/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': 'Half-duplex', 'ip': '10.1.7.7', 'txload': '1/255', 'interf_reset': '0', 'bandwidth': '10000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '10Mb/s', 'output_drops': '0'}}, 'General Node': {'log': {}, 'eigrp_neigh': {'10.1.7.1': {'rto': '1284', 'neighbor': '10.1.7.1', 'srtt': '214', 'uptime': '00:39:24'}, '10.7.14.14': {'rto': '3612', 'neighbor': '10.7.14.14', 'srtt': '602', 'uptime': '00:39:23'}, '10.7.8.8': {'rto': '1650', 'neighbor': '10.7.8.8', 'srtt': '275', 'uptime': '00:39:24'}}, 'ip_route_00': {1: 'D       1.1.1.1 [90/409600] via 10.1.7.1, 00:37:32, FastEthernet0/0', 2: 'D       2.2.2.2 [90/412160] via 10.7.8.8, 00:37:32, FastEthernet2/2', 3: '                [90/412160] via 10.1.7.1, 00:37:32, FastEthernet0/0', 4: 'D EX    3.3.3.3 [170/286720] via 10.7.8.8, 00:37:32, FastEthernet2/2', 5: '                [170/286720] via 10.1.7.1, 00:37:32, FastEthernet0/0', 6: 'D EX    4.4.4.4 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 7: 'D EX    55.55.55.55 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 8: 'D EX    5.5.5.5 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 9: 'D EX    6.6.6.6 [170/284160] via 10.1.7.1, 00:37:32, FastEthernet0/0', 10: 'D EX    22.22.22.22 [170/25628416] via 10.7.8.8, 00:37:32, FastEthernet2/2', 11: '                    [170/25628416] via 10.1.7.1, 00:37:32, FastEthernet0/0', 12: 'D EX    10.6.12.0 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 13: 'D       10.2.8.0 [90/284160] via 10.7.8.8, 00:37:32, FastEthernet2/2', 14: 'D EX    10.5.11.0 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 15: 'D EX    10.5.6.0 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 16: 'D       10.1.2.0 [90/284160] via 10.1.7.1, 00:37:32, FastEthernet0/0', 17: 'D       10.8.14.0 [90/30720] via 10.7.14.14, 00:37:33, FastEthernet2/0', 18: '                  [90/30720] via 10.7.8.8, 00:37:33, FastEthernet2/2', 19: 'D EX    10.11.12.0 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 20: 'D EX    10.1.6.0 [170/25625856] via 10.1.7.1, 00:27:39, FastEthernet0/0', 21: 'D EX    10.17.21.0 [170/25625856] via 10.1.7.1, 00:25:56, FastEthernet0/0', 22: 'D       10.8.13.0 [90/30720] via 10.7.8.8, 00:37:32, FastEthernet2/2', 23: 'D       10.14.20.0 [90/30720] via 10.7.14.14, 00:37:32, FastEthernet2/0', 24: 'D EX    10.11.17.0 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 25: 'D EX    10.11.18.0 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 26: 'D EX    10.12.18.0 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0', 27: 'D EX    10.12.17.0 [170/25625856] via 10.1.7.1, 00:26:26, FastEthernet0/0'}, 'spanning_tree': {}, 'Process_Memory': {'io': {'total': 12.0, 'free': 6.58, 'used': 5.42, 'percent': 45.14}, 'processor': {'total': 148.81, 'free': 129.14, 'used': 19.67, 'percent': 13.22}}, 'version': {'hardware': '3725', 'uptime': '37 minutes', 'version': '12.4(15)T14', 'reload_reason': 'unknown reload cause - suspect boot_data[BOOT_COUNT] 0x0, BOOT_COUNT 0, BOOTDATA 19', 'soft_ver': 'Cisco IOS'}, 'CPU': {'cpu_5_sec': '1', 'cpu_1_min': '2', 'cpu_5_min': '2'}, 'interface_counters_errors': {}, '47': {'proc_5_min': '0.15', 'proc_5_sec': '0.16', 'proc_1_min': '0.13', 'process': 'Compute load avg '}}}, {'Name': {'0': 'MUM--RC06'}, 'Interface Dictionary': {'FastEthernet2/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': 'Half-duplex', 'ip': '10.5.6.6', 'txload': '1/255', 'interf_reset': '0', 'bandwidth': '100000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '100Mb/s', 'output_drops': '0'}, 'FastEthernet1/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': 'Half-duplex', 'ip': '10.1.6.6', 'txload': '1/255', 'interf_reset': '0', 'bandwidth': '100000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '100Mb/s', 'output_drops': '0'}}, 'General Node': {'log': {0: '*Mar 29 06:54:20.995: %LINEPROTO-5-UPDOWN: Line protocol on Interface VoIP-Null0, changed state to up', 1: '*Mar 29 06:54:20.999: %LINK-3-UPDOWN: Interface FastEthernet0/0, changed state to up', 2: '*Mar 29 06:54:21.007: %LINK-3-UPDOWN: Interface FastEthernet1/0, changed state to up', 3: '*Mar 29 06:54:21.011: %LINK-3-UPDOWN: Interface FastEthernet2/0, changed state to up', 4: '*Mar 29 06:54:21.015: %LINK-3-UPDOWN: Interface FastEthernet3/0, changed state to up', 5: '*Mar 29 06:54:21.019: %LINK-3-UPDOWN: Interface FastEthernet4/0, changed state to up', 6: '*Mar 29 06:54:21.027: %LINK-3-UPDOWN: Interface FastEthernet5/0, changed state to up', 7: '*Mar 29 06:54:21.031: %LINK-3-UPDOWN: Interface FastEthernet6/0, changed state to up', 8: '*Mar 29 06:54:22.059: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/0, changed state to up', 9: '*Mar 29 06:54:22.063: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet1/0, changed state to up', 10: '*Mar 29 06:54:22.063: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet2/0, changed state to up', 11: '*Mar 29 06:54:22.067: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet3/0, changed state to up', 12: '*Mar 29 06:54:22.067: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet4/0, changed state to up', 13: '*Mar 29 06:54:22.071: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet5/0, changed state to up', 14: '*Mar 29 06:54:22.071: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet6/0, changed state to up', 15: '*Mar 29 06:54:22.847: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback0, changed state to up', 16: '*Mar 29 06:54:24.651: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.5 (FastEthernet2/0) is up: new adjacency', 17: '*Mar 29 06:54:25.307: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet3/0, changed state to down', 18: '*Mar 29 06:54:25.507: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet4/0, changed state to down', 19: '*Mar 29 06:54:25.511: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet5/0, changed state to down', 20: '*Mar 29 06:54:25.515: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet6/0, changed state to down', 21: '*Mar 29 06:54:28.271: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.6.12.12 (FastEthernet0/0) is up: new adjacency', 22: '*Mar 29 06:54:28.379: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.5 (FastEthernet2/0) is down: Interface Goodbye received', 23: '*Mar 29 06:54:28.915: %BGP-5-ADJCHANGE: neighbor 1.1.1.1 Up ', 24: '*Mar 29 06:54:29.239: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.5 (FastEthernet2/0) is up: new adjacency', 25: '*Mar 29 06:54:30.743: %BGP-5-ADJCHANGE: neighbor 5.5.5.5 Up ', 26: '*Mar 29 06:54:32.475: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.5 (FastEthernet2/0) is down: route configuration changed', 27: '*Mar 29 06:54:32.475: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.6.12.12 (FastEthernet0/0) is down: route configuration changed', 28: '*Mar 29 06:54:33.859: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.5 (FastEthernet2/0) is up: new adjacency', 29: '*Mar 29 06:54:37.179: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.6.12.12 (FastEthernet0/0) is up: new adjacency'}, 'eigrp_neigh': {'10.5.6.5': {'rto': '396', 'neighbor': '10.5.6.5', 'srtt': '44', 'uptime': '00:39:57'}, '10.6.12.12': {'rto': '1266', 'neighbor': '10.6.12.12', 'srtt': '211', 'uptime': '00:39:53'}}, 'ip_route_00': {1: 'B       2.2.2.2 [20/156160] via 1.1.1.1, 00:38:42', 2: 'B       3.3.3.3 [20/30720] via 1.1.1.1, 00:38:42', 3: 'D EX    4.4.4.4 [210/30720] via 10.5.6.5, 00:39:53, FastEthernet2/0', 4: 'D EX    55.55.55.55 [210/25602816] via 10.5.6.5, 00:39:53, FastEthernet2/0', 5: 'D       5.5.5.5 [100/156160] via 10.5.6.5, 00:39:53, FastEthernet2/0', 6: 'B       22.22.22.22 [20/25602816] via 1.1.1.1, 00:38:42', 7: 'B       10.7.13.0 [20/30720] via 1.1.1.1, 00:38:42', 8: 'B       10.2.8.0 [20/30720] via 1.1.1.1, 00:38:42', 9: 'B       10.7.14.0 [20/30720] via 1.1.1.1, 00:38:42', 10: 'D       10.5.11.0 [100/30720] via 10.5.6.5, 00:39:48, FastEthernet2/0', 11: 'B       10.7.8.0 [20/30720] via 1.1.1.1, 00:38:42', 12: 'B       10.1.2.0 [20/0] via 1.1.1.1, 00:38:42', 13: 'B       10.8.14.0 [20/33280] via 1.1.1.1, 00:38:42', 14: 'B       10.1.7.0 [20/0] via 1.1.1.1, 00:38:42', 15: 'D       10.11.12.0 [100/30720] via 10.6.12.12, 00:39:48, FastEthernet0/0', 16: 'D       10.17.21.0 [100/33280] via 10.6.12.12, 00:38:48, FastEthernet0/0', 17: 'B       10.8.13.0 [20/33280] via 1.1.1.1, 00:38:42', 18: 'B       10.14.20.0 [20/33280] via 1.1.1.1, 00:38:42', 19: 'D       10.11.17.0 [100/33280] via 10.6.12.12, 00:39:48, FastEthernet0/0', 20: '                   [100/33280] via 10.5.6.5, 00:39:48, FastEthernet2/0', 21: 'D       10.11.18.0 [100/33280] via 10.6.12.12, 00:39:48, FastEthernet0/0', 22: '                   [100/33280] via 10.5.6.5, 00:39:48, FastEthernet2/0', 23: 'D       10.12.18.0 [100/30720] via 10.6.12.12, 00:39:48, FastEthernet0/0', 24: 'D       10.12.17.0 [100/30720] via 10.6.12.12, 00:39:48, FastEthernet0/0'}, '139': {'proc_5_min': '0.32', 'proc_5_sec': '0.47', 'proc_1_min': '0.44', 'process': 'HQF Shaper Backg '}, 'Process_Memory': {'io': {'total': 32.0, 'free': 28.58, 'used': 3.42, 'percent': 10.7}, 'processor': {'total': 367.08, 'free': 338.33, 'used': 28.75, 'percent': 7.83}}, 'bgp_neigh': {'1.1.1.1': {'AS': '100', 'neighbor': '1.1.1.1', 'up/down': '00:40:03'}, '5.5.5.5': {'AS': '300', 'neighbor': '5.5.5.5', 'up/down': '00:40:01'}}, 'version': {'hardware': '7206VXR', 'uptime': '40 minutes', 'version': '12.4(24)T8', 'reload_reason': 'unknown reload cause - suspect boot_data[BOOT_COUNT] 0x0, BOOT_COUNT 0, BOOTDATA 19', 'soft_ver': 'Cisco IOS'}, 'CPU': {'cpu_5_sec': '1', 'cpu_1_min': '0', 'cpu_5_min': '0'}, 'interface_counters_errors': {}, '41': {'proc_5_min': '0.19', 'proc_5_sec': '0.31', 'proc_1_min': '0.24', 'process': 'Per-Second Jobs  '}, 'spanning_tree': {}}}, {'Name': {'0': 'MUM--RC05'}, 'Interface Dictionary': {'FastEthernet2/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': 'Half-duplex', 'ip': '10.5.6.5', 'txload': '1/255', 'interf_reset': '0', 'bandwidth': '100000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '100Mb/s', 'output_drops': '0'}, 'FastEthernet0/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': 'Half-duplex', 'ip': '10.5.11.5', 'txload': '1/255', 'interf_reset': '0', 'bandwidth': '100000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '100Mb/s', 'output_drops': '0'}}, 'General Node': {'log': {0: '*Mar 29 06:54:16.111: %LINEPROTO-5-UPDOWN: Line protocol on Interface VoIP-Null0, changed state to up', 1: '*Mar 29 06:54:16.115: %LINK-3-UPDOWN: Interface FastEthernet0/0, changed state to up', 2: '*Mar 29 06:54:16.119: %LINK-3-UPDOWN: Interface FastEthernet1/0, changed state to up', 3: '*Mar 29 06:54:16.123: %LINK-3-UPDOWN: Interface FastEthernet2/0, changed state to up', 4: '*Mar 29 06:54:16.131: %LINK-3-UPDOWN: Interface FastEthernet3/0, changed state to up', 5: '*Mar 29 06:54:16.135: %LINK-3-UPDOWN: Interface FastEthernet4/0, changed state to up', 6: '*Mar 29 06:54:16.139: %LINK-3-UPDOWN: Interface FastEthernet5/0, changed state to up', 7: '*Mar 29 06:54:16.143: %LINK-3-UPDOWN: Interface FastEthernet6/0, changed state to up', 8: '*Mar 29 06:54:19.687: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/0, changed state to up', 9: '*Mar 29 06:54:19.691: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet1/0, changed state to up', 10: '*Mar 29 06:54:19.691: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet2/0, changed state to up', 11: '*Mar 29 06:54:19.695: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet3/0, changed state to down', 12: '*Mar 29 06:54:19.695: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet4/0, changed state to down', 13: '*Mar 29 06:54:19.695: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet5/0, changed state to down', 14: '*Mar 29 06:54:19.699: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet6/0, changed state to down', 15: '*Mar 29 06:54:19.699: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback0, changed state to up', 16: '*Mar 29 06:54:19.703: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback1, changed state to up', 17: '*Mar 29 06:54:19.707: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback2, changed state to up', 18: '*Mar 29 06:54:24.831: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.6 (FastEthernet2/0) is up: new adjacency', 19: '*Mar 29 06:54:28.699: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.6 (FastEthernet2/0) is down: route configuration changed', 20: '*Mar 29 06:54:29.511: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.6 (FastEthernet2/0) is up: new adjacency', 21: '*Mar 29 06:54:31.039: %BGP-5-ADJCHANGE: neighbor 6.6.6.6 Up ', 22: '*Mar 29 06:54:32.531: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.11.11 (FastEthernet0/0) is up: new adjacency', 23: '*Mar 29 06:54:32.759: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.6 (FastEthernet2/0) is down: Interface Goodbye received', 24: '*Mar 29 06:54:34.155: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 300: Neighbor 10.5.6.6 (FastEthernet2/0) is up: new adjacency'}, 'eigrp_neigh': {'10.5.11.11': {'rto': '200', 'neighbor': '10.5.11.11', 'srtt': '15', 'uptime': '00:40:12'}, '10.5.6.6': {'rto': '1164', 'neighbor': '10.5.6.6', 'srtt': '194', 'uptime': '00:40:10'}}, 'ip_route_00': {1: 'D EX    1.1.1.1 [210/30720] via 10.5.6.6, 00:40:06, FastEthernet2/0', 2: 'B       2.2.2.2 [200/156160] via 6.6.6.6, 00:38:54', 3: 'B       3.3.3.3 [200/30720] via 6.6.6.6, 00:38:54', 4: 'D       6.6.6.6 [100/156160] via 10.5.6.6, 00:40:06, FastEthernet2/0', 5: 'B       22.22.22.22 [200/25602816] via 6.6.6.6, 00:38:54', 6: 'B       10.7.13.0 [200/30720] via 6.6.6.6, 00:38:54', 7: 'D       10.6.12.0 [100/30720] via 10.5.6.6, 00:40:03, FastEthernet2/0', 8: 'B       10.2.8.0 [200/30720] via 6.6.6.6, 00:38:54', 9: 'B       10.7.14.0 [200/30720] via 6.6.6.6, 00:38:54', 10: 'B       10.7.8.0 [200/30720] via 6.6.6.6, 00:38:54', 11: 'B       10.1.2.0 [200/0] via 6.6.6.6, 00:38:54', 12: 'B       10.8.14.0 [200/33280] via 6.6.6.6, 00:38:54', 13: 'B       10.1.7.0 [200/0] via 6.6.6.6, 00:38:54', 14: 'D       10.11.12.0 [100/30720] via 10.5.11.11, 00:40:01, FastEthernet0/0', 15: 'B       10.1.6.0 [200/0] via 6.6.6.6, 00:38:59', 16: 'D       10.17.21.0 [100/33280] via 10.5.11.11, 00:39:02, FastEthernet0/0', 17: 'B       10.8.13.0 [200/33280] via 6.6.6.6, 00:38:54', 18: 'B       10.14.20.0 [200/33280] via 6.6.6.6, 00:38:54', 19: 'D       10.11.17.0 [100/30720] via 10.5.11.11, 00:40:06, FastEthernet0/0', 20: 'D       10.11.18.0 [100/30720] via 10.5.11.11, 00:40:06, FastEthernet0/0', 21: 'D       10.12.18.0 [100/33280] via 10.5.11.11, 00:40:01, FastEthernet0/0', 22: '                   [100/33280] via 10.5.6.6, 00:40:01, FastEthernet2/0', 23: 'D       10.12.17.0 [100/33280] via 10.5.11.11, 00:40:01, FastEthernet0/0', 24: '                   [100/33280] via 10.5.6.6, 00:40:01, FastEthernet2/0'}, '139': {'proc_5_min': '0.35', 'proc_5_sec': '0.55', 'proc_1_min': '0.48', 'process': 'HQF Shaper Backg '}, 'Process_Memory': {'io': {'total': 32.0, 'free': 28.58, 'used': 3.42, 'percent': 10.7}, 'processor': {'total': 367.08, 'free': 338.28, 'used': 28.8, 'percent': 7.84}}, 'bgp_neigh': {'4.4.4.4': {'AS': '200', 'neighbor': '4.4.4.4', 'up/down': 'never'}, '6.6.6.6': {'AS': '300', 'neighbor': '6.6.6.6', 'up/down': '00:40:14'}}, 'version': {'hardware': '7206VXR', 'uptime': '41 minutes', 'version': '12.4(24)T8', 'reload_reason': 'unknown reload cause - suspect boot_data[BOOT_COUNT] 0x0, BOOT_COUNT 0, BOOTDATA 19', 'soft_ver': 'Cisco IOS'}, 'CPU': {'cpu_5_sec': '1', 'cpu_1_min': '1', 'cpu_5_min': '0'}, 'interface_counters_errors': {}, '41': {'proc_5_min': '0.18', 'proc_5_sec': '0.23', 'proc_1_min': '0.23', 'process': 'Per-Second Jobs  '}, 'spanning_tree': {}}}, {'Name': {'0': 'MUM--SC11'}, 'Interface Dictionary': {'FastEthernet0/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': 'Half-duplex', 'ip': '10.5.11.11', 'txload': '1/255', 'interf_reset': '0', 'bandwidth': '10000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '10Mb/s', 'output_drops': '0'}}, 'General Node': {'log': {}, '87': {'proc_5_min': '0.21', 'proc_5_sec': '0.16', 'proc_1_min': '0.19', 'process': 'IP ARP Retry Age '}, 'ip_route_00': {1: 'D EX    1.1.1.1 [170/286720] via 10.11.12.12, 00:32:18, FastEthernet2/2', 2: '                [170/286720] via 10.5.11.5, 00:32:18, FastEthernet0/0', 3: 'D EX    2.2.2.2 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 4: 'D EX    3.3.3.3 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 5: 'D EX    4.4.4.4 [170/284160] via 10.5.11.5, 00:33:00, FastEthernet0/0', 6: 'D EX    55.55.55.55 [170/25625856] via 10.5.11.5, 00:33:00, FastEthernet0/0', 7: 'D       5.5.5.5 [90/409600] via 10.5.11.5, 00:33:00, FastEthernet0/0', 8: 'D       6.6.6.6 [90/412160] via 10.11.12.12, 00:32:18, FastEthernet2/2', 9: '                [90/412160] via 10.5.11.5, 00:32:18, FastEthernet0/0', 10: 'D EX    22.22.22.22 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 11: 'D EX    10.7.13.0 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 12: 'D       10.6.12.0 [90/284160] via 10.11.12.12, 00:32:18, FastEthernet2/2', 13: 'D EX    10.2.8.0 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 14: 'D EX    10.7.14.0 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 15: 'D EX    10.7.8.0 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 16: 'D       10.5.6.0 [90/284160] via 10.5.11.5, 00:32:56, FastEthernet0/0', 17: 'D EX    10.1.2.0 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 18: 'D EX    10.8.14.0 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 19: 'D EX    10.1.7.0 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 20: 'D       10.17.21.0 [90/30720] via 10.11.17.17, 00:32:18, FastEthernet2/1', 21: 'D EX    10.8.13.0 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 22: 'D EX    10.14.20.0 [170/25628416] via 10.11.12.12, 00:32:12, FastEthernet2/2', 23: 'D       10.12.18.0 [90/30720] via 10.11.18.18, 00:32:18, FastEthernet2/0', 24: '                   [90/30720] via 10.11.12.12, 00:32:18, FastEthernet2/2', 25: 'D       10.12.17.0 [90/30720] via 10.11.17.17, 00:32:20, FastEthernet2/1', 26: '                   [90/30720] via 10.11.12.12, 00:32:20, FastEthernet2/2'}, 'Process_Memory': {'io': {'total': 12.0, 'free': 6.59, 'used': 5.41, 'percent': 45.06}, 'processor': {'total': 148.81, 'free': 128.95, 'used': 19.85, 'percent': 13.34}}, 'spanning_tree': {}, 'eigrp_neigh': {'10.11.18.18': {'rto': '1422', 'neighbor': '10.11.18.18', 'srtt': '237', 'uptime': '00:32:28'}, '10.11.12.12': {'rto': '2226', 'neighbor': '10.11.12.12', 'srtt': '371', 'uptime': '00:33:05'}, '10.11.17.17': {'rto': '3564', 'neighbor': '10.11.17.17', 'srtt': '594', 'uptime': '00:32:26'}, '10.5.11.5': {'rto': '390', 'neighbor': '10.5.11.5', 'srtt': '65', 'uptime': '00:33:06'}}, 'version': {'hardware': '3725', 'uptime': '33 minutes', 'version': '12.4(15)T14', 'reload_reason': 'unknown reload cause - suspect boot_data[BOOT_COUNT] 0x0, BOOT_COUNT 0, BOOTDATA 19', 'soft_ver': 'Cisco IOS'}, '83': {'proc_5_min': '0.21', 'proc_5_sec': '0.16', 'proc_1_min': '0.18', 'process': 'ACCT Periodic Pr '}, 'CPU': {'cpu_5_sec': '1', 'cpu_1_min': '1', 'cpu_5_min': '1'}, 'interface_counters_errors': {}, '47': {'proc_5_min': '0.15', 'proc_5_sec': '0.16', 'proc_1_min': '0.14', 'process': 'Compute load avg '}}}, {'Name': {'0': 'BGL--SA14'}, 'Interface Dictionary': {'FastEthernet2/0': {'input_errors': '0', 'collisions': '0', 'output_errors': '0', 'crc': '0', 'reliability': '255/255', 'late_collision': '0', 'rxload': '1/255', 'overrun': '0', 'duplex': '', 'ip': '10.7.14.14', 'txload': '1/255', 'interf_reset': '4', 'bandwidth': '100000 Kbit', 'ignored': '0', 'frame': '0', 'speed': '', 'output_drops': '1'}}, 'General Node': {'log': {}, '87': {'proc_5_min': '0.21', 'proc_5_sec': '0.24', 'proc_1_min': '0.21', 'process': 'IP ARP Retry Age '}, 'ip_route_00': {1: 'D       1.1.1.1 [90/412160] via 10.7.14.7, 00:47:25, FastEthernet2/0', 2: 'D       2.2.2.2 [90/412160] via 10.8.14.8, 00:47:25, FastEthernet2/1', 3: 'D EX    3.3.3.3 [170/286720] via 10.8.14.8, 00:47:25, FastEthernet2/1', 4: 'D EX    4.4.4.4 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 5: 'D EX    55.55.55.55 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 6: 'D EX    5.5.5.5 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 7: 'D EX    6.6.6.6 [170/286720] via 10.7.14.7, 00:47:25, FastEthernet2/0', 8: 'D EX    22.22.22.22 [170/25628416] via 10.8.14.8, 00:47:25, FastEthernet2/1', 9: 'D       10.7.13.0 [90/30720] via 10.7.14.7, 00:47:24, FastEthernet2/0', 10: 'D EX    10.6.12.0 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 11: 'D       10.2.8.0 [90/284160] via 10.8.14.8, 00:47:25, FastEthernet2/1', 12: 'D EX    10.5.11.0 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 13: 'D       10.7.8.0 [90/30720] via 10.8.14.8, 00:47:25, FastEthernet2/1', 14: '                 [90/30720] via 10.7.14.7, 00:47:25, FastEthernet2/0', 15: 'D EX    10.5.6.0 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 16: 'D       10.1.2.0 [90/286720] via 10.8.14.8, 00:47:25, FastEthernet2/1', 17: '                 [90/286720] via 10.7.14.7, 00:47:25, FastEthernet2/0', 18: 'D       10.1.7.0 [90/284160] via 10.7.14.7, 00:47:24, FastEthernet2/0', 19: 'D EX    10.11.12.0 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 20: 'D EX    10.1.6.0 [170/25628416] via 10.7.14.7, 00:37:16, FastEthernet2/0', 21: 'D EX    10.17.21.0 [170/25628416] via 10.7.14.7, 00:36:15, FastEthernet2/0', 22: 'D       10.8.13.0 [90/30720] via 10.8.14.8, 00:47:25, FastEthernet2/1', 23: 'D EX    10.11.17.0 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 24: 'D EX    10.11.18.0 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 25: 'D EX    10.12.18.0 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0', 26: 'D EX    10.12.17.0 [170/25628416] via 10.7.14.7, 00:36:33, FastEthernet2/0'}, 'Process_Memory': {'io': {'total': 12.0, 'free': 6.45, 'used': 5.55, 'percent': 46.26}, 'processor': {'total': 148.81, 'free': 129.16, 'used': 19.64, 'percent': 13.2}}, 'spanning_tree': {}, 'eigrp_neigh': {'10.8.14.8': {'rto': '624', 'neighbor': '10.8.14.8', 'srtt': '104', 'uptime': '00:47:35'}, '10.7.14.7': {'rto': '504', 'neighbor': '10.7.14.7', 'srtt': '56', 'uptime': '00:47:31'}}, 'version': {'hardware': '3725', 'uptime': '53 minutes', 'version': '12.4(15)T14', 'reload_reason': 'unknown reload cause - suspect boot_data[BOOT_COUNT] 0x0, BOOT_COUNT 0, BOOTDATA 19', 'soft_ver': 'Cisco IOS'}, '83': {'proc_5_min': '0.21', 'proc_5_sec': '0.16', 'proc_1_min': '0.20', 'process': 'ACCT Periodic Pr '}, 'CPU': {'cpu_5_sec': '2', 'cpu_1_min': '1', 'cpu_5_min': '1'}, 'interface_counters_errors': {}}}]
- 
- 
- 
+	        ctobj=dictofnames[name]
+	        arr[ctobj].addexit(p)
+	        dictofobj[name].adddictip(hop,ip)
+	        
 
 
 
+	        p=''
+	            
+	    elif prot=='connected",':
+	        boo=True
+	        while boo:
+	            try:
+	                ret=ssh.send_command("sh ip route "+dst+" | include directly")
+	                boo=False
+	            except:
+	                boo=True
+	                print("4 Exception Handled- Trying again")
+	            print(" Return from sh ip route dst i directly")
+	            print(ret)
+	            if not ret:
+	                boo=True
+	                print("4 Return from show ip route dst is null, Trying again")
+	            
+	            elif isinstance(ret,list):
+	                print("4 Return from sh ip route directly is a list, trying again")
+	                boo=True
+	            elif len(ret.split())>3:
+	                boo=False
+	            else:
+	                print("4 Trying again")
+	                boo=True
+	        
+	        print("Connected route- show ip route| i directly ")
+	        print(ret)
+	        ret=ret.split()
+	        p=''
+	        x=ret.index('via')
+	        p=ret[x+1]
+	        hop=ret[x+1]
+	        p=p+' directly'
+	        if name not in exit.keys():
+	                exit[name]=set()
+	        exit[name].add(p)
+	        print(" Name "+name+" is connected to dst via "+p)
+
+	        ctobj=dictofnames[name]
+	        arr[ctobj].addexit(p)
+	        boo=True
+	        while boo:
+	            try:    
+	                ret=ssh.send_command("sh ip int brief | include "+hop)
+	                boo=False
+	            except:
+	                print("5 Exception Handled- Trying again")
+	                boo=True
+	            if not ret:
+	                boo=True
+	            elif isinstance(ret,list):
+	                print("5 Return from sh ip int brief is a list, trying again")
+	                boo=True
+	            elif not(re.match('^FastEthernet\d\/\d$',ret.split()[0])):
+	                boo=True
+	                print("5-1 Trying again")
+	            elif len(ret.split())<6:
+	                boo=True
+	            else:
+	                boo=False
+	            
+	                
+	        ip=ret.split()[1]
+
+	        dictofobj[name].adddictip(hop,ip)
+
+	        p=''
+
+	    else:
+	        boo=True
+	        while boo:
+	            try:
+	                ret=ssh.send_command("sh ip route "+dst+" | include via")
+	                boo=False
+	            except:
+	                boo=True
+	                print("6 Exception Handled- Trying again")
+	            print(" Return from sh ip route")
+	            print(ret)
+	            if not ret:
+	                boo=True
+	                print("6 Trying again")
+	            
+	            elif isinstance(ret,list):
+	                print("6 Return from sh ip route is a list, trying again")
+	                boo=True
+	            elif len(ret.split())>3:
+	                boo=False
+	            else:
+	                print("6 Trying again")
+	                boo=True
+	        print("output from sh ip route | inc via ")
+	        print(ret)
+	        print("Splitting")
+	        ret=ret.split('\n')
+	        for i in ret:
+	            i=i.split()
+	            print(i)
+	            t=0
+	            for j in i:
+	                #print(j)
+	                if re.match('^(?:[0-9]{1,3}\.){3}([0-9]{1,3})',j):
+	                    print("extract- "+j[:-1])
+	                    j=j[:-1]
+	                    if j not in extract:
+	                        extract.add(j)
+	                        s.add(j)
+	                        ls.append(j)     
+	                    t=1
+	               
+	                if t==1:
+	                    num=i.index('via')
+	                    p=i[num+1]
+	                    hop=i[num+1]
+	                    p=p+' '+j
+	                    if name not in exit.keys():
+	                        exit[name]=set()
+	              
+	                    exit[name].add(p)
+
+	                    ctobj=dictofnames[name]
+	                    #print("ctobj "+ctobj)
+	                    arr[ctobj].addexit(p)
+	                    print("hop ",hop)
+	                    boo=True
+	                    ret1=""
+	                    while boo:
+	                        try:    
+	                            ret1=ssh.send_command("sh ip int brief | include "+hop)
+	                            boo=False
+	                        except:
+	                            print("6-2 Exception Handled- Trying again")
+	                            boo=True
+	                        print(" Return ")
+	                        print(ret1)
+	                        print(len(ret1.split()))
+	                        #print(ret1.split()[0])
+	                        if not ret1:
+	                            boo=True
+	                        elif not(re.match('^FastEthernet\d\/\d$',ret1.split()[0])):
+	                            boo=True
+	                            print("6-1 Trying again")
+	                        elif isinstance(ret1,list):
+	                            print("6-2 Return from sh ip int brief is a list, trying again")
+	                            boo=True
+	                        elif len(ret1.split())<5:
+	                            boo=True
+	                        else:
+	                            boo=False
+	                
+	                    ip=ret1.split()[1]
+	                    dictofobj[name].adddictip(hop,ip)
+
+	                    p=''
+	                    break
+	    extract.clear()
+	    s.remove(now)
+	    ls.remove(now)
+	 
+	    if now!=src:
+	        boo=True
+	        while boo:
+	            try:    
+	                ret=ssh.send_command("sh ip int brief | include "+now)
+	                boo=False
+	            except:
+	                print("7  Exception Handled- Trying again")
+	                boo=True
+	            print(" return from sh ip int brief | inc dest at dest ")
+	            print(ret)
+	            print(len(ret.split()))
+	            if not ret:
+	                print("7 null")
+	                boo=True
+	            elif isinstance(ret,list):
+	                print("7 Return from sh ip route is a list, trying again")
+	                boo=True
+	            elif not(re.match('^FastEthernet\d\/\d$',ret.split()[0])):
+	                boo=True
+	                print("7-1 Trying again")
+	            elif len(ret.split())<6:
+	                boo=True
+	                print("7 Trying Again")
+	            else:
+	                boo=False
+	        print(" Name "+name+" sh ip int brief | include "+now)
+	        print(ret)
+	        ret=ret.split()
+	 
+	        if name not in entry.keys():
+	            entry[name]=set()
+	        p=''
+	        p=ret[0]
+	        hop=ret[0]
+	        ip=now
+	        p=p+' '+now
+	        entry[name].add(p)
+
+	        ctobj=dictofnames[name]
+	        arr[ctobj].addentry(p)
+	        dictofobj[name].adddictip(hop,ip)
+	        
+
+	        entryrev[now]=set()
+	        p=''
+	        p=name+' '+ret[0]
+	        entryrev[now].add(p)
+	     
+	boo=True
+	while boo:
+	        try:
+	            ssh=ConnectHandler(device_type="cisco_ios",host=dst,username="rit",password="pan")
+	            boo=False
+	        except:
+	            boo=True
+	            print(" Connection error, trying again ")
 
 
 
-#Json Object
-#kpijson = [{'General Node': {'41': {'proc_5_min': '0.26', 'proc_5_sec': '0.31', 'proc_1_min': '0.27', 'process': 'Per-Second Jobs  '}, 'ip_route_00': {1: 'B       10.13.19.0 [20/33280] via 1.1.1.1, 00:13:10'}, 'cpu': {'cpu_5_sec': '1', 'cpu_5_min': '1', 'cpu_1_min': '1'}, '139': {'proc_5_min': '0.50', 'proc_5_sec': '0.55', 'proc_1_min': '0.50', 'process': 'HQF Shaper Backg '}}, 'Name': {'0': 'MUM--RC06'}, 'Interface Dictionary': {'FastEthernet0/0': {'rxload': '1/255', 'output_errors': '0', 'interf_reset': '0', 'output_drops': '0', 'txload': '1/255', 'collisions': '0', 'late_collision': '0', 'bandwidth': '100000 Kbit', 'speed': '100Mb/s', 'ip': '10.6.12.6', 'duplex': 'Half-duplex', 'frame': '0', 'reliability': '255/255', 'input_errors': '0', 'ignored': '0', 'crc': '0', 'overrun': '0'}, 'FastEthernet1/0': {'rxload': '1/255', 'output_errors': '0', 'interf_reset': '0', 'output_drops': '0', 'txload': '1/255', 'collisions': '0', 'late_collision': '0', 'bandwidth': '100000 Kbit', 'speed': '100Mb/s', 'ip': '10.1.6.6', 'duplex': 'Half-duplex', 'frame': '0', 'reliability': '255/255', 'input_errors': '0', 'ignored': '0', 'crc': '0', 'overrun': '0'}}}, {'General Node': {'41': {'proc_5_min': '0.26', 'proc_5_sec': '0.23', 'proc_1_min': '0.24', 'process': 'Per-Second Jobs  '}, 'ip_route_00': {1: 'D       10.13.19.0 [100/33280] via 10.1.7.7, 00:13:42, FastEthernet0/0'}, 'cpu': {'cpu_5_sec': '1', 'cpu_5_min': '1', 'cpu_1_min': '1'}, '139': {'proc_5_min': '0.51', 'proc_5_sec': '0.55', 'proc_1_min': '0.49', 'process': 'HQF Shaper Backg '}}, 'Name': {'0': 'BGL--RC01'}, 'Interface Dictionary': {'FastEthernet0/0': {'rxload': '1/255', 'output_errors': '0', 'interf_reset': '0', 'output_drops': '0', 'txload': '1/255', 'collisions': '0', 'late_collision': '0', 'bandwidth': '100000 Kbit', 'speed': '100Mb/s', 'ip': '10.1.7.1', 'duplex': 'Half-duplex', 'frame': '0', 'reliability': '255/255', 'input_errors': '0', 'ignored': '0', 'crc': '0', 'overrun': '0'}, 'FastEthernet1/0': {'rxload': '1/255', 'output_errors': '0', 'interf_reset': '0', 'output_drops': '0', 'txload': '1/255', 'collisions': '0', 'late_collision': '0', 'bandwidth': '100000 Kbit', 'speed': '100Mb/s', 'ip': '10.1.6.1', 'duplex': 'Half-duplex', 'frame': '0', 'reliability': '255/255', 'input_errors': '0', 'ignored': '0', 'crc': '0', 'overrun': '0'}}}, {'General Node': {'87': {'proc_5_min': '0.20', 'proc_5_sec': '0.16', 'proc_1_min': '0.18', 'process': 'IP ARP Retry Age '}, 'ip_route_00': {}, '83': {'proc_5_min': '0.22', 'proc_5_sec': '0.24', 'proc_1_min': '0.23', 'process': 'ACCT Periodic Pr '}, 'cpu': {'cpu_5_sec': '1', 'cpu_5_min': '3', 'cpu_1_min': '3'}, '47': {'proc_5_min': '0.16', 'proc_5_sec': '0.16', 'proc_1_min': '0.15', 'process': 'Compute load avg '}}, 'Name': {'0': 'MUM--SC12'}, 'Interface Dictionary': {'FastEthernet0/0': {'rxload': '1/255', 'output_errors': '0', 'interf_reset': '0', 'output_drops': '0', 'txload': '1/255', 'collisions': '0', 'late_collision': '0', 'bandwidth': '10000 Kbit', 'speed': '10Mb/s', 'ip': '10.6.12.12', 'duplex': 'Half-duplex', 'frame': '0', 'reliability': '255/255', 'input_errors': '0', 'ignored': '0', 'crc': '0', 'overrun': '0'}, 'FastEthernet2/1': {'rxload': '1/255', 'output_errors': '0', 'interf_reset': '4', 'output_drops': '0', 'txload': '1/255', 'collisions': '0', 'late_collision': '0', 'bandwidth': '100000 Kbit', 'speed': '', 'ip': '10.12.18.12', 'duplex': '', 'frame': '0', 'reliability': '255/255', 'input_errors': '0', 'ignored': '0', 'crc': '0', 'overrun': '0'}}}, {'General Node': {'87': {'proc_5_min': '0.18', 'proc_5_sec': '0.16', 'proc_1_min': '0.18', 'process': 'IP ARP Retry Age '}, '5': {'proc_5_min': '0.35', 'proc_5_sec': '0.65', 'proc_1_min': '0.12', 'process': 'Check heaps      '}, 'ip_route_00': {}, '83': {'proc_5_min': '0.21', 'proc_5_sec': '0.16', 'proc_1_min': '0.20', 'process': 'ACCT Periodic Pr '}, '47': {'proc_5_min': '0.15', 'proc_5_sec': '0.16', 'proc_1_min': '0.12', 'process': 'Compute load avg '}, '196': {'proc_5_min': '0.21', 'proc_5_sec': '0.90', 'proc_1_min': '0.28', 'process': 'SSH Process      '}, 'cpu': {'cpu_5_sec': '', 'cpu_5_min': '', 'cpu_1_min': ''}}, 'Name': {'0': 'MUM--SA18'}, 'Interface Dictionary': {'FastEthernet2/1': {'rxload': '1/255', 'output_errors': '0', 'interf_reset': '4', 'output_drops': '0', 'txload': '1/255', 'collisions': '0', 'late_collision': '0', 'bandwidth': '100000 Kbit', 'speed': '', 'ip': '10.12.18.18', 'duplex': '', 'frame': '0', 'reliability': '255/255', 'input_errors': '0', 'ignored': '0', 'crc': '0', 'overrun': '0'}}}, {'General Node': {'87': {'proc_5_min': '0.18', 'proc_5_sec': '0.24', 'proc_1_min': '0.20', 'process': 'IP ARP Retry Age '}, 'ip_route_00': {1: 'D       1.1.1.1 [90/409600] via 10.1.7.1, 00:16:50, FastEthernet0/0', 2: 'D       2.2.2.2 [90/412160] via 10.7.8.8, 00:16:50, FastEthernet2/2', 3: '                [90/412160] via 10.1.7.1, 00:16:50, FastEthernet0/0', 4: 'D EX    3.3.3.3 [170/286720] via 10.7.8.8, 00:16:50, FastEthernet2/2', 5: '                [170/286720] via 10.1.7.1, 00:16:50, FastEthernet0/0', 6: 'D EX    4.4.4.4 [170/25625856] via 10.1.7.1, 00:16:50, FastEthernet0/0', 7: 'D EX    55.55.55.55 [170/25625856] via 10.1.7.1, 00:16:50, FastEthernet0/0', 8: 'D EX    5.5.5.5 [170/25625856] via 10.1.7.1, 00:16:50, FastEthernet0/0', 9: 'D EX    6.6.6.6 [170/284160] via 10.1.7.1, 00:16:50, FastEthernet0/0', 10: 'D EX    22.22.22.22 [170/25628416] via 10.7.8.8, 00:16:50, FastEthernet2/2', 11: '                    [170/25628416] via 10.1.7.1, 00:16:50, FastEthernet0/0', 12: 'D EX    10.6.12.0 [170/25625856] via 10.1.7.1, 00:16:50, FastEthernet0/0', 13: 'D       10.2.8.0 [90/284160] via 10.7.8.8, 00:16:50, FastEthernet2/2', 14: 'D EX    10.5.11.0 [170/25625856] via 10.1.7.1, 00:16:50, FastEthernet0/0', 15: 'D EX    10.5.6.0 [170/25625856] via 10.1.7.1, 00:16:50, FastEthernet0/0', 16: 'D       10.1.2.0 [90/284160] via 10.1.7.1, 00:16:50, FastEthernet0/0', 17: 'D EX    10.2.3.0 [170/25628416] via 10.7.8.8, 00:16:51, FastEthernet2/2', 18: 'D       10.8.14.0 [90/30720] via 10.7.14.14, 00:16:51, FastEthernet2/0', 19: '                  [90/30720] via 10.7.8.8, 00:16:51, FastEthernet2/2', 20: 'D EX    10.11.12.0 [170/25625856] via 10.1.7.1, 00:16:50, FastEthernet0/0', 21: 'D EX    10.1.6.0 [170/25625856] via 10.1.7.1, 00:16:50, FastEthernet0/0', 22: 'D EX    10.17.21.0 [170/25625856] via 10.1.7.1, 00:16:50, FastEthernet0/0', 23: 'D       10.8.13.0 [90/30720] via 10.7.13.13, 00:16:51, FastEthernet2/1', 24: '                  [90/30720] via 10.7.8.8, 00:16:51, FastEthernet2/2', 25: 'D       10.14.20.0 [90/30720] via 10.7.14.14, 00:16:50, FastEthernet2/0', 26: 'D EX    10.11.17.0 [170/25625856] via 10.1.7.1, 00:16:50, FastEthernet0/0', 27: 'D EX    10.11.18.0 [170/25625856] via 10.1.7.1, 00:16:50, FastEthernet0/0', 28: 'D       10.13.19.0 [90/30720] via 10.7.13.13, 00:16:50, FastEthernet2/1', 29: 'D EX    10.12.18.0 [170/25625856] via 10.1.7.1, 00:16:50, FastEthernet0/0', 30: 'D EX    10.12.17.0 [170/25625856] via 10.1.7.1, 00:16:50, FastEthernet0/0'}, 'cpu': {'cpu_5_sec': '1', 'cpu_5_min': '1', 'cpu_1_min': '1'}, '83': {'proc_5_min': '0.19', 'proc_5_sec': '0.16', 'proc_1_min': '0.19', 'process': 'ACCT Periodic Pr '}}, 'Name': {'0': 'BGL--SC07'}, 'Interface Dictionary': {'FastEthernet0/0': {'rxload': '1/255', 'output_errors': '0', 'interf_reset': '0', 'output_drops': '0', 'txload': '1/255', 'collisions': '0', 'late_collision': '0', 'bandwidth': '10000 Kbit', 'speed': '10Mb/s', 'ip': '10.1.7.7', 'duplex': 'Half-duplex', 'frame': '0', 'reliability': '255/255', 'input_errors': '0', 'ignored': '0', 'crc': '0', 'overrun': '0'}}}]
+	boo=True
+	while boo:
+	    try:
+	        name=ssh.find_prompt()
+	        boo=False
+	    except Exception as e:
+	        print(str(e))
+	        print("Find Prompt errTrying Again")
+	        boo=True
+	        
+	name=name[:-1]
+	honame.add(name)
 
+	if name not in setofnames:
+	    setofnames.add(name)
+	    dictofnames[name]=count
+	    k1=router(name)
+	    arr.append(k1)
+	    dictofobj[name]=k1
+	    dictofobj[name].addconnect(ssh)
+	    count+=1
+
+
+	boo=True
+	while boo:
+	    try:
+	        ret=ssh.send_command("sh ip int brief | include "+dst)
+	        boo=False
+	    except:
+	        print("8 Exception Handled- Trying again")
+	        boo=True
+	    print(" return from sh ip int brief | inc dest ")
+	    print(ret)
+	    if not ret:
+	        boo=True
+	    elif not(re.match('^FastEthernet\d\/\d$',ret.split()[0])):
+	        boo=True
+	        print("8-1 Trying again")
+	    elif isinstance(ret,list):
+	        print("8 Return from sh ip int brief is a list, trying again")
+	        boo=True
+	    elif len(ret.split())<6:
+	        boo=True
+	        print("8 Trying Again")
+	    else:
+	        boo=False
+
+	ret=ret.split()
+	#print(ret)
+	if name not in entry.keys():
+	    entry[name]=set()
+	p=''
+	p=ret[0]
+	p=p+' '+'directly'
+	entry[name].add(p)
+
+	hop=ret[0]
+	ip=dst
+
+	ctobj=dictofnames[name]
+	arr[ctobj].addentry(p)
+	dictofobj[name].adddictip(hop,ip)
+
+	p=''
+	entryrev['directly']=set()
+	p=name+' '+ret[0]
+	entryrev['directly'].add(p)
+
+	print("Entry interfaces ")
+	print(entry)
+	print()
+	print(" Exit  interfaces ")
+	print(exit)
+
+	print()
+	print(" Entry Reverse ")
+	print(entryrev)
+
+	ff=0
+
+
+	for nme in setofnames:
+	    ssh=dictofobj[nme].handle
+
+	    #general_node_parameters
+
+	    boo=True
+
+	    while boo:
+	        ff=0
+	        try:
+	            ret=ssh.send_command("sh version",use_textfsm=True)
+	            print("Sh version Exec")
+	            boo=False
+	        except Exception as e:
+	            print(" 9-0 Exception raised is show version, trying again ")
+	            print(e)
+	            boo=True
+	            ff=1
+	            try:
+	                ssh=ConnectHandler(device_type="cisco_ios",host=dictofobj[nme].sship,username="rit",password="pan")
+	            except Exception as ee:
+	                print("Exception raised again")
+	                print(ee)
+
+	        print("Return from Show version")
+	        print(ret)
+	        if ff==1:
+	            boo=True
+	        elif not ret:
+	            print(" 9-0 Return from show version is null. Trying again ")
+	            boo=True
+	        elif not(isinstance(ret,list)):
+	            print(" 9-0 Return from show version is not proper. Trying again ")
+	            boo=True
+	        else:
+	            boo=False
+
+	    verdict={}
+	    verdict['soft_ver']=ret[0]['soft_ver']
+	    verdict['version']=ret[0]['version']
+	    verdict['uptime']=ret[0]['uptime']    
+	    verdict['hardware']=ret[0]['hardware'][0]        
+	    verdict['reload_reason']=ret[0]['reload_reason']
+	    dictofobj[nme].gennodedict['version']=verdict 
+	    
+
+
+
+
+
+
+
+	    
+	    boo=True
+	    while boo:
+	        try:
+	            ret=ssh.send_command("sh proc cpu | ex 0.0",use_textfsm=True)
+	            boo=False
+	        except:
+	            print("9 Exception Raised , Trying again")
+	            boo=True
+	        if not(isinstance(ret,list)):
+	            boo=True
+	            print("9 return from sh proc cpu not proper, trying again")
+	        else:
+	            boo=False
+	            
+	    #parse the return from show environment and take out parameters like
+	    ct1=0
+	    for line in ret:
+	        if ct1==0:
+	            cpu={}
+	            cpu['cpu_5_sec']=line['cpu_5_sec']
+	            cpu['cpu_1_min']=line['cpu_1_min']
+	            cpu['cpu_5_min']=line['cpu_5_min']
+	            dictofobj[nme].gennodedict['CPU']=cpu                
+	            
+	        combine={}
+	        combine['process']=line['process']
+	        combine['proc_5_sec']=line['proc_5_sec']
+	        combine['proc_1_min']=line['proc_1_min']
+	        combine['proc_5_min']=line['proc_5_min']
+	        dictofobj[nme].gennodedict[line['pid']]=combine      
+	        ct1+=1
+
+
+	#parsing sh ip route
+
+	    boo=True
+	    while boo:
+	        try:
+	            ret=ssh.send_command("sh ip route")
+	            boo=False
+	        except:
+	            print("10 Exception Raised , Trying again")
+	            boo=True
+	        print(ret)
+	        if not ret:
+	            boo=True
+	        elif isinstance(ret,list):
+	            print("10 Return from sh ip route is a list, trying again")
+	            boo=True
+	        else:
+	            boo=False
+
+	    ret=ret.split('\n')
+	    gen={}
+	    ct1=0
+	    print(ret)
+	    for line in ret:
+	        
+	        line2=line.split()
+	        
+	        if not(not(line2)) and line2[0]!='S' and line2[0]!='C' and line2[0]!='S*' and 'via' in line2:
+	            pos=line2.index('via')
+	            if line2[pos+2][0:2]=='00':
+	                ct1+=1
+	                gen[ct1]=line
+	                print(line)        
+	    dictofobj[nme].gennodedict['ip_route_00']=gen
+	                
+	    #keys for gen dict is just numbers with no significance. display only values        
+	    #dictofobj[nme].gennodedict['redundant_power']=
+
+
+
+	    
+	#-----------------------------------------Harshad------------------------------------------------------------------------------------------
+	    boo=True
+	    while boo:
+	        ans=ans1=0
+	        try:
+	            ans=ssh.send_command("show ip protocols | include bgp")
+	            ans1=ssh.send_command("show ip protocols | include eigrp")
+	            boo=False
+	        except:
+	            print("9-2 Exception raised in sh ip protocols, trying again ")
+	            boo=True
+	        print(" sh ip protocols | i bgp ")
+	        print(ans)
+	        print(" sh ip protocols | i eigrp")
+	        print(ans1)
+	        if not(isinstance(ans,str)) or not(isinstance(ans1,str)):
+	            boo=True
+	            print("9-2 Return from sh ip protocols not proper. Trying again")
+	        elif not ans and not ans1:
+	            print("9-2  Return null from both protocols, trying again ")
+	            boo=True
+	        elif (not(ans1) and len(ans.split())<5) or (not(ans) and len(ans1.split())<5):
+	            print(" 9-2-1 Return from sh ip protocols not proper. Trying again")
+	            boo=True
+	        elif not(not(ans)) and len(ans.split())<5 and not(not(ans1)) and len(ans1.split())<5:
+	            print(" 9-2-3 Return from sh ip protocols not proper. Trying again")
+	            boo=True
+	        else:
+	            boo=False
+	            
+	    
+	    bgp=ans.split("\n")
+	    eigrp=ans1.split("\n")
+	    bgp_sub='"bgp'
+	    eigrp_sub='"eigrp'
+	    flag1=0
+	    flag2=0
+	    for text in bgp:
+	        if bgp_sub in text:
+	            flag1=1
+	            break
+	    for text in eigrp:
+	        if eigrp_sub in text:
+	            flag2=1
+	            break
+	    
+	    if flag2==1:
+	        print("eigrp there")
+	      #call bgp func
+	        boo=True
+	        while boo:
+	            try:
+	                ans=ssh.send_command("show ip eigrp neighbors")
+	                boo=False
+	            except:
+	                print("9-3 Exception handled. Error in sh ip eigrp neigh. Trying again ")
+	                boo=True
+	            
+	            print(" Return from sh ip eigrp neighbors ")
+	            print(ans)
+	            if not ans:
+	                print('Null returned from show ip eigrp neighbors')
+	                boo=True
+	            elif not(isinstance(ans,str)):
+	                print('not a string, returned from show ip eigrp neighbors')
+	                boo=True
+	            elif len(ans.split())<3:
+	                print('size less, returned from show ip eigrp neighbors')
+	                boo=True
+	            else:
+	                boo=False
+	        boo=True
+	        while boo: 
+	            try:
+	                template=open('cisco_ios_show_ip_eigrp_neighbors.template')
+	                res_template=textfsm.TextFSM(template)
+	                ans_final=res_template.ParseText(ans)
+	                boo=False
+	            except Exception as e:
+	                print(e)
+	                print("9-4 Exception in Textfsm, Trying again")
+	                boo=True
+	        print(ans_final)
+	        hello={}
+	        j=0
+	        dictofobj[nme].gennodedict['eigrp_neigh']=dict()
+	        for i in range(0,len(ans_final)):
+	            hello={}
+	            hello['neighbor']=ans_final[i][1]
+	            hello['uptime']=ans_final[i][4]
+	            hello['srtt']=ans_final[i][5]
+	            hello['rto']=ans_final[i][6]
+	            #dictofobj[nme].gennodedict['eigrp_neigh']
+	            dictofobj[nme].gennodedict['eigrp_neigh'][ans_final[i][1]]=dict()
+	            dictofobj[nme].gennodedict['eigrp_neigh'][ans_final[i][1]]=hello
+	  
+
+	  
+	    if flag1==1:
+	        print("bgp there")
+	        ans=ssh.send_command("show ip bgp summary")
+	        print(ans)
+	        template=open('cisco_ios_show_ip_bgp_summary.template')
+	        res_template=textfsm.TextFSM(template)
+	        ans_final=res_template.ParseText(ans)
+	        print(ans_final)
+	        hello={}
+	        j=0
+	        dictofobj[nme].gennodedict['bgp_neigh']=dict()
+	        for i in range(0,len(ans_final)):
+	            hello={}
+	            hello['neighbor']=ans_final[i][2]
+	            hello['AS']=ans_final[i][3]
+	            hello['up/down']=ans_final[i][5]
+
+	            dictofobj[nme].gennodedict['bgp_neigh'][ans_final[i][2]]=dict()
+	            dictofobj[nme].gennodedict['bgp_neigh'][ans_final[i][2]]=hello
+	            
+	            
+	        
+
+
+	#----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+	#------------------------------------------Neeraj-----------------------------------------------------------------------------------------------
+
+
+
+	    boo=True
+	    while boo:
+
+	        try:
+	            ret = ssh.send_command("show proc mem | include Processor Pool | I/O Pool")
+	            boo=False
+	        except:
+	            print(" 9-4 Exception handled in sh proc mem | inc Pool Total. Trying Again")
+	            boo=True
+	        print("Return from show proc mem | include Pool Total ")
+	        print(ret)
+	        if not ret:
+	            print(" 9-4 Returned value is null. Trying again ")
+	            boo=True
+	        elif not(isinstance(ret,str)):
+	            boo=True
+	            print("9-4 Returned value is not string, trying again ")
+	        elif ret.split()[0]!='Processor':
+	            print("9-4 Returned value on show proc mem is not proper, trying again")
+	        elif len(ret.split())<6:
+	            print("9-4 Returned value on show proc mem is not proper, trying again")
+	            boo=True
+	        else:
+	            boo=False
+	        
+
+	    def mb(str):
+	        return round(int(str)/1024/1024,2)
+	        #return 1
+	        
+
+	    def percent(a,b):
+	        return round((int(a)/int(b)) * 100,2)
+	        
+	    memory = dict()
+	    ret.replace('\n',' ')
+	    temp_vals = ret.split(' ')
+	    vals = []
+	    for string in temp_vals:
+	        if len(string.strip())>0:
+	            vals.append(string.strip("\n"))
+	    print(vals)
+	    memory.update({'processor':{'total':mb(vals[3]),'used':mb(vals[5]),'free':mb(vals[7]),'percent':percent(vals[5],vals[3])},'io':{'total':mb(vals[11]),'used':mb(vals[13]),'free':mb(vals[15]),'percent':percent(vals[13],vals[11])}})    
+
+	    dictofobj[nme].gennodedict['Process_Memory']=dict()
+	    dictofobj[nme].gennodedict['Process_Memory']=memory
+
+
+
+
+	    boo=True
+	    while boo:
+	        
+	        try:
+	            time1 = ssh.send_command("show clock")
+	            boo=False
+	        except:
+	            print("9-4 Exception handled. sh clock. Trying again")
+	            boo=True
+	        print("Time ")
+	        print(time1)
+	        if not time1:
+	            boo=True
+	            print("9-4 Return from show clock not proper. Trying again ")
+	        elif not(isinstance(time1,str)):
+	            print("9-4  Return from show clock in not string. Trying again")
+	            boo=True
+	        elif len(time1.split())<5:
+	            print("Time received not proper. Trying again ")
+	            boo=True
+	        else:
+	            boo=False
+	    
+	    
+	    time1=time1.split(" ")[3:5]
+	    time1 = time1[0]+" "+time1[1]
+	    print(time1)
+	    #ret = src.send_command("show log | i down|Down|up|Up|err|fail|Fail|drop|crash|MALLOCFAIL|duplex",time[0]+" "+str((int(time[1])-1)))
+
+	    boo=True
+	    while boo:
+	        try:
+	            
+	            ret = ssh.send_command("show log | i "+time1)
+	            boo=False
+	        except:
+	            print("9-5 exception handled in show log. Trying again ")
+	            boo=True
+	        if not(isinstance(ret,str)):
+	            print("9-5  Return from show log in not string. Trying again")
+	            boo=True
+	        else:
+	            boo=False
+	            
+	    array = ret.split('\n')
+
+	    count=0
+	    syslog = dict()
+	    for line in array:
+	        if line.find('%')!=-1 and (line.find("NBRCHANGE")!=-1 or line.find("ADJCHANGE")!=-1 or line.find("UPDOWN")!=-1 or line.find("duplex")!=-1):
+	            syslog.update({count:line})
+	            count+=1
+	    dictofobj[nme].gennodedict['log']=syslog
+
+
+	#---------------------------------------------------------------------------------------------------------------------------------------
+	#---------------------------------------------------ARAVIND-----------------------------------------------------------------------------
+
+
+	    map_return = {}
+	    print("For Spanning Tree KPI")
+	    print(dictofobj[nme].gennodedict['version']['hardware'])
+	    output_span=''
+	    if dictofobj[nme].gennodedict['version']['hardware']=='3725':
+	            
+	        boo=True
+	        while boo:
+	            try:
+	                output_span= ssh.send_command("sh spanning-tree active")
+	                boo=False
+	            except:
+	                boo=True
+	                print("9-6 Exception Raised in show spanning tree")
+	            if not output_span:
+	                print(" 9-6 Return from show spanning tree is null. Trying again ")
+	                boo=True
+	            elif not(isinstance(output_span,str)):
+	                boo=True
+	                print(" 9-6 Return from show spanning tree is not a string. Trying again ")
+	                
+	            elif len(output_span.split())<4:
+	                boo=True
+	                print(" 9-6 Return from show spanning tree is not proper. Trying again")
+	            else:
+	                boo=False
+	        
+	        l=output_span.split('\n')
+	        print("Spanning LIST")
+	        print(l)
+	        flag = 0
+	        p = 12
+	        m1={}
+	        for k in range(len(l)-6):
+	            if (k == p):
+	                print(" k ")
+	                print(k)
+	                print(" p ")
+	                print(p)
+	                print(l[k])
+	                print(l[k + 6])
+	                m1[l[k]] = l[k + 6]
+	                p += 9
+	        p = 12
+	        time.sleep(20)
+	        for lo in range(0, 2):
+	            for k in range(len(l)-6):
+	                if (k == p):
+	                    print(" k ")
+	                    print(k)
+	                    print(" p ")
+	                    print(p)
+	                    # print(l[k])
+	                    # print(l[k+6])
+	                    if (m1[l[k]] != l[k + 6]):
+	                        map_return[l[k]] = l[k + 6]
+	                        print(l[k] + "\n" + l[k + 6])
+	                        flag = 1
+	                    else:
+	                        print("No change Observed")
+	                        flag = 0
+	                    p += 9
+	            p = 12
+	            time.sleep(20)
+	        if (flag == 0):
+	            print("No Changes in the Past 1 minute")
+	        flag = 0
+	        print('\n\n\n')
+	    dictofobj[nme].gennodedict['spanning_tree']=map_return
+
+
+
+
+
+
+
+
+	    print("For show interface counters")
+	    print(dictofobj[nme].gennodedict['version']['hardware'])
+	    Int_count={}
+	    if dictofobj[nme].gennodedict['version']['hardware']=='3725':
+	        boo=True
+	        while boo:
+	            try:
+	                command = ssh.send_command("sh int counters error | ex 0")
+	                boo=False
+	            except:
+	                boo=True
+	                print("9-7 Exception handled - sh int counters error, Trying again")
+	            print("Return from show int counters error")
+	            print(command)
+	            if not command:
+	                print("9-7 Return from sh int counters errors is null, trying again")
+	                boo=True
+	            elif not(isinstance(command,str)):
+	                print("9-7 Return from sh int counters errors is not a string, trying again")
+	                boo=True
+	            elif len(command.split())<5:
+	                boo=True
+	                print("9-7 Return from sh int counters errors is not proper, trying again")
+	            else:
+	                boo=False
+	                    
+	        output = command.split('\n')
+	        output.pop(0)
+	        if (output[1]):
+	            for i in output:
+	                print(i + '\n')
+	                Int_count = {i: 5 for i in output}
+	        else:
+	            print("Sorry Empty")
+	        
+	    dictofobj[nme].gennodedict['interface_counters_errors']=Int_count
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	#---------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+	    #interface_level_details
+	    for interf in dictofobj[nme].dictint.keys():
+	        print(interf+" in loop ")
+	        boo=True
+	        while boo:
+	            try:
+	                ret=ssh.send_command("sh interfaces "+interf,use_textfsm=True)
+	                boo=False
+	            except:
+	                print("11 Exception Raised , Trying again")
+	                boo=True
+	                continue
+	            print(ret)
+	            if not ret:
+	                boo=True
+	            elif isinstance(ret,str):
+	                print("11 output not in proper form, trying again ")
+	                boo=True
+	            else:
+	                boo=False
+	        #Parse the sh interface output and get the crc and other things out
+	        print(ret)
+	        line={}
+	        for line in ret:
+	            x=line.keys()
+	            if 'crc' in x:
+	                dictofobj[nme].dictint[interf]['crc']=line['crc']
+	            if 'duplex' in x:
+	                dictofobj[nme].dictint[interf]['duplex']=line['duplex']
+	            if 'reliability' in x:
+	                dictofobj[nme].dictint[interf]['reliability']=line['reliability']
+	            if 'txload' in x:
+	                dictofobj[nme].dictint[interf]['txload']=line['txload']
+	            if 'rxload' in x:
+	                dictofobj[nme].dictint[interf]['rxload']=line['rxload']
+	            if 'speed' in x:
+	                dictofobj[nme].dictint[interf]['speed']=line['speed']
+	            if 'collisions' in x:
+	                dictofobj[nme].dictint[interf]['collisions']=line['collisions']
+	            if 'late_collision' in x:
+	                dictofobj[nme].dictint[interf]['late_collision']=line['late_collision']
+	            if 'overrun' in x:
+	                dictofobj[nme].dictint[interf]['overrun']=line['overrun']
+	            if 'interf_reset' in x:
+	                dictofobj[nme].dictint[interf]['interf_reset']=line['interf_reset']
+	            if 'input_errors' in x:
+	                dictofobj[nme].dictint[interf]['input_errors']=line['input_errors']
+	            if 'output_errors' in x:
+	                dictofobj[nme].dictint[interf]['output_errors']=line['output_errors']
+	            if 'frame' in x:
+	                dictofobj[nme].dictint[interf]['frame']=line['frame']
+	            if 'ignored' in x:
+	                dictofobj[nme].dictint[interf]['ignored']=line['ignored']
+	            if 'bandwidth' in x:
+	                dictofobj[nme].dictint[interf]['bandwidth']=line['bandwidth']
+	            if 'ignored' in x:
+	                dictofobj[nme].dictint[interf]['output_drops']=line['output_drops']
+	        
+
+
+
+	        """boo=True
+	        while boo:
+	            try:
+	                ret=ssh.send_command("sh controllers "+interf)
+	                boo=False
+	            except:
+	                print("Exception Raised 2, Trying again")
+	                boo=True
+	            if not ret:
+	                boo=True
+	            elif len(boo.split('\n'))<4:
+	                boo=True
+	            else:
+	                boo=False
+	        #parse the ret and get the required parameters
+
+
+	        dictofobj[nme].dictint[interf]['']=
+	        dictofobj[nme].dictint[interf]['']=
+	        dictofobj[nme].dictint[interf]['']=
+	        dictofobj[nme].dictint[interf]['']=
+	        dictofobj[nme].dictint[interf]['']="""
+	        
+	    forjson={}
+	    forjson['Name']=dict()
+	    #forjson['Name'][0]=dict()
+	    forjson['Name']['0']=nme
+	    forjson['Interface Dictionary']=dict()
+
+	    forjson['Interface Dictionary']=dictofobj[nme].dictint
+	    forjson['General Node']=dict()
+	    forjson['General Node']=dictofobj[nme].gennodedict
+	    intojson.append(forjson)
+	    
+
+
+	    ssh.disconnect()
+	        
+
+	#for r in arr:
+	#    r.objprint()
+
+
+
+	print( "FINAL OUTPUT ")
+	print(exit)
+	print(entryrev)
+	print(intojson)
+	return exit,entryrev,intojson
 
 
 
@@ -95,7 +1172,7 @@ def topology():
 		print("src:",src)
 		print("dst:",dst)
 
-		#entry,exit,objs = rit(src,dst);
+		exit,reverse,kpijson = backend(1,2);
 
 		temp = []
 		for key,value in exit.items():

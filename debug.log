@@ -1,0 +1,4 @@
+[0401/130158.485:VERBOSE1:logging_network_change_observer.cc(85)] Observed a change to the network IP addresses
+[0401/130159.482:VERBOSE1:logging_network_change_observer.cc(95)] Observed a change to network connectivity state CONNECTION_WIFI
+[0401/130159.976:VERBOSE1:logging_network_change_observer.cc(108)] Observed a network change to state CONNECTION_NONE
+[0401/130159.977:VERBOSE1:logging_network_change_observer.cc(108)] Observed a network change to state CONNECTION_WIFI
