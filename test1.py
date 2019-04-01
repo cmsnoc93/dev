@@ -52,8 +52,8 @@ class router(object):
 	        print("------------------------------")
 
 def backend(src,dst):
-	src='10.8.14.14'
-	dst='10.1.7.1'	
+	src=src
+	dst=dst	
 	        
 	arr=[]
 	count=0
@@ -1178,7 +1178,7 @@ def topology():
 		print("src:",src)
 		print("dst:",dst)
 
-		exit,reverse,kpijson = backend(1,2);
+		exit,reverse,kpijson = backend(src,dst);
 
 		temp = []
 		for key,value in exit.items():
