@@ -1140,14 +1140,11 @@ for nme in setofnames:
     ssh.disconnect()
         
 
-#for r in arr:
-#    r.objprint()
+for r in arr:
+    r.objprint()
 
-
-
-print( "FINAL OUTPUT ")
-print(exit)
-print(entryrev)
+print()
+print("Json Object")
 print(intojson)
 
 
