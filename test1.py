@@ -543,13 +543,12 @@ def backend(src,dst):
 	print(" Entry Reverse ")
 	print(entryrev)
 	threads=[]
-	count=0
+	
 	for nme in setofnames:
 		ssh=dictofobj[nme].handle
-		threads[count] = threading.Thread(target=fetchKPI,args=(ssh,));
-		print("Starting Thread :",threads[count])
-		threads[count].start();
-		count++;
+		thread = threading.Thread(target=fetchKPI,args=(ssh,));
+		threads.append(thread)
+		print("Starting Thread :",thread)
 	
 	for thread in threads:
 		print("Waiting for thread to complete:")
