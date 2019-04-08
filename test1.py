@@ -5,6 +5,7 @@ import time
 import textfsm
 import re
 from netmiko import ConnectHandler
+import threading
 
 
 app = Flask(__name__)
@@ -51,17 +52,15 @@ class router(object):
 	        
 	        print("------------------------------")
 
+dictofnames={}
+dictofobj={}
+intojson=[]
 def backend(src,dst):
 	src=src
-	dst=dst	
-	        
+	dst=dst		        
 	arr=[]
 	count=0
-
 	setofnames=set()
-	dictofnames={}
-	dictofobj={}
-
 	name=''
 	s={src}
 	now=src
@@ -74,7 +73,6 @@ def backend(src,dst):
 	extract=set()
 	p=''
 	boo=True
-	intojson=[]
 
 	while(len(s)>0):
 	    now=ls[0]
@@ -547,9 +545,90 @@ def backend(src,dst):
 
 	ff=0
 
-
+    threads = []
+    count = 0;
 	for nme in setofnames:
 	    ssh=dictofobj[nme].handle
+        threads[count] = threading.Thread(target=fetchKPI,args=(ssh,));
+ 	    count++;
+	
+	for thread in threads:
+		thread.join();
+
+	print( "FINAL OUTPUT ")
+	print(exit)
+	print(entryrev)
+	print(intojson)
+	return exit,entryrev,intojson
+
+
+
+class Response():
+	
+    def __init__(self,responseList):
+	    self.jsons = list()
+	    for json in responseList:
+	        self.jsons.append(json)
+	
+	
+
+@app.route('/Topology',methods=['GET','POST'])
+def topology():
+	if request.method == 'GET':
+		src = request.args.get('src')
+		dst = request.args.get('dst')
+
+		# call function
+		print("src:",src)
+		print("dst:",dst)
+
+		exit,reverse,kpijson = backend(src,dst);
+
+		temp = []
+		for key,value in exit.items():
+			value = list(value)
+			if len(value)>0 :
+				for i in value:
+					t = {}
+					t["now"] = key
+					foo = i.split()
+					t["exit"] = foo[0]
+					foo2 = list(reverse[foo[1]])
+					t["next"] = foo2[0].split()[0]
+					t["entry"] = foo2[0].split()[1]
+					temp.append(t)
+			else:
+					t = {}
+					t["now"] = key
+					foo = value[0].split()
+					t["exit"] = foo[0]
+					foo2 = list(reverse[foo[1]])
+					t["next"] = foo2[0].split()[0]
+					t["entry"] = foo2[0].split()[1]
+					temp.append(t) 
+		responseList = list()
+		responseList.append(json.dumps(temp))
+		responseList.append(json.dumps(kpijson))
+
+
+		return render_template('topology.html',response=json.dumps(Response(responseList).__dict__))
+
+@app.route('/',methods=['GET','POST'])
+def index():
+	if request.method == 'GET':
+		return render_template('login.html')
+	else:
+		username = request.args.get('username')
+		password = request.args.get('password')
+		# if validated,
+		return render_template('topology.html')
+	print("Failure")
+	return render_template('login.html')
+
+
+
+
+def fetchKPI(ssh):
 
 	    #general_node_parameters
 
@@ -830,13 +909,7 @@ def backend(src,dst):
 	            boo=False
 	        
 
-	    def mb(str):
-	        return round(int(str)/1024/1024,2)
-	        #return 1
-	        
 
-	    def percent(a,b):
-	        return round((int(a)/int(b)) * 100,2)
 	        
 	    memory = dict()
 	    ret.replace('\n',' ')
@@ -1103,32 +1176,7 @@ def backend(src,dst):
 	                dictofobj[nme].dictint[interf]['bandwidth']=line['bandwidth']
 	            if 'ignored' in x:
 	                dictofobj[nme].dictint[interf]['output_drops']=line['output_drops']
-	        
-
-
-
-	        """boo=True
-	        while boo:
-	            try:
-	                ret=ssh.send_command("sh controllers "+interf)
-	                boo=False
-	            except:
-	                print("Exception Raised 2, Trying again")
-	                boo=True
-	            if not ret:
-	                boo=True
-	            elif len(boo.split('\n'))<4:
-	                boo=True
-	            else:
-	                boo=False
-	        #parse the ret and get the required parameters
-
-
-	        dictofobj[nme].dictint[interf]['']=
-	        dictofobj[nme].dictint[interf]['']=
-	        dictofobj[nme].dictint[interf]['']=
-	        dictofobj[nme].dictint[interf]['']=
-	        dictofobj[nme].dictint[interf]['']="""
+	      
 	        
 	    forjson={}
 	    forjson['Name']=dict()
@@ -1139,91 +1187,12 @@ def backend(src,dst):
 	    forjson['Interface Dictionary']=dictofobj[nme].dictint
 	    forjson['General Node']=dict()
 	    forjson['General Node']=dictofobj[nme].gennodedict
-	    intojson.append(forjson)
-	    
-
-
 	    ssh.disconnect()
+	    intojson.append(forjson)
+
+	
+def mb(str):
+    return round(int(str)/1024/1024,2)
 	        
-
-	#for r in arr:
-	#    r.objprint()
-
-
-
-	print( "FINAL OUTPUT ")
-	print(exit)
-	print(entryrev)
-	print(intojson)
-	return exit,entryrev,intojson
-
-
-
-class Response():
-	
-    def __init__(self,responseList):
-	    self.jsons = list()
-	    for json in responseList:
-	        self.jsons.append(json)
-	
-	
-
-@app.route('/Topology',methods=['GET','POST'])
-def topology():
-	if request.method == 'GET':
-		src = request.args.get('src')
-		dst = request.args.get('dst')
-
-		# call ritesh function
-		print("src:",src)
-		print("dst:",dst)
-
-		exit,reverse,kpijson = backend(src,dst);
-
-		temp = []
-		for key,value in exit.items():
-			value = list(value)
-			if len(value)>0 :
-				for i in value:
-					t = {}
-					t["now"] = key
-					foo = i.split()
-					t["exit"] = foo[0]
-					foo2 = list(reverse[foo[1]])
-					t["next"] = foo2[0].split()[0]
-					t["entry"] = foo2[0].split()[1]
-					temp.append(t)
-			else:
-					t = {}
-					t["now"] = key
-					foo = value[0].split()
-					t["exit"] = foo[0]
-					foo2 = list(reverse[foo[1]])
-					t["next"] = foo2[0].split()[0]
-					t["entry"] = foo2[0].split()[1]
-					temp.append(t) 
-		responseList = list()
-		responseList.append(json.dumps(temp))
-		responseList.append(json.dumps(kpijson))
-
-
-		return render_template('topology.html',response=json.dumps(Response(responseList).__dict__))
-
-@app.route('/',methods=['GET','POST'])
-def index():
-	if request.method == 'GET':
-		return render_template('login.html')
-	else:
-		username = request.args.get('username')
-		password = request.args.get('password')
-		# if validated,
-		return render_template('topology.html')
-	print("Failure")
-	return render_template('login.html')
-
-
-
-
-
-
-	
+def percent(a,b):
+    return round((int(a)/int(b)) * 100,2)

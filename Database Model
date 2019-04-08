@@ -1,0 +1,47 @@
+{
+	"src,dst":  {
+                  "2019-08-04 morning" :{
+                   [ 0 : {entry,exit,this,next}
+                   	 1 : {entry,exit,this,next}
+                   ]
+                  }
+                  "2019-08-04 evening  :{
+                   [ 0 : {entry,exit,this,next}
+                   	 1 : {entry,exit,this,next}
+                     2 : {entry,exit,this,next}
+                   ]
+                }			
+	"src2,dst2":{
+                  "2019-08-04 morning" :{
+                   [ 0 : {entry,exit,this,next}
+                   	 1 : {entry,exit,this,next}
+                   ]
+                  }
+                  "2019-08-04 evening :{
+                   [ 0 : {entry,exit,this,next}
+                   	 1 : {entry,exit,this,next}
+                     2 : {entry,exit,this,next}
+                   ]
+                  }	
+                  "2019-08-04 night :{
+                   [ 0 : {entry,exit,this,next}
+                   	 1 : {entry,exit,this,next}
+                     2 : {entry,exit,this,next}
+                   ]
+                }		
+			  }			 
+
+}
+
+1. which src and dst
+2. how many previous entries to store
+3. UI revamping for the same ^ 
+
+
+
+3. seperating kpis from path calculation
+4. multithreading ^
+
+5. UI thresholds
+
+7.CALO

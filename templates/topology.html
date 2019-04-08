@@ -235,6 +235,16 @@ input[type=text] {
                     popup.css('display','inline');          
                   });
     }
+
+
+    // to do : define a set of threshold dicts
+    var gen_node_thres = {}
+     
+    // Compares KPI dict with Thresholds dict and sets CSS as per results
+    function checkThreshold(dict,kpi_name){
+      
+
+    }
     // Digests various kpi dictionaries and returns HTML for the divs
    
     function asHtml(dict,kpi_name){
@@ -243,6 +253,7 @@ input[type=text] {
       var html="";
       switch(String(kpi_name)){
         case "general":
+
                       for(key in dict){
                         if(!isNaN(key)){
                             html+="<b>PID:"+key+"</b><br>";
