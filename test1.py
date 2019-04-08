@@ -549,11 +549,12 @@ def backend(src,dst):
 		thread = threading.Thread(target=fetchKPI,args=(ssh,));
 		threads.append(thread)
 		print("Starting Thread :",thread)
+		thread.start()
 	
 	for thread in threads:
 		print("Waiting for thread to complete:")
 		print(thread)
-		thread.join();
+		thread.join()
 
 	print( "FINAL OUTPUT ")
 	print(exit)
