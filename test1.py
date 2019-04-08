@@ -545,8 +545,8 @@ def backend(src,dst):
 
 	ff=0
 
-    threads = []
-    count = 0;
+        threads = []
+        count = 0;
 	for nme in setofnames:
 	    ssh=dictofobj[nme].handle
             threads[count] = threading.Thread(target=fetchKPI,args=(ssh,));
