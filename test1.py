@@ -549,10 +549,14 @@ def backend(src,dst):
     count = 0;
 	for nme in setofnames:
 	    ssh=dictofobj[nme].handle
-        threads[count] = threading.Thread(target=fetchKPI,args=(ssh,));
+            threads[count] = threading.Thread(target=fetchKPI,args=(ssh,));
+            print("Starting Thread :",threads[count])
+            threads[count].start();
  	    count++;
 	
 	for thread in threads:
+		print("Waiting for thread to complete:")
+		print(thread)
 		thread.join();
 
 	print( "FINAL OUTPUT ")
