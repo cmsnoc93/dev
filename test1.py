@@ -546,7 +546,7 @@ def backend(src,dst):
 	
 	for nme in setofnames:
 		ssh=dictofobj[nme].handle
-		thread = threading.Thread(target=fetchKPI,args=(ssh,));
+		thread = threading.Thread(target=fetchKPI,args=(ssh,nme,));
 		threads.append(thread)
 		print("Starting Thread :",thread)
 		thread.start()
@@ -629,7 +629,7 @@ def index():
 
 
 ff=0
-def fetchKPI(ssh):
+def fetchKPI(ssh,nme):
 
 	    #general_node_parameters
 
