@@ -549,7 +549,7 @@ def backend(src,dst):
 		threads[count] = threading.Thread(target=fetchKPI,args=(ssh,));
 		print("Starting Thread :",threads[count])
 		threads[count].start();
-		count++;
+		count=count+1;
 	
 	for thread in threads:
 		print("Waiting for thread to complete:")
