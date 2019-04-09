@@ -635,8 +635,8 @@ def fetchKPI(ssh,nme):
             ff=0
             try:
                 ret=ssh.send_command("sh version",use_textfsm=True)
-	            print("Sh version Exec")
-	            boo=False
+                print("Sh version Exec")
+                boo=False
 	        except Exception as e:
 	            print(" 9-0 Exception raised is show version for host:",gennodedict[nme].sship," trying again ")
 	            print(e)
