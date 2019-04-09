@@ -889,10 +889,10 @@ def fetchKPI(ssh,nme):
 	            boo=True
 	            print("9-4 Returned value is not string, trying again ")
 	        elif ret.split()[0]!='Processor':
-	            print("9-4 Returned value on show proc mem is not proper, trying again")
+	            print("9-4 Returned value on show proc mem doesnt habe 'processor', trying again",threading.currentThread())
 	            boo=True
 	        elif len(ret.split())<6:
-	            print("9-4 Returned value on show proc mem is not proper, trying again")
+	            print("9-4 Returned value on show proc mem is less than 6 attribs, trying again",threading.currentThread())
 	            boo=True
 	        else:
 	            boo=False
