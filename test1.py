@@ -639,7 +639,7 @@ def fetchKPI(ssh,nme):
 	            print("Sh version Exec")
 	            boo=False
 	        except Exception as e:
-	            print(" 9-0 Exception raised is show version for host:",gennodedict[nme].sship," trying again ")
+	            print(" 9-0 Exception raised is show version for host:",dictofobj[nme].sship," trying again ")
 	            print(e)
 	            boo=True
 	            ff=1
@@ -677,7 +677,7 @@ def fetchKPI(ssh,nme):
 	            ret=ssh.send_command("sh proc cpu | ex 0.0",use_textfsm=True)
 	            boo=False
 	        except:
-	            print("9 Exception Raised in show proc cpu, for host:",gennodedict[nme].sship," Trying again")
+	            print("9 Exception Raised in show proc cpu, for host:",dictofobj[nme].sship," Trying again")
 	            boo=True
 	        if not(isinstance(ret,list)):
 	            boo=True
@@ -711,7 +711,7 @@ def fetchKPI(ssh,nme):
 	            ret=ssh.send_command("sh ip route")
 	            boo=False
 	        except:
-	            print("10 Exception Raised in show ip route for host:",gennodedict[nme].sship,"Trying again")
+	            print("10 Exception Raised in show ip route for host:",dictofobj[nme].sship,"Trying again")
 	            boo=True
 	        print(ret)
 	        if not ret:
