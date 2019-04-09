@@ -236,8 +236,6 @@ def backend(src,dst):
 	                
 	        ip=ret.split()[1]
 
-
-
 	        ctobj=dictofnames[name]
 	        arr[ctobj].addexit(p)
 	        dictofobj[name].adddictip(hop,ip)
@@ -817,7 +815,7 @@ def fetchKPI(ssh,nme):
 	        boo=True
 	        while boo: 
 	            try:
-	                template=open('cisco_ios_show_ip_eigrp_neighbors.template')
+	                template=open('cisco_ios_show_ip_eigrp_neighbors.template','r')
 	                res_template=textfsm.TextFSM(template)
 	                ans_final=res_template.ParseText(ans)
 	                boo=False
@@ -845,7 +843,7 @@ def fetchKPI(ssh,nme):
 	        print("bgp there")
 	        ans=ssh.send_command("show ip bgp summary")
 	        print(ans)
-	        template=open('cisco_ios_show_ip_bgp_summary.template')
+	        template=open('cisco_ios_show_ip_bgp_summary.template','r')
 	        res_template=textfsm.TextFSM(template)
 	        ans_final=res_template.ParseText(ans)
 	        print(ans_final)
