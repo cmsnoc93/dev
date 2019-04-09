@@ -634,7 +634,7 @@ def fetchKPI(ssh,nme):
         while boo:
             ff=0
             try:
-            ret=ssh.send_command("sh version",use_textfsm=True)
+                ret=ssh.send_command("sh version",use_textfsm=True)
 	            print("Sh version Exec")
 	            boo=False
 	        except Exception as e:
