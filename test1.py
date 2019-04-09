@@ -836,6 +836,7 @@ def fetchKPI(ssh,nme):
 	            #dictofobj[nme].gennodedict['eigrp_neigh']
 	            dictofobj[nme].gennodedict['eigrp_neigh'][ans_final[i][1]]=dict()
 	            dictofobj[nme].gennodedict['eigrp_neigh'][ans_final[i][1]]=hello
+	        template.close()
 	  
 
 	  
@@ -857,7 +858,8 @@ def fetchKPI(ssh,nme):
 	            hello['up/down']=ans_final[i][5]
 
 	            dictofobj[nme].gennodedict['bgp_neigh'][ans_final[i][2]]=dict()
-	            dictofobj[nme].gennodedict['bgp_neigh'][ans_final[i][2]]=hello          
+	            dictofobj[nme].gennodedict['bgp_neigh'][ans_final[i][2]]=hello      
+	        template.close()    
 	            
 	        
 
@@ -895,8 +897,7 @@ def fetchKPI(ssh,nme):
 	            boo=False
 	        
 
-
-	        
+        
 	    memory = dict()
 	    ret.replace('\n',' ')
 	    temp_vals = ret.split(' ')
