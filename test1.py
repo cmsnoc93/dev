@@ -631,10 +631,9 @@ def index():
 ff=0
 def fetchKPI(ssh,nme):
 
-	    #general_node_parameters
-
+	    #show version
 	    boo=True
-
+        global ff
 	    while boo:
 	        ff=0
 	        try:
@@ -642,7 +641,7 @@ def fetchKPI(ssh,nme):
 	            print("Sh version Exec")
 	            boo=False
 	        except Exception as e:
-	            print(" 9-0 Exception raised is show version, trying again ")
+	            print(" 9-0 Exception raised is show version for host:",gennodedict[nme].sship," trying again ")
 	            print(e)
 	            boo=True
 	            ff=1
@@ -673,21 +672,14 @@ def fetchKPI(ssh,nme):
 	    verdict['reload_reason']=ret[0]['reload_reason']
 	    dictofobj[nme].gennodedict['version']=verdict 
 	    
-
-
-
-
-
-
-
-	    
+	    #show cpu
 	    boo=True
 	    while boo:
 	        try:
 	            ret=ssh.send_command("sh proc cpu | ex 0.0",use_textfsm=True)
 	            boo=False
 	        except:
-	            print("9 Exception Raised , Trying again")
+	            print("9 Exception Raised in show proc cpu, for host:",gennodedict[nme].sship," Trying again")
 	            boo=True
 	        if not(isinstance(ret,list)):
 	            boo=True
@@ -695,7 +687,6 @@ def fetchKPI(ssh,nme):
 	        else:
 	            boo=False
 	            
-	    #parse the return from show environment and take out parameters like
 	    ct1=0
 	    for line in ret:
 	        if ct1==0:
@@ -714,15 +705,15 @@ def fetchKPI(ssh,nme):
 	        ct1+=1
 
 
-	#parsing sh ip route
-
+	
+        #show ip route
 	    boo=True
 	    while boo:
 	        try:
 	            ret=ssh.send_command("sh ip route")
 	            boo=False
 	        except:
-	            print("10 Exception Raised , Trying again")
+	            print("10 Exception Raised in show ip route for host:",gennodedict[nme].sship,"Trying again")
 	            boo=True
 	        print(ret)
 	        if not ret:
@@ -749,13 +740,10 @@ def fetchKPI(ssh,nme):
 	                print(line)        
 	    dictofobj[nme].gennodedict['ip_route_00']=gen
 	                
-	    #keys for gen dict is just numbers with no significance. display only values        
-	    #dictofobj[nme].gennodedict['redundant_power']=
-
-
-
-	    
+    
 	#-----------------------------------------Harshad------------------------------------------------------------------------------------------
+	    
+	    #show ip protocols
 	    boo=True
 	    while boo:
 	        ans=ans1=0
@@ -871,8 +859,7 @@ def fetchKPI(ssh,nme):
 	            hello['up/down']=ans_final[i][5]
 
 	            dictofobj[nme].gennodedict['bgp_neigh'][ans_final[i][2]]=dict()
-	            dictofobj[nme].gennodedict['bgp_neigh'][ans_final[i][2]]=hello
-	            
+	            dictofobj[nme].gennodedict['bgp_neigh'][ans_final[i][2]]=hello          
 	            
 	        
 
@@ -1102,20 +1089,6 @@ def fetchKPI(ssh,nme):
 	    dictofobj[nme].gennodedict['interface_counters_errors']=Int_count
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	#---------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -1193,7 +1166,19 @@ def fetchKPI(ssh,nme):
 
 	
 def mb(str):
+	if not is_number(str):
+		return -1
     return round(int(str)/1024/1024,2)
 	        
 def percent(a,b):
+
+	if not is_number(a) and not is_number(b):
+		return -1;
     return round((int(a)/int(b)) * 100,2)
+
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
