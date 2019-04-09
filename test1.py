@@ -1169,18 +1169,17 @@ def fetchKPI(ssh,nme):
 	
 def mb(str):
 	if not is_number(str):
-		return -1
-    return round(int(str)/1024/1024,2)
-	        
-def percent(a,b):
+	    return -1
+	return round(int(str)/1024/1024,2)
 
+def percent(a,b):
 	if not is_number(a) and not is_number(b):
-		return -1;
-    return round((int(a)/int(b)) * 100,2)
+	    return -1;
+	return round((int(a)/int(b)) * 100,2)
 
 def is_number(s):
-    try:
-        float(s)
-        return True
-    except ValueError:
-        return False
+	try:
+	    float(s)
+	    return True
+	except ValueError:
+	    return False
