@@ -626,15 +626,13 @@ def index():
 	print("Failure")
 	return render_template('login.html')
 
-
-
 ff=0
 def fetchKPI(ssh,nme):
 
 	    #show version
 	    boo=True
-        global ff
-	    while boo:
+		global ff
+		while boo:
 	        ff=0
 	        try:
 	            ret=ssh.send_command("sh version",use_textfsm=True)
