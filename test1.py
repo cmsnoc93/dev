@@ -629,11 +629,11 @@ def index():
 ff=0
 def fetchKPI(ssh,nme):
 
-	    #show version
-	    boo=True
+		#show version
+		boo=True
 		global ff
 		while boo:
-	        ff=0
+			ff=0
 	        try:
 	            ret=ssh.send_command("sh version",use_textfsm=True)
 	            print("Sh version Exec")
