@@ -875,7 +875,7 @@ def fetchKPI(ssh,nme,lock):
 	        lock.acquire()
 	        try:
 	        	ret = ssh.send_command("show proc mem | include Processor Pool | I/O Pool")
-	            boo=False
+	        	boo=False
 	        except:
 	            print(" 9-4 Exception handled in sh proc mem | inc Pool Total. Trying Again",dictofobj[nme].sship)
 	            boo=True
