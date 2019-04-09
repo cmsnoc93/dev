@@ -650,7 +650,7 @@ def fetchKPI(ssh,nme):
 	                print(ee)
 
 	        print("Return from Show version")
-	        print(ret)
+	        #print(ret)
 	        if ff==1:
 	            boo=True
 	        elif not ret:
@@ -713,7 +713,7 @@ def fetchKPI(ssh,nme):
 	        except:
 	            print("10 Exception Raised in show ip route for host:",dictofobj[nme].sship,"Trying again")
 	            boo=True
-	        print(ret)
+	        #print(ret)
 	        if not ret:
 	            boo=True
 	        elif isinstance(ret,list):
@@ -752,10 +752,10 @@ def fetchKPI(ssh,nme):
 	        except:
 	            print("9-2 Exception raised in sh ip protocols, trying again ")
 	            boo=True
-	        print(" sh ip protocols | i bgp ")
-	        print(ans)
-	        print(" sh ip protocols | i eigrp")
-	        print(ans1)
+	        #print(" sh ip protocols | i bgp ")
+	        #print(ans)
+	        #print(" sh ip protocols | i eigrp")
+	        #print(ans1)
 	        if not(isinstance(ans,str)) or not(isinstance(ans1,str)):
 	            boo=True
 	            print("9-2 Return from sh ip protocols not proper. Trying again")
@@ -788,7 +788,7 @@ def fetchKPI(ssh,nme):
 	            break
 	    
 	    if flag2==1:
-	        print("eigrp there")
+	        #print("eigrp there")
 	      #call bgp func
 	        boo=True
 	        while boo:
@@ -823,7 +823,7 @@ def fetchKPI(ssh,nme):
 	                print(e)
 	                print("9-4 Exception in Textfsm, Trying again")
 	                boo=True
-	        print(ans_final)
+	        #print(ans_final)
 	        hello={}
 	        j=0
 	        dictofobj[nme].gennodedict['eigrp_neigh']=dict()
@@ -847,7 +847,7 @@ def fetchKPI(ssh,nme):
 	        template=open('cisco_ios_show_ip_bgp_summary.template','r')
 	        res_template=textfsm.TextFSM(template)
 	        ans_final=res_template.ParseText(ans)
-	        print(ans_final)
+	        #print(ans_final)
 	        hello={}
 	        j=0
 	        dictofobj[nme].gennodedict['bgp_neigh']=dict()
@@ -890,6 +890,7 @@ def fetchKPI(ssh,nme):
 	            print("9-4 Returned value is not string, trying again ")
 	        elif ret.split()[0]!='Processor':
 	            print("9-4 Returned value on show proc mem is not proper, trying again")
+	            boo=True
 	        elif len(ret.split())<6:
 	            print("9-4 Returned value on show proc mem is not proper, trying again")
 	            boo=True
@@ -1002,7 +1003,7 @@ def fetchKPI(ssh,nme):
 	        
 	        l=output_span.split('\n')
 	        print("Spanning LIST")
-	        print(l)
+	        #print(l)
 	        flag = 0
 	        p = 12
 	        m1={}
