@@ -1,0 +1,513 @@
+Script started on Tue 09 Apr 2019 06:58:20 BST
+]0;root@user-virtual-machine: /home/user/devroot@user-virtual-machine:/home/user/dev# flask run --host-9[K[K=0.0.0.0
+ * Serving Flask app "test1.py" (lazy loading)
+ * Environment: development
+ * Debug mode: on
+ * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 291-569-680
+192.168.126.1 - - [09/Apr/2019 06:58:32] "GET / HTTP/1.1" 200 -
+192.168.126.1 - - [09/Apr/2019 06:58:35] "POST / HTTP/1.1" 200 -
+src: 10.8.14.14
+dst: 10.1.7.1
+BGL--SA14
+dict of names 
+{'BGL--SA14': 0}
+ return from sh ip route | inc known via 
+
+1 Trying again
+ return from sh ip route | inc known via 
+  Known via "eigrp 100", distance 90, metric 284160, type internal
+ Name BGL--SA14 show ip route | i known via
+  Known via "eigrp 100", distance 90, metric 284160, type internal
+PROT- eigrp
+ Return from sh ip route
+  Known via "eigrp 100", distance 90, metric 284160, type internal
+  Redistributing via eigrp 100
+  * 10.7.14.7, from 10.7.14.7, 00:00:01 ago, via FastEthernet2/0
+output from sh ip route | inc via 
+  Known via "eigrp 100", distance 90, metric 284160, type internal
+  Redistributing via eigrp 100
+  * 10.7.14.7, from 10.7.14.7, 00:00:01 ago, via FastEthernet2/0
+Splitting
+['Known', 'via', '"eigrp', '100",', 'distance', '90,', 'metric', '284160,', 'type', 'internal']
+['Redistributing', 'via', 'eigrp', '100']
+['*', '10.7.14.7,', 'from', '10.7.14.7,', '00:00:01', 'ago,', 'via', 'FastEthernet2/0']
+extract- 10.7.14.7
+hop  FastEthernet2/0
+ Return 
+FastEthernet2/0            10.7.14.14      YES NVRAM  up                    up      
+6
+BGL--SC07
+dict of names 
+{'BGL--SC07': 1, 'BGL--SA14': 0}
+ return from sh ip route | inc known via 
+  Known via "connected", distance 0, metric 0 (connected, via interface)
+ Name BGL--SC07 show ip route | i known via
+  Known via "connected", distance 0, metric 0 (connected, via interface)
+PROT- connected",
+ Return from sh ip route dst i directly
+  * directly connected, via FastEthernet0/0
+Connected route- show ip route| i directly 
+  * directly connected, via FastEthernet0/0
+ Name BGL--SC07 is connected to dst via FastEthernet0/0 directly
+ return from sh ip int brief | inc dest at dest 
+FastEthernet2/0            10.7.14.7       YES NVRAM  up                    up      
+6
+ Name BGL--SC07 sh ip int brief | include 10.7.14.7
+FastEthernet2/0            10.7.14.7       YES NVRAM  up                    up      
+ return from sh ip int brief | inc dest 
+FastEthernet0/0            10.1.7.1        YES NVRAM  up                    up      
+Entry interfaces 
+{'BGL--SC07': {'FastEthernet2/0 10.7.14.7'}, 'BGL--RC01': {'FastEthernet0/0 directly'}}
+
+ Exit  interfaces 
+{'BGL--SC07': {'FastEthernet0/0 directly'}, 'BGL--SA14': {'FastEthernet2/0 10.7.14.7'}}
+
+ Entry Reverse 
+{'10.7.14.7': {'BGL--SC07 FastEthernet2/0'}, 'directly': {'BGL--RC01 FastEthernet0/0'}}
+Starting Thread : <Thread(Thread-13, initial daemon)>
+Starting Thread : <Thread(Thread-14, initial daemon)>
+Starting Thread : <Thread(Thread-15, initial daemon)>
+Waiting for thread to complete:
+<Thread(Thread-13, started daemon 140211749119744)>
+Sh version Exec
+Return from Show version
+Sh version Exec
+Return from Show version
+Sh version Exec
+Return from Show version
+['Codes: C - connected, S - static, R - RIP, M - mobile, B - BGP', '       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area ', '       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2', '       E1 - OSPF external type 1, E2 - OSPF external type 2', '       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2', '       ia - IS-IS inter area, * - candidate default, U - per-user static route', '       o - ODR, P - periodic downloaded static route', '', 'Gateway of last resort is not set', '', '     1.0.0.0/32 is subnetted, 1 subnets', 'D       1.1.1.1 [90/412160] via 10.7.14.7, 00:00:29, FastEthernet2/0', '     6.0.0.0/32 is subnetted, 1 subnets', 'D EX    6.6.6.6 [170/286720] via 10.7.14.7, 00:00:29, FastEthernet2/0', '     10.0.0.0/24 is subnetted, 16 subnets', 'D       10.7.13.0 [90/30720] via 10.7.14.7, 00:00:29, FastEthernet2/0', 'D EX    10.6.12.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0', 'D       10.2.8.0 [90/284160] via 10.8.14.8, 00:00:29, FastEthernet2/1', 'C       10.7.14.0 is directly connected, FastEthernet2/0', 'D       10.7.8.0 [90/30720] via 10.8.14.8, 00:00:29, FastEthernet2/1', '                 [90/30720] via 10.7.14.7, 00:00:29, FastEthernet2/0', 'D EX    10.5.6.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0', 'D       10.1.2.0 [90/286720] via 10.7.14.7, 00:00:29, FastEthernet2/0', 'C       10.8.14.0 is directly connected, FastEthernet2/1', 'D       10.1.7.0 [90/284160] via 10.7.14.7, 00:00:29, FastEthernet2/0', 'D EX    10.11.12.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0', 'D EX    10.1.6.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0', 'D       10.8.13.0 [90/30720] via 10.8.14.8, 00:00:29, FastEthernet2/1', 'C       10.14.20.0 is directly connected, Vlan11', 'D EX    10.11.18.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0', 'D EX    10.12.18.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0', 'D EX    10.12.17.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0']
+D       1.1.1.1 [90/412160] via 10.7.14.7, 00:00:29, FastEthernet2/0
+D EX    6.6.6.6 [170/286720] via 10.7.14.7, 00:00:29, FastEthernet2/0
+D       10.7.13.0 [90/30720] via 10.7.14.7, 00:00:29, FastEthernet2/0
+D EX    10.6.12.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0
+D       10.2.8.0 [90/284160] via 10.8.14.8, 00:00:29, FastEthernet2/1
+D       10.7.8.0 [90/30720] via 10.8.14.8, 00:00:29, FastEthernet2/1
+                 [90/30720] via 10.7.14.7, 00:00:29, FastEthernet2/0
+D EX    10.5.6.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0
+D       10.1.2.0 [90/286720] via 10.7.14.7, 00:00:29, FastEthernet2/0
+D       10.1.7.0 [90/284160] via 10.7.14.7, 00:00:29, FastEthernet2/0
+D EX    10.11.12.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0
+D EX    10.1.6.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0
+D       10.8.13.0 [90/30720] via 10.8.14.8, 00:00:29, FastEthernet2/1
+D EX    10.11.18.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0
+D EX    10.12.18.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0
+D EX    10.12.17.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0
+['Codes: C - connected, S - static, R - RIP, M - mobile, B - BGP', '       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area ', '       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2', '       E1 - OSPF external type 1, E2 - OSPF external type 2', '       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2', '       ia - IS-IS inter area, * - candidate default, U - per-user static route', '       o - ODR, P - periodic downloaded static route', '', 'Gateway of last resort is not set', '', '     1.0.0.0/32 is subnetted, 1 subnets', 'D       1.1.1.1 [90/409600] via 10.1.7.1, 01:22:17, FastEthernet0/0', '     6.0.0.0/32 is subnetted, 1 subnets', 'D EX    6.6.6.6 [170/284160] via 10.1.7.1, 01:22:17, FastEthernet0/0', '     10.0.0.0/24 is subnetted, 16 subnets', 'C       10.7.13.0 is directly connected, FastEthernet2/1', 'D EX    10.6.12.0 [170/25625856] via 10.1.7.1, 01:21:36, FastEthernet0/0', 'D       10.2.8.0 [90/284160] via 10.7.8.8, 00:00:30, FastEthernet2/2', 'C       10.7.14.0 is directly connected, FastEthernet2/0', 'C       10.7.8.0 is directly connected, FastEthernet2/2', 'D EX    10.5.6.0 [170/25625856] via 10.1.7.1, 01:21:36, FastEthernet0/0', 'D       10.1.2.0 [90/284160] via 10.1.7.1, 01:22:17, FastEthernet0/0', 'D       10.8.14.0 [90/30720] via 10.7.14.14, 00:00:30, FastEthernet2/0', '                  [90/30720] via 10.7.8.8, 00:00:30, FastEthernet2/2', 'C       10.1.7.0 is directly connected, FastEthernet0/0', 'D EX    10.11.12.0 [170/25625856] via 10.1.7.1, 01:21:36, FastEthernet0/0', 'D EX    10.1.6.0 [170/25625856] via 10.1.7.1, 00:24:01, FastEthernet0/0', 'D       10.8.13.0 [90/30720] via 10.7.8.8, 00:00:30, FastEthernet2/2', 'D       10.14.20.0 [90/30720] via 10.7.14.14, 00:00:30, FastEthernet2/0', 'D EX    10.11.18.0 [170/25625856] via 10.1.7.1, 01:21:36, FastEthernet0/0', 'D EX    10.12.18.0 [170/25625856] via 10.1.7.1, 01:21:36, FastEthernet0/0', 'D EX    10.12.17.0 [170/25625856] via 10.1.7.1, 01:21:36, FastEthernet0/0']
+D       10.2.8.0 [90/284160] via 10.7.8.8, 00:00:30, FastEthernet2/2
+D       10.8.14.0 [90/30720] via 10.7.14.14, 00:00:30, FastEthernet2/0
+                  [90/30720] via 10.7.8.8, 00:00:30, FastEthernet2/2
+D EX    10.1.6.0 [170/25625856] via 10.1.7.1, 00:24:01, FastEthernet0/0
+D       10.8.13.0 [90/30720] via 10.7.8.8, 00:00:30, FastEthernet2/2
+D       10.14.20.0 [90/30720] via 10.7.14.14, 00:00:30, FastEthernet2/0
+ Return from sh ip eigrp neighbors 
+IP-EIGRP neighbors for process 100
+H   Address                 Interface       Hold Uptime   SRTT   RTO  Q  Seq
+                                            (sec)         (ms)       Cnt Num
+1   10.8.14.8               Fa2/1             11 00:00:36   35   315  0  34
+0   10.7.14.7               Fa2/0             12 00:00:36   39   234  0  44
+ 9-2-3 Return from sh ip protocols not proper. Trying again
+['BGL--RC01#', 'BGL--RC01#', 'BGL--RC01#', 'BGL--RC01#']
+Return from show proc mem | include Pool Total 
+
+ 9-4 Returned value is null. Trying again 
+Return from show proc mem | include Pool Total 
+
+ 9-4 Returned value is null. Trying again 
+Return from show proc mem | include Pool Total 
+Free:  135468424
+      I/O Pool Total:   12582912 Used:    5674144 Free:    6908768
+BGL--SA14#
+BGL--SA14#
+9-4 Returned value on show proc mem is not proper, trying again
+Return from show proc mem | include Pool Total 
+ Total:  156034848 Used:   20566424 Free:  135468424
+      I/O Pool Total:   12582912 Used:    5674144 Free:    6908768
+BGL--SA14#
+9-4 Returned value on show proc mem is not proper, trying again
+Return from show proc mem | include Pool Total 
+Used:   20566424 Free:  135468424
+      I/O Pool Total:   12582912 Used:    5674144 Free:    6908768
+BGL--SA14#
+9-4 Returned value on show proc mem is not proper, trying again
+Return from show proc mem | include Pool Total 
+ eigrp 100
+9-4 Returned value on show proc mem is not proper, trying again
+Return from show proc mem | include Pool Total 
+848 Used:   20566424 Free:  135468424
+      I/O Pool Total:   12582912 Used:    5674144 Free:    6908768
+BGL--SA14#
+9-4 Returned value on show proc mem is not proper, trying again
+Return from show proc mem | include Pool Total 
+
+ 9-4 Returned value is null. Trying again 
+Return from show proc mem | include Pool Total 
+
+ 9-4 Returned value is null. Trying again 
+Return from show proc mem | include Pool Total 
+Processor Pool Total:  156034848 Used:   20554924 Free:  135479924
+      I/O Pool Total:   12582912 Used:    5668864 Free:    6914048
+BGL--SC07#
+BGL--SC07#
+['Processor', 'Pool', 'Total:', '156034848', 'Used:', '20554924', 'Free:', '135479924', 'I/O', 'Pool', 'Total:', '12582912', 'Used:', '5668864', 'Free:', '6914048\nBGL--SC07#\nBGL--SC07#']
+Return from show proc mem | include Pool Total 
+
+ 9-4 Returned value is null. Trying again 
+Return from show proc mem | include Pool Total 
+otal:  156034848 Used:   20566424 Free:  135468424
+      I/O Pool Total:   12582912 Used:    5674144 Free:    6908768
+BGL--SA14#
+9-4 Returned value on show proc mem is not proper, trying again
+Return from show proc mem | include Pool Total 
+  156034848 Used:   20566424 Free:  135468424
+      I/O Pool Total:   12582912 Used:    5674144 Free:    6908768
+BGL--SA14#
+9-4 Returned value on show proc mem is not proper, trying again
+Return from show proc mem | include Pool Total 
+4848 Used:   20566424 Free:  135468424
+      I/O Pool Total:   12582912 Used:    5674144 Free:    6908768
+BGL--SA14#
+9-4 Returned value on show proc mem is not proper, trying again
+Return from show proc mem | include Pool Total 
+ 20566424 Free:  135468424
+      I/O Pool Total:   12582912 Used:    5674144 Free:    6908768
+BGL--SA14#
+9-4 Returned value on show proc mem is not proper, trying again
+Return from show proc mem | include Pool Total 
+
+ 9-4 Returned value is null. Trying again 
+Return from show proc mem | include Pool Total 
+Processor Pool Total:  156034848 Used:   20566424 Free:  135468424
+      I/O Pool Total:   12582912 Used:    5674144 Free:    6908768
+['Processor', 'Pool', 'Total:', '156034848', 'Used:', '20566424', 'Free:', '135468424', 'I/O', 'Pool', 'Total:', '12582912', 'Used:', '5674144', 'Free:', '6908768']
+Time 
+*01:18:33.423 UTC Fri Mar 1 2002
+Mar 1
+For Spanning Tree KPI
+3725
+Spanning LIST
+ k 
+12
+ p 
+12
+ Port 84 (FastEthernet2/3) of VLAN1 is forwarding
+   Number of transitions to forwarding state: 1
+ k 
+21
+ p 
+21
+ Port 85 (FastEthernet2/4) of VLAN1 is forwarding
+   Number of transitions to forwarding state: 1
+ k 
+30
+ p 
+30
+ Port 86 (FastEthernet2/5) of VLAN1 is forwarding
+   Number of transitions to forwarding state: 1
+ k 
+39
+ p 
+39
+ Port 87 (FastEthernet2/6) of VLAN1 is forwarding
+   Number of transitions to forwarding state: 1
+ k 
+48
+ p 
+48
+ Port 88 (FastEthernet2/7) of VLAN1 is forwarding
+   Number of transitions to forwarding state: 1
+ k 
+57
+ p 
+57
+ Port 89 (FastEthernet2/8) of VLAN1 is forwarding
+   Number of transitions to forwarding state: 1
+ k 
+66
+ p 
+66
+ Port 90 (FastEthernet2/9) of VLAN1 is forwarding
+   Number of transitions to forwarding state: 1
+ k 
+75
+ p 
+75
+ Port 91 (FastEthernet2/10) of VLAN1 is forwarding
+   Number of transitions to forwarding state: 1
+ k 
+84
+ p 
+84
+ Port 92 (FastEthernet2/11) of VLAN1 is forwarding
+   Number of transitions to forwarding state: 1
+ k 
+93
+ p 
+93
+ Port 93 (FastEthernet2/12) of VLAN1 is forwarding
+   Number of transitions to forwarding state: 1
+ k 
+102
+ p 
+102
+ Port 94 (FastEthernet2/13) of VLAN1 is forwarding
+   Number of transitions to forwarding state: 1
+ k 
+111
+ p 
+111
+ Port 95 (FastEthernet2/14) of VLAN1 is forwarding
+   Number of transitions to forwarding state: 1
+ k 
+120
+ p 
+120
+ Port 96 (FastEthernet2/15) of VLAN1 is forwarding
+   Number of transitions to forwarding state: 1
+ k 
+129
+ p 
+129
+
+  Number of topology changes 1 last change occurred 01:17:51 ago
+ k 
+138
+ p 
+138
+          hello 2, max age 20, forward delay 15 
+   Designated bridge has priority 32768, address c213.224e.0000
+ k 
+12
+ p 
+12
+No change Observed
+ k 
+21
+ p 
+21
+No change Observed
+ k 
+30
+ p 
+30
+No change Observed
+ k 
+39
+ p 
+39
+No change Observed
+ k 
+48
+ p 
+48
+No change Observed
+ k 
+57
+ p 
+57
+No change Observed
+ k 
+66
+ p 
+66
+No change Observed
+ k 
+75
+ p 
+75
+No change Observed
+ k 
+84
+ p 
+84
+No change Observed
+ k 
+93
+ p 
+93
+No change Observed
+ k 
+102
+ p 
+102
+No change Observed
+ k 
+111
+ p 
+111
+No change Observed
+ k 
+120
+ p 
+120
+No change Observed
+ k 
+129
+ p 
+129
+No change Observed
+ k 
+138
+ p 
+138
+No change Observed
+ k 
+12
+ p 
+12
+No change Observed
+ k 
+21
+ p 
+21
+No change Observed
+ k 
+30
+ p 
+30
+No change Observed
+ k 
+39
+ p 
+39
+No change Observed
+ k 
+48
+ p 
+48
+No change Observed
+ k 
+57
+ p 
+57
+No change Observed
+ k 
+66
+ p 
+66
+No change Observed
+ k 
+75
+ p 
+75
+No change Observed
+ k 
+84
+ p 
+84
+No change Observed
+ k 
+93
+ p 
+93
+No change Observed
+ k 
+102
+ p 
+102
+No change Observed
+ k 
+111
+ p 
+111
+No change Observed
+ k 
+120
+ p 
+120
+No change Observed
+ k 
+129
+ p 
+129
+No change Observed
+ k 
+138
+ p 
+138
+No change Observed
+No Changes in the Past 1 minute
+
+
+
+
+For show interface counters
+3725
+Return from show int counters error
+
+Port        Align-Err    FCS-Err   Xmit-Err    Rcv-Err UnderSize
+
+Port      Single-Col Multi-Col  Late-Col Excess-Col Carri-Sen     Runts    Giants
+Sorry Empty
+FastEthernet2/0 in loop 
+[{'output_errors': '0', 'interf_reset': '4', 'output_drops': '0', 'ignored': '0', 'reliability': '255/255', 'ip_address': '10.7.14.14/24', 'rxload': '1/255', 'hardware_type': 'Fast Ethernet', 'delay': '100 usec', 'encapsulation': 'ARPA', 'bia': 'c213.224e.f200', 'interface': 'FastEthernet2/0', 'protocol_status': 'up', 'collisions': '0', 'last_output_hang': 'never', 'address': 'c213.224e.f200', 'output_packets': '0', 'queue_strategy': 'fifo', 'txload': '1/255', 'input_packets': '0', 'mtu': '1500', 'speed': '', 'frame': '0', 'input_rate': '0', 'late_collision': '0', 'last_output': 'never', 'link_status': 'up', 'input_errors': '0', 'last_input': '00:00:03', 'description': '', 'bandwidth': '100000 Kbit', 'crc': '0', 'duplex': '', 'output_rate': '0', 'overrun': '0'}]
+[{'output_errors': '0', 'interf_reset': '4', 'output_drops': '0', 'ignored': '0', 'reliability': '255/255', 'ip_address': '10.7.14.14/24', 'rxload': '1/255', 'hardware_type': 'Fast Ethernet', 'delay': '100 usec', 'encapsulation': 'ARPA', 'bia': 'c213.224e.f200', 'interface': 'FastEthernet2/0', 'protocol_status': 'up', 'collisions': '0', 'last_output_hang': 'never', 'address': 'c213.224e.f200', 'output_packets': '0', 'queue_strategy': 'fifo', 'txload': '1/255', 'input_packets': '0', 'mtu': '1500', 'speed': '', 'frame': '0', 'input_rate': '0', 'late_collision': '0', 'last_output': 'never', 'link_status': 'up', 'input_errors': '0', 'last_input': '00:00:03', 'description': '', 'bandwidth': '100000 Kbit', 'crc': '0', 'duplex': '', 'output_rate': '0', 'overrun': '0'}]
+9-2 Exception raised in sh ip protocols, trying again 
+9-2 Return from sh ip protocols not proper. Trying again
+ Return from sh ip eigrp neighbors 
+IP-EIGRP neighbors for process 100
+H   Address                 Interface       Hold Uptime   SRTT   RTO  Q  Seq
+                                            (sec)         (ms)       Cnt Num
+0   10.1.7.7                Fa0/0             11 01:58:56   29   300  0  43
+bgp there
+BGP router identifier 1.1.1.1, local AS number 100
+BGP table version is 22, main routing table version 22
+18 network entries using 2376 bytes of memory
+19 path entries using 988 bytes of memory
+10/9 BGP path/bestpath attribute entries using 1680 bytes of memory
+1 BGP AS-PATH entries using 24 bytes of memory
+0 BGP route-map cache entries using 0 bytes of memory
+0 BGP filter-list cache entries using 0 bytes of memory
+Bitfield cache entries: current 1 (at peak 2) using 32 bytes of memory
+BGP using 5100 total bytes of memory
+BGP activity 18/0 prefixes, 27/8 paths, scan interval 60 secs
+
+Neighbor        V          AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+2.2.2.2         4        100       0       0        0    0    0 never    Active
+6.6.6.6         4        300     124     126       22    0    0 01:58:56        8
+Return from show proc mem | include Pool Total 
+Processor Pool Total:  384909028 Used:   30145724 Free:  354763304
+      I/O Pool Total:   33554432 Used:    3598352 Free:   29956080
+['Processor', 'Pool', 'Total:', '384909028', 'Used:', '30145724', 'Free:', '354763304', 'I/O', 'Pool', 'Total:', '33554432', 'Used:', '3598352', 'Free:', '29956080']
+Time 
+*09:01:15.195 UTC Tue Apr 9 2019
+Apr 9
+For Spanning Tree KPI
+7206VXR
+For show interface counters
+7206VXR
+FastEthernet0/0 in loop 
+[{'output_errors': '0', 'interf_reset': '0', 'output_drops': '0', 'ignored': '0', 'reliability': '255/255', 'ip_address': '10.1.7.1/24', 'rxload': '1/255', 'hardware_type': 'DEC21140', 'delay': '100 usec', 'encapsulation': 'ARPA', 'bia': 'ca0b.2669.0000', 'interface': 'FastEthernet0/0', 'protocol_status': 'up', 'collisions': '0', 'last_output_hang': 'never', 'address': 'ca0b.2669.0000', 'output_packets': '5894', 'queue_strategy': 'fifo', 'txload': '1/255', 'input_packets': '', 'mtu': '1500', 'speed': '100Mb/s', 'frame': '0', 'input_rate': '1000', 'late_collision': '0', 'last_output': '00:00:00', 'link_status': 'up', 'input_errors': '0', 'last_input': '00:00:00', 'description': '', 'bandwidth': '100000 Kbit', 'crc': '0', 'duplex': 'Half-duplex', 'output_rate': '1000', 'overrun': '0'}]
+[{'output_errors': '0', 'interf_reset': '0', 'output_drops': '0', 'ignored': '0', 'reliability': '255/255', 'ip_address': '10.1.7.1/24', 'rxload': '1/255', 'hardware_type': 'DEC21140', 'delay': '100 usec', 'encapsulation': 'ARPA', 'bia': 'ca0b.2669.0000', 'interface': 'FastEthernet0/0', 'protocol_status': 'up', 'collisions': '0', 'last_output_hang': 'never', 'address': 'ca0b.2669.0000', 'output_packets': '5894', 'queue_strategy': 'fifo', 'txload': '1/255', 'input_packets': '', 'mtu': '1500', 'speed': '100Mb/s', 'frame': '0', 'input_rate': '1000', 'late_collision': '0', 'last_output': '00:00:00', 'link_status': 'up', 'input_errors': '0', 'last_input': '00:00:00', 'description': '', 'bandwidth': '100000 Kbit', 'crc': '0', 'duplex': 'Half-duplex', 'output_rate': '1000', 'overrun': '0'}]
+9-4 Exception handled. sh clock. Trying again
+Time 
+Exception in thread Thread-13:
+Traceback (most recent call last):
+  File "/usr/lib/python3.5/threading.py", line 914, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.5/threading.py", line 862, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/user/dev/test1.py", line 928, in fetchKPI
+    print(time1)
+UnboundLocalError: local variable 'time1' referenced before assignment
+
+Waiting for thread to complete:
+<Thread(Thread-14, stopped daemon 140211740727040)>
+Waiting for thread to complete:
+<Thread(Thread-15, stopped daemon 140211732334336)>
+FINAL OUTPUT 
+{'BGL--SC07': {'FastEthernet0/0 directly'}, 'BGL--SA14': {'FastEthernet2/0 10.7.14.7'}}
+{'10.7.14.7': {'BGL--SC07 FastEthernet2/0'}, 'directly': {'BGL--RC01 FastEthernet0/0'}}
+[{'Name': {'0': 'BGL--SA14'}, 'General Node': {'87': {'proc_1_min': '0.22', 'proc_5_sec': '0.24', 'process': 'IP ARP Retry Age ', 'proc_5_min': '0.19'}, 'version': {'version': '12.4(15)T14', 'soft_ver': 'Cisco IOS', 'reload_reason': 'unknown reload cause - suspect boot_data[BOOT_COUNT] 0x0, BOOT_COUNT 0, BOOTDATA 19', 'uptime': '1 hour, 18 minutes', 'hardware': '3725'}, 'interface_counters_errors': {}, '95': {'proc_1_min': '1.10', 'proc_5_sec': '0.65', 'process': 'SSH Process      ', 'proc_5_min': '0.35'}, 'Process_Memory': {'io': {'used': 5.41, 'percent': 45.09, 'total': 12.0, 'free': 6.59}, 'processor': {'used': 19.61, 'percent': 13.18, 'total': 148.81, 'free': 129.19}}, 'spanning_tree': {}, 'ip_route_00': {1: 'D       1.1.1.1 [90/412160] via 10.7.14.7, 00:00:29, FastEthernet2/0', 2: 'D EX    6.6.6.6 [170/286720] via 10.7.14.7, 00:00:29, FastEthernet2/0', 3: 'D       10.7.13.0 [90/30720] via 10.7.14.7, 00:00:29, FastEthernet2/0', 4: 'D EX    10.6.12.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0', 5: 'D       10.2.8.0 [90/284160] via 10.8.14.8, 00:00:29, FastEthernet2/1', 6: 'D       10.7.8.0 [90/30720] via 10.8.14.8, 00:00:29, FastEthernet2/1', 7: '                 [90/30720] via 10.7.14.7, 00:00:29, FastEthernet2/0', 8: 'D EX    10.5.6.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0', 9: 'D       10.1.2.0 [90/286720] via 10.7.14.7, 00:00:29, FastEthernet2/0', 10: 'D       10.1.7.0 [90/284160] via 10.7.14.7, 00:00:29, FastEthernet2/0', 11: 'D EX    10.11.12.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0', 12: 'D EX    10.1.6.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0', 13: 'D       10.8.13.0 [90/30720] via 10.8.14.8, 00:00:29, FastEthernet2/1', 14: 'D EX    10.11.18.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0', 15: 'D EX    10.12.18.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0', 16: 'D EX    10.12.17.0 [170/25628416] via 10.7.14.7, 00:00:29, FastEthernet2/0'}, 'log': {}, 'CPU': {'cpu_5_sec': '1', 'cpu_5_min': '3', 'cpu_1_min': '4'}, 'eigrp_neigh': {'10.7.14.7': {'rto': '234', 'uptime': '00:00:36', 'srtt': '39', 'neighbor': '10.7.14.7'}, '10.8.14.8': {'rto': '315', 'uptime': '00:00:36', 'srtt': '35', 'neighbor': '10.8.14.8'}}, '83': {'proc_1_min': '0.19', 'proc_5_sec': '0.16', 'process': 'ACCT Periodic Pr ', 'proc_5_min': '0.17'}}, 'Interface Dictionary': {'FastEthernet2/0': {'output_errors': '0', 'interf_reset': '4', 'output_drops': '0', 'ignored': '0', 'txload': '1/255', 'speed': '', 'frame': '0', 'rxload': '1/255', 'late_collision': '0', 'collisions': '0', 'input_errors': '0', 'ip': '10.7.14.14', 'crc': '0', 'overrun': '0', 'reliability': '255/255', 'duplex': '', 'bandwidth': '100000 Kbit'}}}, {'Name': {'0': 'BGL--RC01'}, 'General Node': {'Process_Memory': {'io': {'used': 3.43, 'percent': 10.72, 'total': 32.0, 'free': 28.57}, 'processor': {'used': 28.75, 'percent': 7.83, 'total': 367.08, 'free': 338.33}}, 'version': {'version': '12.4(24)T8', 'soft_ver': 'Cisco IOS', 'reload_reason': 'unknown reload cause - suspect boot_data[BOOT_COUNT] 0x0, BOOT_COUNT 0, BOOTDATA 19', 'uptime': '1 hour, 57 minutes', 'hardware': '7206VXR'}, '139': {'proc_1_min': '0.14', 'proc_5_sec': '0.15', 'process': 'HQF Shaper Backg ', 'proc_5_min': '0.15'}, 'bgp_neigh': {'6.6.6.6': {'up/down': '01:58:56', 'AS': '300', 'neighbor': '6.6.6.6'}, '2.2.2.2': {'up/down': 'never', 'AS': '100', 'neighbor': '2.2.2.2'}}, 'interface_counters_errors': {}, 'spanning_tree': {}, 'log': {}, 'CPU': {'cpu_5_sec': '1', 'cpu_5_min': '0', 'cpu_1_min': '0'}, 'eigrp_neigh': {'10.1.7.7': {'rto': '300', 'uptime': '01:58:56', 'srtt': '29', 'neighbor': '10.1.7.7'}}, 'ip_route_00': {}}, 'Interface Dictionary': {'FastEthernet0/0': {'output_errors': '0', 'interf_reset': '0', 'output_drops': '0', 'ignored': '0', 'txload': '1/255', 'speed': '100Mb/s', 'frame': '0', 'rxload': '1/255', 'late_collision': '0', 'collisions': '0', 'input_errors': '0', 'ip': '10.1.7.1', 'crc': '0', 'overrun': '0', 'reliability': '255/255', 'duplex': 'Half-duplex', 'bandwidth': '100000 Kbit'}}}]
+192.168.126.1 - - [09/Apr/2019 07:01:18] "GET /Topology?src=10.8.14.14&dst=10.1.7.1 HTTP/1.1" 200 -
+^Z
+[1]+  Stopped                 flask run --host=0.0.0.0
+]0;root@user-virtual-machine: /home/user/devroot@user-virtual-machine:/home/user/dev# exit
+exit
+There are stopped jobs.
+]0;root@user-virtual-machine: /home/user/devroot@user-virtual-machine:/home/user/dev# ext[Kit
+exit
+
+Script done on Tue 09 Apr 2019 07:02:06 BST
