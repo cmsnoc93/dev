@@ -878,21 +878,21 @@ def fetchKPI(ssh,nme):
 	            ret = ssh.send_command("show proc mem | include Processor Pool | I/O Pool")
 	            boo=False
 	        except:
-	            print(" 9-4 Exception handled in sh proc mem | inc Pool Total. Trying Again")
+	            print(" 9-4 Exception handled in sh proc mem | inc Pool Total. Trying Again",dictofobj[nme].sship)
 	            boo=True
-	        print("Return from show proc mem | include Pool Total ")
+	        print("Return from show proc mem | include Pool Total ",dictofobj[nme].sship)
 	        print(ret)
 	        if not ret:
-	            print(" 9-4 Returned value is null. Trying again ")
+	            print(" 9-4 Returned value is null. Trying again ",dictofobj[nme].sship)
 	            boo=True
 	        elif not(isinstance(ret,str)):
 	            boo=True
-	            print("9-4 Returned value is not string, trying again ")
+	            print("9-4 Returned value is not string, trying again ",dictofobj[nme].sship)
 	        elif ret.split()[0]!='Processor':
-	            print("9-4 Returned value on show proc mem doesnt habe 'processor', trying again",threading.currentThread())
+	            print("9-4 Returned value on show proc mem doesnt habe 'processor', trying again",threading.currentThread(),dictofobj[nme].sship)
 	            boo=True
 	        elif len(ret.split())<6:
-	            print("9-4 Returned value on show proc mem is less than 6 attribs, trying again",threading.currentThread())
+	            print("9-4 Returned value on show proc mem is less than 6 attribs, trying again",threading.currentThread(),dictofobj[nme].sship)
 	            boo=True
 	        else:
 	            boo=False
