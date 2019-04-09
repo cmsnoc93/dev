@@ -542,9 +542,10 @@ def backend(src,dst):
 	print(entryrev)
 	threads=[]
 	
+	lock = threading.Lock()
 	for nme in setofnames:
 		ssh=dictofobj[nme].handle
-		thread = threading.Thread(target=fetchKPI,args=(ssh,nme,));
+		thread = threading.Thread(target=fetchKPI,args=(ssh,nme,lock));
 		threads.append(thread)
 		print("Starting Thread :",thread)
 		thread.start()
@@ -624,10 +625,8 @@ def index():
 	print("Failure")
 	return render_template('login.html')
 
-
-
 ff=0
-def fetchKPI(ssh,nme):
+def fetchKPI(ssh,nme,lock):
 
 	    #show version
 	    boo=True
@@ -873,9 +872,9 @@ def fetchKPI(ssh,nme):
 
 	    boo=True
 	    while boo:
-
+	        lock.acquire()
 	        try:
-	            ret = ssh.send_command("show proc mem | include Processor Pool | I/O Pool")
+	        	ret = ssh.send_command("show proc mem | include Processor Pool | I/O Pool")
 	            boo=False
 	        except:
 	            print(" 9-4 Exception handled in sh proc mem | inc Pool Total. Trying Again",dictofobj[nme].sship)
@@ -896,6 +895,7 @@ def fetchKPI(ssh,nme):
 	            boo=True
 	        else:
 	            boo=False
+	        lock.release()
 	        
 
         
