@@ -225,9 +225,6 @@ def backend(src,dst):
 	                boo=True
 	            if not ret:
 	                boo=True
-	            elif not(re.match('^FastEthernet\d\/\d$',ret.split()[0])):
-	                boo=True
-	                print("3-1 Trying again")
 	            elif isinstance(ret,list):
 	                print("3 Return from sh ip int brief is a list, trying again")
 	                boo=True
@@ -301,9 +298,6 @@ def backend(src,dst):
 	            elif isinstance(ret,list):
 	                print("5 Return from sh ip int brief is a list, trying again")
 	                boo=True
-	            elif not(re.match('^FastEthernet\d\/\d$',ret.split()[0])):
-	                boo=True
-	                print("5-1 Trying again")
 	            elif len(ret.split())<6:
 	                boo=True
 	            else:
@@ -387,9 +381,6 @@ def backend(src,dst):
 	                        #print(ret1.split()[0])
 	                        if not ret1:
 	                            boo=True
-	                        elif not(re.match('^FastEthernet\d\/\d$',ret1.split()[0])):
-	                            boo=True
-	                            print("6-1 Trying again")
 	                        elif isinstance(ret1,list):
 	                            print("6-2 Return from sh ip int brief is a list, trying again")
 	                            boo=True
@@ -425,9 +416,6 @@ def backend(src,dst):
 	            elif isinstance(ret,list):
 	                print("7 Return from sh ip route is a list, trying again")
 	                boo=True
-	            elif not(re.match('^FastEthernet\d\/\d$',ret.split()[0])):
-	                boo=True
-	                print("7-1 Trying again")
 	            elif len(ret.split())<6:
 	                boo=True
 	                print("7 Trying Again")
@@ -502,9 +490,6 @@ def backend(src,dst):
 	    print(ret)
 	    if not ret:
 	        boo=True
-	    elif not(re.match('^FastEthernet\d\/\d$',ret.split()[0])):
-	        boo=True
-	        print("8-1 Trying again")
 	    elif isinstance(ret,list):
 	        print("8 Return from sh ip int brief is a list, trying again")
 	        boo=True
