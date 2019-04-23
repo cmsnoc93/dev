@@ -83,15 +83,15 @@ def backend(src,dst):
 	        try:
 	            ssh=ConnectHandler(device_type="cisco_ios",host=now,username="rit",password="CMSnoc$1234")
 	            boo=False
-	        except:
+	        except Exception as e:
 	            boo=True
-	            print(" Connection error, trying again ")
+	            print(" Connection error, trying again ",e)
 
 
 	    #ret=ssh.send_command("en")
 	    boo=True
 	    while boo:
-	        try:
+	        try: 
 	            name=ssh.find_prompt()
 	            boo=False
 	        except Exception as e:
@@ -449,9 +449,9 @@ def backend(src,dst):
 	        try:
 	            ssh=ConnectHandler(device_type="cisco_ios",host=dst,username="rit",password="CMSnoc$1234")
 	            boo=False
-	        except:
+	        except Exception as e:
 	            boo=True
-	            print(" Connection error, trying again ")
+	            print(" Connection error, trying again ",e,dst)
 
 
 
@@ -641,12 +641,12 @@ def backend(src,dst):
 	    ret=ret.split('\n')
 	    gen={}
 	    ct1=0
-	    print(ret)
+	    print("RETURN: " ,ret)
 	    for line in ret:
-	        
+	        print("LINE: ",line)
 	        line2=line.split()
-	        
-	        if not(not(line2)) and line2[0]!='S' and line2[0]!='C' and line2[0]!='S*' and 'via' in line2:
+	        print("Splitted LINE: ",line2)
+	        if not(not(line2)) and line2[0]!='S' and line2[0]!='C' and line2[0]!='S*' and 'via' in line2 and line2[0]=='D' and line2[0]=='B':
 	            pos=line2.index('via')
 	            if line2[pos+2][0:2]=='00':
 	                ct1+=1
@@ -798,7 +798,7 @@ def backend(src,dst):
 	        except:
 	            print(" 9-4 Exception handled in sh proc mem | inc Pool Total. Trying Again")
 	            boo=True
-	        print("Return from show proc mem | include Pool Total ")
+	        print("Return from show proc mem ")
 	        print(ret)
 	        if not ret:
 	            print(" 9-4 Returned value is null. Trying again ")
@@ -823,7 +823,7 @@ def backend(src,dst):
 	    def percent(a,b):
 	        return round((int(a)/int(b)) * 100,2)
 	        
-	    memory = dict()
+	    memory = dict()		
 	    ret.replace('\n',' ')
 	    temp_vals = ret.split(' ')
 	    vals = []
@@ -831,7 +831,7 @@ def backend(src,dst):
 	        if len(string.strip())>0:
 	            vals.append(string.strip("\n"))
 	    print(vals)
-	    memory.update({'processor':{'total':mb(vals[3]),'used':mb(vals[5]),'free':mb(vals[7]),'percent':percent(vals[5],vals[3])},'io':{'total':mb(vals[11]),'used':mb(vals[13]),'free':mb(vals[15]),'percent':percent(vals[13],vals[11])}})    
+	    memory.update({'processor':{'total':mb(vals[3]),'used':mb(vals[5]),'free':mb(vals[7]),'percent':percent(vals[5],vals[3])},'io':{'total':mb(vals[11]),'used':mb(vals[13]),'free':mb(vals[15]),'percent':percent(vals[13],vals[11])}})   
 
 	    dictofobj[nme].gennodedict['Process_Memory']=dict()
 	    dictofobj[nme].gennodedict['Process_Memory']=memory

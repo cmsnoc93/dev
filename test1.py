@@ -79,7 +79,7 @@ def backend(src,dst):
 	    boo=True
 	    while boo:
 	        try:
-	            ssh=ConnectHandler(device_type="cisco_ios",host=now,username="rit",password="pan")
+	            ssh=ConnectHandler(device_type="cisco_ios",host=now,username="rit",password="CMSnoc$1234")
 	            boo=False
 	        except:
 	            boo=True
@@ -223,9 +223,6 @@ def backend(src,dst):
 	                boo=True
 	            if not ret:
 	                boo=True
-	            elif not(re.match('^FastEthernet\d\/\d$',ret.split()[0])):
-	                boo=True
-	                print("3-1 Trying again")
 	            elif isinstance(ret,list):
 	                print("3 Return from sh ip int brief is a list, trying again")
 	                boo=True
@@ -297,9 +294,7 @@ def backend(src,dst):
 	            elif isinstance(ret,list):
 	                print("5 Return from sh ip int brief is a list, trying again")
 	                boo=True
-	            elif not(re.match('^FastEthernet\d\/\d$',ret.split()[0])):
-	                boo=True
-	                print("5-1 Trying again")
+
 	            elif len(ret.split())<6:
 	                boo=True
 	            else:
@@ -383,9 +378,6 @@ def backend(src,dst):
 	                        #print(ret1.split()[0])
 	                        if not ret1:
 	                            boo=True
-	                        elif not(re.match('^FastEthernet\d\/\d$',ret1.split()[0])):
-	                            boo=True
-	                            print("6-1 Trying again")
 	                        elif isinstance(ret1,list):
 	                            print("6-2 Return from sh ip int brief is a list, trying again")
 	                            boo=True
@@ -421,9 +413,6 @@ def backend(src,dst):
 	            elif isinstance(ret,list):
 	                print("7 Return from sh ip route is a list, trying again")
 	                boo=True
-	            elif not(re.match('^FastEthernet\d\/\d$',ret.split()[0])):
-	                boo=True
-	                print("7-1 Trying again")
 	            elif len(ret.split())<6:
 	                boo=True
 	                print("7 Trying Again")
@@ -455,7 +444,7 @@ def backend(src,dst):
 	boo=True
 	while boo:
 	        try:
-	            ssh=ConnectHandler(device_type="cisco_ios",host=dst,username="rit",password="pan")
+	            ssh=ConnectHandler(device_type="cisco_ios",host=dst,username="rit",password="CMSnoc$1234")
 	            boo=False
 	        except:
 	            boo=True
@@ -498,9 +487,7 @@ def backend(src,dst):
 	    print(ret)
 	    if not ret:
 	        boo=True
-	    elif not(re.match('^FastEthernet\d\/\d$',ret.split()[0])):
-	        boo=True
-	        print("8-1 Trying again")
+
 	    elif isinstance(ret,list):
 	        print("8 Return from sh ip int brief is a list, trying again")
 	        boo=True
@@ -643,7 +630,7 @@ def fetchKPI(ssh,nme,lock):
 	            boo=True
 	            ff=1
 	            try:
-	                ssh=ConnectHandler(device_type="cisco_ios",host=dictofobj[nme].sship,username="rit",password="pan")
+	                ssh=ConnectHandler(device_type="cisco_ios",host=dictofobj[nme].sship,username="rit",password="CMSnoc$1234")
 	            except Exception as ee:
 	                print("Exception raised again")
 	                print(ee)
@@ -729,7 +716,7 @@ def fetchKPI(ssh,nme,lock):
 	        
 	        line2=line.split()
 	        
-	        if not(not(line2)) and line2[0]!='S' and line2[0]!='C' and line2[0]!='S*' and 'via' in line2:
+	        if not(not(line2)) and line2[0]!='S' and line2[0]!='C' and line2[0]!='S*' and 'via' in line2 and line2[0]=='D' and line2[0]=='B':
 	            pos=line2.index('via')
 	            if line2[pos+2][0:2]=='00':
 	                ct1+=1
@@ -870,9 +857,8 @@ def fetchKPI(ssh,nme,lock):
 
 
 
-	    boo=True
+	    boo=False
 	    while boo:
-	        lock.acquire()
 	        try:
 	        	ret = ssh.send_command("show proc mem | include Processor Pool | I/O Pool")
 	        	boo=False
@@ -895,22 +881,21 @@ def fetchKPI(ssh,nme,lock):
 	            boo=True
 	        else:
 	            boo=False
-	        lock.release()
 	        
 
         
-	    memory = dict()
-	    ret.replace('\n',' ')
-	    temp_vals = ret.split(' ')
-	    vals = []
-	    for string in temp_vals:
-	        if len(string.strip())>0:
-	            vals.append(string.strip("\n"))
-	    print(vals)
-	    memory.update({'processor':{'total':mb(vals[3]),'used':mb(vals[5]),'free':mb(vals[7]),'percent':percent(vals[5],vals[3])},'io':{'total':mb(vals[11]),'used':mb(vals[13]),'free':mb(vals[15]),'percent':percent(vals[13],vals[11])}})    
+	    #memory = dict()
+	    #ret.replace('\n',' ')
+	    #temp_vals = ret.split(' ')
+	    #vals = []
+	    #for string in temp_vals:
+	        #if len(string.strip())>0:
+	            #vals.append(string.strip("\n"))
+	    #print(vals)
+	    #memory.update({'processor':{'total':mb(vals[3]),'used':mb(vals[5]),'free':mb(vals[7]),'percent':percent(vals[5],vals[3])},'io':{'total':mb(vals[11]),'used':mb(vals[13]),'free':mb(vals[15]),'percent':percent(vals[13],vals[11])}})    
 
-	    dictofobj[nme].gennodedict['Process_Memory']=dict()
-	    dictofobj[nme].gennodedict['Process_Memory']=memory
+	    #dictofobj[nme].gennodedict['Process_Memory']=dict()
+	    #dictofobj[nme].gennodedict['Process_Memory']=memory
 
 
 
