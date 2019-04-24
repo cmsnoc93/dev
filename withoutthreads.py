@@ -4,7 +4,7 @@ import time
 
 import textfsm
 import re
-from netmiko import ConnectHandler
+from netmiko import ConnectHandler, SSHDetect
 
 
 app = Flask(__name__)
@@ -81,7 +81,11 @@ def backend(src,dst):
 	    boo=True
 	    while boo:
 	        try:
-	            ssh=ConnectHandler(device_type="cisco_ios",host=now,username="rit",password="CMSnoc$1234")
+	            #device = {"device_type": "autodetect","host":now,"username": "rit","password":"CMSnoc$1234"}
+	            #guesser = SSHDetect(**device)
+	            #best_match = guesser.autodetect()
+	            #print(best_match,guesser.potential_matches)
+	            ssh= ConnectHandler(device_type="cisco_ios",host=now,username="rit",password="CMSnoc$1234")
 	            boo=False
 	        except Exception as e:
 	            boo=True
@@ -447,6 +451,10 @@ def backend(src,dst):
 	boo=True
 	while boo:
 	        try:
+	            #device = {"device_type": "autodetect","host":dst,"username": "rit","password":"CMSnoc$1234"}
+	            #guesser = SSHDetect(**device)
+	            #best_match = guesser.autodetect()
+	            #print(best_match,guesser.potential_matches)
 	            ssh=ConnectHandler(device_type="cisco_ios",host=dst,username="rit",password="CMSnoc$1234")
 	            boo=False
 	        except Exception as e:
@@ -552,6 +560,10 @@ def backend(src,dst):
 	            boo=True
 	            ff=1
 	            try:
+	                #device = {"device_type": "autodetect","host":dictofobj[nme].sship,"username": "rit","password":"CMSnoc$1234"}
+	                #guesser = SSHDetect(**device)
+	                #best_match = guesser.autodetect()
+	                #print(best_match,guesser.potential_matches)
 	                ssh=ConnectHandler(device_type="cisco_ios",host=dictofobj[nme].sship,username="rit",password="CMSnoc$1234")
 	            except Exception as ee:
 	                print("Exception raised again")
@@ -793,7 +805,7 @@ def backend(src,dst):
 	    while boo:
 
 	        try:
-	            ret = ssh.send_command("show proc mem | include Processor Pool | I/O Pool")
+	            ret = ssh.send_command("show proc mem | include Total")
 	            boo=False
 	        except:
 	            print(" 9-4 Exception handled in sh proc mem | inc Pool Total. Trying Again")
@@ -831,7 +843,7 @@ def backend(src,dst):
 	        if len(string.strip())>0:
 	            vals.append(string.strip("\n"))
 	    print(vals)
-	    memory.update({'processor':{'total':mb(vals[3]),'used':mb(vals[5]),'free':mb(vals[7]),'percent':percent(vals[5],vals[3])},'io':{'total':mb(vals[11]),'used':mb(vals[13]),'free':mb(vals[15]),'percent':percent(vals[13],vals[11])}})   
+	    #memory.update({'processor':{'total':mb(vals[3]),'used':mb(vals[5]),'free':mb(vals[7]),'percent':percent(vals[5],vals[3])},'io':{'total':mb(vals[11]),'used':mb(vals[13]),'free':mb(vals[15]),'percent':percent(vals[13],vals[11])}})   
 
 	    dictofobj[nme].gennodedict['Process_Memory']=dict()
 	    dictofobj[nme].gennodedict['Process_Memory']=memory
