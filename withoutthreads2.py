@@ -903,7 +903,7 @@ def backend(src,dst):
 	    while boo:
 	        try:
 	            
-	            ret = ssh.send_command("show log | i down|fail|drop|crash|err|Fail|MALLOCFAIL")
+	            ret = ssh.send_command("show log | i down|Down|err|fail|Fail|drop|crash|MALLOCFAIL|")
 	            boo=False
 	        except:
 	            print("9-5 exception handled in show log. Trying again ")

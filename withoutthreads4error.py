@@ -1,7 +1,7 @@
 from flask import Flask, redirect, url_for, request, render_template
 import json
 import time
-
+import paramiko
 import textfsm
 import re
 from netmiko import ConnectHandler, SSHDetect
@@ -91,18 +91,110 @@ def backend(src,dst):
 	while(len(s)>0):
 	    now=ls[0]
 	    boo=True
-	    while boo:
-	        try:
-	            #device = {"device_type": "autodetect","host":now,"username": "rit","password":"CMSnoc$1234"}
-	            #guesser = SSHDetect(**device)
-	            #best_match = guesser.autodetect()
-	            #print(best_match,guesser.potential_matches)
+
+            rem=paramiko.SSHClient()
+            rem.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            boo=True
+            while boo:
+                try:
+                    rem.connect(now,port=22, username='rit',password='CMSnoc$1234')
+                    boo=False
+                    print ("SSH connection established for getting the version - ",now)
+                    stdin,stdout,stderr=rem.exec_command("show version")
+                except Exception as e:
+                    print("Error in ssh connection, Trying again. Error - ",e) 
+                    boo=True
+  
     
-	            ssh= ConnectHandler(device_type="cisco_ios",host=now,username="rit",password="CMSnoc$1234")
-	            boo=False
-	        except Exception as e:
-	            boo=True
-	            print(" Connection error, trying again ",e)
+
+            output=stdout.readlines()
+            print(output)
+            output='\n'.join(output)
+            k9=output.replace('\n',' ')
+            print("\n\n\n\n")
+            print(k9)
+            k9=k9.split()
+            print("\n\n\n\n")
+            print(k9)
+            a=k9.index('Cisco')
+            #print(a)
+            #print(k9[a+1])
+            ios_ver=''
+            verdict={}
+            if (k9[a+1]=='IOS'):
+                if (k9[a+2]=='XE'):
+                    ios_ver='IOS_XE'
+                else:
+                    ios_ver='IOS'
+            else:
+                ios_ver='NEXUS'
+            
+            print(ios_ver)
+
+
+            verdict['soft_ver']=ios_ver
+
+            if ios_ver=='NEXUS':
+                var=k9.index('BIOS:')
+                var3=k9.index('kickstart:')
+                verdict['version']="BIOS: "+k9[var+2]+" Kickstart: "+k9[var3+2]
+                var=k9.index('uptime')
+                var2=k9.index('second(s)')
+                verdict['uptime']=' '.join(k9[var+2:var2+1])
+                var=k9.index('Hardware')
+                verdict['hardware']=' '.join(k9[var+1:var+3])
+                var=k9.index('Reason:')
+                verdict['reload_reason']=k9[var+1]
+            
+            elif ios_ver=='IOS_XE':
+                var=k9.index('weeks,')
+                var2=k9.index('minutes')
+                verdict['uptime']=' '.join(k9[var-1:var2+1])
+            
+                var=k9.index('Last')
+                var2=k9.index('This')
+                verdict['reload_reason']=' '.join(k9[var+3:var2])
+             
+                var=k9.index('Version')
+            
+                verdict['version']=k9[var+1]
+                
+                var=k9.index('Release')
+                verdict['hardware']=k9[var+4]  
+            
+                 
+            
+            else:
+                
+                var=k9.index('Version')
+                verdict['version']=' '.join(k9[var+1][:-1])
+                var=k9.index('Software,')
+                verdict['hardware']=k9[var+1]  
+                var=k9.index('uptime')
+                var2=k9.index('minutes')
+                verdict['uptime']=' '.join(k9[var+2:var2+1])            
+                var=k9.index('reason:')
+                var2=k9.index('This')
+                verdict['reload_reason']=' '.join(k9[var+1:var2])
+
+            print(verdict)
+ 
+
+            rem.close()
+
+
+            boo=True
+            while boo:
+                try:
+                    ssh= ConnectHandler(device_type=ios_ver,host=now,username="rit",password="CMSnoc$1234")
+                    boo=False
+                except Exception as e:
+                    boo=True
+                    print(" Connection error, trying again ",e)
+
+
+
+
 
 
 	    #ret=ssh.send_command("en")
@@ -131,7 +223,7 @@ def backend(src,dst):
 	        dictofobj[name].addconnect(ssh)
 	        dictofobj[name].addsship(now)
 	        count+=1
-	        
+	    dictofobj[name].gennodedict['version']=verdict	        
 	    
 	    print(name)
 	    honame.add(name)
@@ -903,7 +995,7 @@ def backend(src,dst):
 	    while boo:
 	        try:
 	            
-	            ret = ssh.send_command("show log | i down|fail|drop|crash|err|Fail|MALLOCFAIL")
+	            ret = ssh.send_command("show log | i down|Down|err|fail|Fail|drop|crash|MALLOCFAIL|")
 	            boo=False
 	        except:
 	            print("9-5 exception handled in show log. Trying again ")

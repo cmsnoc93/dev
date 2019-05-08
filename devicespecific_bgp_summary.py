@@ -5,7 +5,7 @@ import paramiko
 import textfsm
 import re
 from netmiko import ConnectHandler, SSHDetect
-from subprocess import Popen, PIPE
+
 
 app = Flask(__name__)
 jinja_options = app.jinja_options.copy()
@@ -63,29 +63,10 @@ class router(object):
 	        
 	        print("------------------------------")
 
-def ping_to(check_dst):
-	cmd="ping -c 4 "
-	cmd+=check_dst
-	p= Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
-	out,err= p.communicate()
-	print(out)
-	out=out.split()
-	recv_index=out.index("received,".encode('ascii'))
-	num_stat=int(out[recv_index-1].decode('ascii'))
-	if num_stat>=3:
-	    status='perfect'
-	elif num_stat>0:
-	    status='Not all pings going through'
-	else:
-	    status='not reachable'
-	return status
-
-
 def backend(src,dst):
 	src=src
 	dst=dst	
-	def_gw='10.8.14.14'
-#default gateway hard coded as of now
+	        
 	arr=[]
 	count=0
 
@@ -107,20 +88,6 @@ def backend(src,dst):
 	boo=True
 	intojson=[]
 	ping_stat=dict()
-	ping_stat['terminate']='false'
-	ping_stat['ping_failure']='false'
-	ping_stat['ssh_failure']='false'
-
-
-
-	ping_stat['source']=ping_to(src)
-	if ping_stat['source']!='perfect':
-	    ping_stat['dg']=ping_to(def_gw)
-	    ping_stat['terminate']='true'
-	    ping_stat['ping_failure']='true'
-	    return exit,entryrev,intojson,ping_stat 
-	else:
-	    ping_stat['dg']='perfect'
 
 	while(len(s)>0):
 	    now=ls[0]
@@ -134,11 +101,7 @@ def backend(src,dst):
 	            print ("SSH connection established for getting the version - ",now)
 	            stdin,stdout,stderr=rem.exec_command("show version")
 	        except Exception as e:
-	            print("Error in ssh connection, Trying again. Error - ",e)
-	            ping_stat['terminate']='true'
-	            ping_stat['ssh_failure']='true'
-	            ping_stat['ssh_err_ip']=now
-	            return exit,entryrev,intojson,ping_stat
+	            print("Error in ssh connection, Trying again. Error - ",e) 
 	            boo=True
  
    
@@ -170,34 +133,28 @@ def backend(src,dst):
 	    verdict['soft_ver']=ios_ver
 
 	    if ios_ver=='cisco_nxos':
-	        if 'BIOS:' in k9 and 'kickstart:' in k9:
-	            var=k9.index('BIOS:')
-	            var3=k9.index('kickstart:')
-	            verdict['version']="BIOS: "+k9[var+2]+" Kickstart: "+k9[var3+2]
-	        if 'uptime' in k9 and 'second(s)' in k9:
-	            var=k9.index('uptime')
-	            var2=k9.index('second(s)')
-	            verdict['uptime']=' '.join(k9[var+2:var2+1])
-	        if 'Hardware' in k9:
-	            var=k9.index('Hardware')
-	            verdict['hardware']=' '.join(k9[var+1:var+3])
-	        if 'Reason:' in k9:
-	            var=k9.index('Reason:')
-	            verdict['reload_reason']=k9[var+1]
+	        var=k9.index('BIOS:')
+	        var3=k9.index('kickstart:')
+	        verdict['version']="BIOS: "+k9[var+2]+" Kickstart: "+k9[var3+2]
+	        var=k9.index('uptime')
+	        var2=k9.index('second(s)')
+	        verdict['uptime']=' '.join(k9[var+2:var2+1])
+	        var=k9.index('Hardware')
+	        verdict['hardware']=' '.join(k9[var+1:var+3])
+	        var=k9.index('Reason:')
+	        verdict['reload_reason']=k9[var+1]
            
 	    elif ios_ver=='cisco_xe':
-	        if 'weeks,' in k9 and 'minutes' in k9:
-	            var=k9.index('weeks,')
-	            var2=k9.index('minutes')
-	            verdict['uptime']=' '.join(k9[var-1:var2+1])
-	        if 'Last' in k9 and 'This' in k9:
-	            var=k9.index('Last')
-	            var2=k9.index('This')
-	            verdict['reload_reason']=' '.join(k9[var+3:var2])
-	        if 'Version' in k9:
-	            var=k9.index('Version')
+	        var=k9.index('weeks,')
+	        var2=k9.index('minutes')
+	        verdict['uptime']=' '.join(k9[var-1:var2+1])
+	        var=k9.index('Last')
+	        var2=k9.index('This')
+	        verdict['reload_reason']=' '.join(k9[var+3:var2])
+            
+	        var=k9.index('Version')
            
-	            verdict['version']=k9[var+1]
+	        verdict['version']=k9[var+1]
          
 	        #var=k9.index('Release')
 	        #verdict['hardware']=k9[var+4]  
@@ -205,20 +162,17 @@ def backend(src,dst):
                
         
 	    else:
-	        if 'Version' in k9:
-	            var=k9.index('Version')
-	            verdict['version']=' '.join(k9[var+1][:-1])
-	        if 'Software,' in k9:
-	            var=k9.index('Software,')
-	            verdict['hardware']=k9[var+1]  
-	        if 'uptime' in k9 and 'minutes' in k9:
-	            var=k9.index('uptime')
-	            var2=k9.index('minutes')
-	            verdict['uptime']=' '.join(k9[var+2:var2+1]) 
-	        if 'reason:' in k9 and 'This' in k9:           
-	            var=k9.index('reason:')
-	            var2=k9.index('This')
-	            verdict['reload_reason']=' '.join(k9[var+1:var2])
+        
+	        var=k9.index('Version')
+	        verdict['version']=' '.join(k9[var+1][:-1])
+	        var=k9.index('Software,')
+	        verdict['hardware']=k9[var+1]  
+	        var=k9.index('uptime')
+	        var2=k9.index('minutes')
+	        verdict['uptime']=' '.join(k9[var+2:var2+1])            
+	        #var=k9.index('reason:')
+	        #var2=k9.index('This')
+	        #verdict['reload_reason']=' '.join(k9[var+1:var2])
 
 	    print(verdict)
 	    rem.close()
@@ -235,11 +189,8 @@ def backend(src,dst):
 	            boo=False
 	        except Exception as e:
 	            boo=True
-	            print(" Connection error ",e)
-	            ping_stat['terminate']='true'
-	            ping_stat['ssh_failure']='true'
-	            ping_stat['ssh_err_ip']=now
-	            return exit,entryrev,intojson,ping_stat
+	            print(" Connection error, trying again ",e)
+
 
 	    #ret=ssh.send_command("en")
 	    boo=True
@@ -274,37 +225,6 @@ def backend(src,dst):
 	    print("dict of names ")
 	    print(dictofnames)
 	    t3=0
-
-	    if now==src:
-	        ret=ssh.send_command('ping '+dst)
-	        ret=ret.split()
-	        print(ret)
-	        if ios_ver!='cisco_nxos':
-	            ret_loc=ret.index('rate')
-	            succ_perc=int(ret[ret_loc+2])
-	            if succ_perc>=80:
-	                ping_stat['dest']='perfect'
-	            else:
-	                ping_stat['dest']='Not reachable'
-	                ping_stat['terminate']='true'
-	                ping_stat['ping_failure']='true'
-	                return exit,entryrev,intojson,ping_stat
-	        else:
-	            ret_loc=ret.index('received,')
-	            succ_num=int(ret[ret_loc-2])
-	            if succ_num>=4:
-	                ping_stat['dest']='perfect'
-	            else:
-	                ping_stat['dest']='Not reachable'
-	                ping_stat['terminate']='true'
-	                ping_stat['ping_failure']='true'
-	                return exit,entryrev,intojson,ping_stat
-
-
-
-
-
-
 	    if ios_ver=='cisco_nxos':
 	        ret=ssh.send_command("sh ip route "+dst)
 	        print(" return from sh ip route | inc known via ")
@@ -778,10 +698,7 @@ def backend(src,dst):
 	    except Exception as e:
 	        print("Error in ssh connection, Trying again. Error - ",e) 
 	        boo=True
-	        ping_stat['terminate']='true'
-	        ping_stat['ssh_failure']='true'
-	        ping_stat['ssh_err_ip']=dst
-	        return exit,entryrev,intojson,ping_stat
+ 
    
 	output=stdout.readlines()
 	print(output)
@@ -868,10 +785,7 @@ def backend(src,dst):
 	        except Exception as e:
 	            boo=True
 	            print(" Connection error, trying again ",e,dst)
-	            ping_stat['terminate']='true'
-	            ping_stat['ssh_err']='true'
-	            ping_stat['ssh_err_ip']=dst
-	            return exit,entryrev,intojson,ping_stat
+
 
 	boo=True
 	while boo:
@@ -1102,79 +1016,57 @@ def backend(src,dst):
 	    if flag2==1:
 	        print("eigrp there")
 	        # SHOW IP EIGRP NEIGHBORS (3)
-	        dictofobj[nme].gennodedict['eigrp_neigh']=dict()
-	        for iter in range(3):
+	        boo=True
+	        while boo:
+	            try:
+	                ans=ssh.send_command("show ip eigrp neighbors")
+	                boo=False
+	            except:
+	                print("9-3 Exception handled. Error in sh ip eigrp neigh. Trying again ")
 	                boo=True
-	                while boo:
-	                    try:
-	                        ans=ssh.send_command("show ip eigrp neighbors")
-	                        boo=False
-	                    except:
-	                        print("9-3 Exception handled. Error in sh ip eigrp neigh. Trying again ")
-	                        boo=True
-         
-	                    print(" Return from sh ip eigrp neighbors ")
-	                    print(ans)
-	                    if not ans:
-	                        print('Null returned from show ip eigrp neighbors')
-	                        boo=True
-	                    elif not(isinstance(ans,str)):
-	                        print('not a string, returned from show ip eigrp neighbors')
-	                        boo=True
-	                    elif len(ans.split())<3:
-	                        print('size less, returned from show ip eigrp neighbors')
-	                        boo=True
-	                    else:
-	                        boo=False
-
-	                    boo=True
-	                    while boo:
-	                        try:
-	                            template=open('cisco_ios_show_ip_eigrp_neighbors.template')
-	                            res_template=textfsm.TextFSM(template)
-	                            ans_final=res_template.ParseText(ans)
-	                            boo=False
-	                        except Exception as e:
-	                            print(e)
-	                            print("9-4 Exception in Textfsm, Trying again")
-	                            boo=True
-	                    print("\n TEXTFSM LIST:\n")	
-	                    print(ans_final)
-	                    hello={}
-	                    j=0
-	                    for i in range(0,len(ans_final)):
-	                        hello={}
-	                        neigh = hello['neighbor']=ans_final[i][1]
-	                        hello['uptime'] = list()
-	                        hello['uptime'].append(ans_final[i][4])
-	                        hello['hold'] = list()
-	                        hello['hold'].append(ans_final[i][3])
-	                        hello['srtt'] = list()
-	                        hello['srtt'].append(ans_final[i][5])
-	                        hello['rto'] = list()
-	                        hello['rto'].append(ans_final[i][6])
-	                        hello['iteration'] = list()
-	                        hello['iteration'].append(iter)
-	                        if neigh in dictofobj[nme].gennodedict['eigrp_neigh']:
-	                            dictofobj[nme].gennodedict['eigrp_neigh'][neigh]['iteration'].append(iter)
-	                            dictofobj[nme].gennodedict['eigrp_neigh'][neigh]['hold'].append(ans_final[i][3])
-	                            dictofobj[nme].gennodedict['eigrp_neigh'][neigh]['uptime'].append(ans_final[i][4])
-	                            dictofobj[nme].gennodedict['eigrp_neigh'][neigh]['srtt'].append(ans_final[i][5])
-	                            dictofobj[nme].gennodedict['eigrp_neigh'][neigh]['rto'].append(ans_final[i][6])
-	                            dictofobj[nme].gennodedict['eigrp_neigh'][neigh]['uptime']=hello['uptime']
-				
-	                        else:
-	                            dictofobj[nme].gennodedict['eigrp_neigh'][neigh]=dict()
-	                            dictofobj[nme].gennodedict['eigrp_neigh'][neigh]=hello
-	                time.sleep(1)
-	        print("\nFINAL DICT:\n")	
-	        print(dictofobj[nme].gennodedict['eigrp_neigh'])
+	            
+	            print(" Return from sh ip eigrp neighbors ")
+	            #print(ans)
+	            if not ans:
+	                print('Null returned from show ip eigrp neighbors')
+	                boo=True
+	            elif not(isinstance(ans,str)):
+	                print('not a string, returned from show ip eigrp neighbors')
+	                boo=True
+	            elif len(ans.split())<3:
+	                print('size less, returned from show ip eigrp neighbors')
+	                boo=True
+	            else:
+	                boo=False
+	        boo=True
+	        while boo: 
+	            try:
+	                template=open('cisco_ios_show_ip_eigrp_neighbors.template')
+	                res_template=textfsm.TextFSM(template)
+	                ans_final=res_template.ParseText(ans)
+	                boo=False
+	            except Exception as e:
+	                print(e)
+	                print("9-4 Exception in Textfsm, Trying again")
+	                boo=True
+	        print(ans_final)
+	        hello={}
+	        j=0
+	        dictofobj[nme].gennodedict['eigrp_neigh']=dict()
+	        for i in range(0,len(ans_final)):
+	            hello={}
+	            hello['neighbor']=ans_final[i][1]
+	            hello['uptime']=ans_final[i][4]
+	            hello['srtt']=ans_final[i][5]
+	            hello['rto']=ans_final[i][6]
+	            #dictofobj[nme].gennodedict['eigrp_neigh']
+	            dictofobj[nme].gennodedict['eigrp_neigh'][ans_final[i][1]]=dict()
+	            dictofobj[nme].gennodedict['eigrp_neigh'][ans_final[i][1]]=hello
 	  
 
 	  
 	    if flag1==1:
 	        print("bgp there")
-	        dictofobj[nme].gennodedict['bgp_neigh']=dict()
 	        dictofobj[nme].gennodedict['bgp_neigh']['Number_of_neigh']='Number of neighbors constant'
 	        three=[]
 	        neigh_wise=dict()
@@ -1356,7 +1248,7 @@ def backend(src,dst):
 	    while boo:
 	        try:
 	            
-	            ret = ssh.send_command("show log | i err|drop|fail|Fail|crash|MALLOCFAIL|down")
+	            ret = ssh.send_command("show log | i down|Down|err|fail|Fail|drop|crash|MALLOCFAIL|")
 	            boo=False
 	        except:
 	            print("9-5 exception handled in show log. Trying again ")
@@ -1531,7 +1423,6 @@ def backend(src,dst):
 	        dictofobj[nme].dictint[interf]['output_drops']=list()
 	        print("Fetching :",interf)
 	        for iter in range(3):
-	            time.sleep(1)
 	            boo=True
 	            while boo:
 	                try:
@@ -1608,7 +1499,7 @@ def backend(src,dst):
 	print(exit)
 	print(entryrev)
 	print(intojson)
-	return exit,entryrev,intojson,None
+	return exit,entryrev,intojson
 
 
 
@@ -1631,13 +1522,11 @@ def topology():
 		src = req['src']
 		dst = req['dst']
 
+		# call ritesh function
 		print("src:",src)
 		print("dst:",dst)
 
-		exit,reverse,kpi_json,terminate_stat = backend(src,dst);
-		if(terminate_stat != None):
-			print("Exit: ",exit,"\n")
-			print("Reverse: ",reverse,"\n")
+		exit,reverse,kpi_json = backend(src,dst);
 
 		temp = []
 		for key,value in exit.items():
@@ -1648,14 +1537,7 @@ def topology():
 					t["now"] = key
 					foo = i.split()
 					t["exit"] = foo[0]
-					try:
-						foo2 = list(reverse[foo[1]])
-				
-					except:
-						t["next"]="Couldnt Fetch"
-						t["entry"]="Couldnt Fetch"	
-						temp.append(t)
-						break
+					foo2 = list(reverse[foo[1]])
 					t["next"] = foo2[0].split()[0]
 					t["entry"] = foo2[0].split()[1]
 					temp.append(t)
@@ -1664,14 +1546,7 @@ def topology():
 					t["now"] = key
 					foo = value[0].split()
 					t["exit"] = foo[0]
-					try:
-						foo2 = list(reverse[foo[1]])
-				
-					except:
-						t["next"]=["Couldnt Fetch"]
-						t["entry"]=["Couldnt Fetch"]	
-						temp.append(t)
-						break			
+					foo2 = list(reverse[foo[1]])
 					t["next"] = foo2[0].split()[0]
 					t["entry"] = foo2[0].split()[1]
 					temp.append(t) 
@@ -1717,7 +1592,6 @@ def topology():
 		response_list = list()
 		response_list.append(temp)
 		response_list.append(device_json)
-		response_list.append(terminate_stat)
 		return json.dumps(response_list)		
 		#return json.dumps(Response(responseList).__dict__)
 

@@ -1,352 +1,714 @@
 <!doctype html>
-<meta charset="utf-8"/>
-<html>
+<html lang="en">
 <head>
-  <title>Network Map</title>
-  <!--script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js "></script!-->
-  <script type="text/javascript" src="/static/vis1.0.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" rel="stylesheet" type="text/css" />
-  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<!-- <img src="data:image/png;base64,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" align="right"> -->
-  <style type="text/css">
-  body  {
-    background-color: #DFDBDA;
-  /* background-image: url("data:image/jpeg;base64,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") ; */
-}
-input[type=text] {
-  background-color: #EADDDA;
-  color: black;
-}
-#bottomright {
-  position: absolute;
-  bottom: 0;
-  right: 50;
-  font-size: 18px;
-}
-    #mynetwork{      
-      height: 500px;
-      border: 4px solid black;
-    }
-    #popup{
-      height:1200px;
-      width:700px;
-      border:4px solid black;
-      background-color: #DFDBDA;
-      background:url("data:image/jpeg;base64,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" )
-       }
-    .kpi{
-    display: block;
-    border:solid;
-    
-    }
-    .jumbotron {
-    background-color:#DFDBDA !important;
-    height:0px; 
-}
-    #gen_head{
-      border-color:#4cbb17;
-    }
-    #int_head{
-      border-color:#ffbf00;
-    }
-    #qos_head{
-      border-color:red;
-    }
-    #prot_head{
-      border-color:#4cbb17;
-    }
-    .hoverWrapper:hover .hoverShow{
-    display: block;
-    }
-    .hoverWrapper .hoverShow {
-    display: none;
-    overflow:auto;
-    height:500px;
-    }    
-    
-    /* #foot{
-      background-color: #B3A4A0;
-    } */
-  </style>
+    <title>Network Map</title>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css"/>
+    <style>
+        .sub-kpi{
+            background-color: lightgray;
+            padding:5px;
+        }
+        .kpi{
+            padding:5px;
+        }
+        .red{
+            color:red;
+        }
+        .green{
+            color:green;
+        }
+        .amber{
+            color:#ffbf00;
+        }
+        .tint{
+            background-color:#f7f7f7;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular.min.js"></script>
+    <script>
+        let app = angular.module("myApp", []);
+        app.controller("myController", function ($scope, $http) {
+            let response; 
+
+            // Function : Abbreviate Interface Names
+            function removeSmall(str) {
+                let temp = "";
+                for (i = 0; i < str.length; i++) {
+                    var ch = str.charAt(i);
+                    if (ch >= "a" && ch <= "z")
+                        continue;
+                    temp += str.charAt(i);
+                }
+                return temp.toLowerCase();
+            }
+
+            // Function : Plot Topology
+            function drawMap(response) {
+                var nodelist = [];
+                var set = new Set();
+                for (device in $scope.device_map) {         
+                    var name = $scope.device_map[device]["Name"][0]     
+                    if (!set.has(name)) {
+                        set.add(name);
+                        var node = { id:name, shape:"image"}     
+                        var isEndpoint = false;
+                        if($scope.src!=undefined && $scope.dst!=undefined)
+                        for(interface in $scope.device_map[device]['Interface Dictionary']){
+                            if($scope.device_map[device]['Interface Dictionary'][interface]['ip']==$scope.src){
+                                console.log($scope.device_map[device]['Interface Dictionary'][interface]['ip'],",",$scope.src)
+                                node.label = "SRC:" + name;
+                                isEndpoint = true;
+                                break;
+                            }
+                            if($scope.device_map[device]['Interface Dictionary'][interface]['ip']==$scope.dst){
+                                console.log($scope.device_map[device]['Interface Dictionary'][interface]['ip'],",",$scope.dst)
+                                node.label = "DEST:" + name;
+                                isEndpoint = true;
+                                break;
+                            }
+                        }
+                        if(!isEndpoint)
+                            node.label = name;
+                        if (name.includes('RC'))
+                            node.image = "/static/router.png";
+                        else
+                            node.image = "/static/switchl3.png";
+                        nodelist.push(node);
+                    }
+                }            
+                var nodes = new vis.DataSet(nodelist);                
+                var edgelist = [];
+                for (line in response) {
+                    var edge = {from:response[line]["now"],to:response[line]["next"]};
+                    if (edge.to == edge.from)
+                        continue;
+                    edge.label = removeSmall(response[line]["entry"]) + " / " + removeSmall(response[line]["exit"]);
+                    edgelist.push(edge)
+                }
+                var edges = new vis.DataSet(edgelist);
+                var container = document.getElementById('mynetwork');
+                var data = {
+                    nodes: nodes,
+                    edges: edges
+                };
+                var options = {physics: {enabled: false},
+                               interaction: {dragNodes: true, zoomView: true},
+                               layout: {hierarchical:{direction:'UD'}}};
+
+                var network = new vis.Network(container, data, options);    
+
+                network.on("click", function (properties) {
+                    $scope.$apply(function () {                        
+                        $scope.clicked_device = $scope.device_map[properties.nodes];      
+                        
+                        $scope.thresholds = { green: 0, amber: 1, red: 3 }
+                        $scope.images = { 0: "/static/checked.png", 
+                                          1: "/static/warning-t.png",
+                                          3: "/static/cancel.png"}
+                        $scope.device = 0; 
+			$scope.platform = 0;
+                        $scope.cpu = 0;
+                        $scope.processes = []; // not used
+                        $scope.memory = 0;
+                        $scope.logs = 0;
+
+                        $scope.interface = 0;
+                        $scope.interfaces = {};
+                        $scope.counters = 0;
+                        $scope.protocols = 0;
+                        $scope.eigrp = 0;
+			$scope.eigrp_down = [];
+                        $scope.bgp = 0;
+			$scope.bgp_down = [];
+                        $scope.spanning = 0;
+                        $scope.routeflaps = 0;
+
+
+		
+		
+                        $scope.qos = 0;
+                        evaluateThresholds();                    
+                        
+                        console.log($scope.clicked_device);
+                        let clicked = properties.nodes;
+                        $scope.exits = "";
+                        $scope.entries = "";
+                        for (entry in response) {
+                            from = response[entry]["now"];
+                            if (from == clicked) {
+                                if (response[entry]['next'] == from)
+                                    continue;
+                                $scope.exits += response[entry]["next"] + " via " + response[entry]["exit"]
+                            }
+                            to = response[entry]["next"];
+                            if (to == clicked) {
+                                if (response[entry]['now'] == to)
+                                    continue;
+                                $scope.entries += response[entry]["now"] + " via " + response[entry]["entry"]
+                            }
+                        }
+                        if ($scope.exits.length === 0) {
+                            $scope.exits = "THIS IS DESTINATION";
+                        }
+                        if ($scope.entries.length === 0) {
+                            $scope.entries = "THIS IS SOURCE";
+                        }
+                    });
+                });
+            }
+
+            // Function : Apply Thresholds
+            function evaluateThresholds(){
+
+                console.log("Checking thresholds");                
+                thresholds = $scope.thresholds;
+
+
+
+                // CPU
+                var flag = thresholds.green;
+                for (attrib in $scope.clicked_device.CPU.cpu_util){
+                    var value = $scope.clicked_device.CPU.cpu_util[attrib];
+                    if(value < 30)
+                        flag = flag | thresholds.green;
+                    else if(value < 50)
+                        flag = flag | thresholds.amber;
+                    else
+                        flag = flag | thresholds.red;
+                }
+                $scope.cpu = flag;
+
+                // Memory
+                var flag = thresholds.green;
+                for (attrib in $scope.clicked_device.device.memory){
+                    var value = $scope.clicked_device.device.memory[attrib];
+                    if(value.percent < 30)
+                        flag = flag | thresholds.green;
+                    else if(value.percent < 50)
+                        flag = flag | thresholds.amber;
+                    else
+                        flag = flag | thresholds.red;                    
+                }
+                $scope.memory = flag;
+
+                // Logs
+                var flag = thresholds.green;
+		var eigrp_down = new Set();
+	 	var bgp_down = new Set();
+                for (it in $scope.clicked_device.device.log){   
+                    var line = $scope.clicked_device.device.log[it]               
+                    if(line.includes("DUAL")){
+                        var r = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
+                        var ip =  line.match(r);
+                        if(!(ip[0] in $scope.clicked_device.Protocols.eigrp)){
+                            
+			        eigrp_down.add(ip[0]);
+				console.log(ip[0],"has not come back up");
+			    
+			    $scope.eigrp = $scope.eigrp | thresholds.red;
+			    
+                        }
+			flag = flag | thresholds.red;
+			
+                    }
+                    if(line.includes("BGP")){
+                        var r = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
+                        var ip =  line.match(r);
+                        if(!(ip[0] in $scope.clicked_device.Protocols.bgp)){
+                            
+			        bgp_down.add(ip[0]);
+				console.log(ip[0],"has not come back up");
+			    
+			    $scope.bgp = $scope.bgp | thresholds.red;
+			    
+                        }
+			flag = flag | thresholds.red;
+			
+                    }
+                        
+                   
+                        flag = flag | thresholds.amber; 
+                                      
+                }
+	        $scope.eigrp_down = Array.from(eigrp_down)
+		$scope.bgp_down = Array.from(bgp_down)
+                $scope.logs = flag;
+                
+                // Device
+                $scope.device = $scope.cpu | $scope.memory | $scope.logs
+
+                // Interfaces
+                
+                for(interface in $scope.clicked_device["Interface Dictionary"]){
+                    var flag = thresholds.green;
+		    var int = $scope.clicked_device["Interface Dictionary"][interface]
+                    if(t(int.collisions) > 0 || t(int.crc) > 0 || t(int.frame) > 0 || t(int.ignored) > 0
+                      || t(int.input_errors) > 0 || t(int.interf_reset) > 0 || t(int.collision) > 0 || t(int.output_drops) > 0 
+                      || t(int.output_errors) > 0 || t(int.overrun) > 0){
+                          flag = thresholds.amber;
+                      }
+                    $scope.interfaces[interface] = flag;
+                }
+
+                for(int in $scope.interfaces){
+                    $scope.interface = $scope.interface | $scope.interfaces[int];
+                }
+
+                // EIGRP
+                var flag = thresholds.green;
+                for(neigh in $scope.clicked_device.Protocols.eigrp){
+		    $scope.eigrp_neigh_count = "Number of neighbors constant"
+                    var srtt = $scope.clicked_device.Protocols.eigrp[neigh].srtt;
+                    var rto = $scope.clicked_device.Protocols.eigrp[neigh].rto;
+		    var occurences = $scope.clicked_device.Protocols.eigrp[neigh].iteration;
+		    var status = new Array();
+		    
+		    var changed = false; var limit=false; var prev=srtt[0];
+		    for(val in srtt){
+			if(srtt[val] != prev)
+				changed = true;
+			if(srtt[val] >= 1500)
+				limit = true;
+			prev = srtt[val];
+		    }
+		    if(changed==true){
+			status.push("SRTT fluctuating")
+		        flag = flag | thresholds.amber;
+		    }
+		    if(limit==true){
+			status.push("SRTT Too High")
+			flag = flag | thresholds.red;
+		    }
+
+		 
+		    changed = false;  limit=false;  prev=rto[0];
+		    for(val in rto){
+			if(rto[val] != prev)
+				changed = true;
+			if(rto[val] > 4500)
+				limit = true;
+			prev = rto[val];
+		    }
+		   if(changed==true){
+			status.push("RTO fluctuating")
+			flag = flag | thresholds.amber;
+		   }
+		   if(limit==true){
+			status.push("RTO Too High")
+			flag = flag | thresholds.red;
+		   }
+		   if(occurences.length!=3){
+			status.push("Flapping")
+		        flag = flag | thresholds.red;
+			$scope.eigrp_neigh_count="Number of Neighbors not constant"
+		   }
+		   if(!occurences.includes(2)){
+			$scope.eigrp_down.push($scope.clicked_device.Protocols.eigrp[neigh].neighbor);
+			flag = flag | thresholds.red;
+		   }
+
+		   if(status.length==0){
+			 flag = flag | thresholds.green;
+			 status.push("No Issues")
+		   }
+
+		  $scope.clicked_device.Protocols.eigrp[neigh].status= status
+                }
+                $scope.eigrp = $scope.eigrp | flag;
+                
+                // BGP
+                var flag = thresholds.green;
+                for(neigh in $scope.clicked_device.Protocols.bgp){
+                    var value = $scope.clicked_device.Protocols.bgp[neigh];
+		    if(typeof value === "object"){
+                    if(value['condition']!="perfect")
+                        flag = flag | thresholds.red;
+                    else
+                        flag = flag | thresholds.green;
+		    }else{
+	             if (value.includes("not"))
+			flag = flag | thresholds.red;
+	             else
+			flag = flag | thresholds.green; 
+		    }
+	   
+                }
+                $scope.bgp = $scope.bgp | flag;
+
+                $scope.protocols = $scope.eigrp | $scope.bgp ;
+
+            }
+
+	    // Returns 0 (fine), 1 (high values), 2 (changing values)
+	    function t(arr){
+	        var retval  = 0;
+		var prev = arr[0]
+		for (i in arr){
+		   console.log(arr[i]," prev:",prev)
+		   if(arr[i]>0)
+			retval = 1;
+		   if(arr[i] != prev)
+			return 2;
+		   prev = arr[i];
+		}
+		return retval
+	    }
+
+            function makeTable(devices) {
+                $scope.device_map = {};
+                for (obj in devices) {
+                    name = devices[obj]['Name'][0];
+                    $scope.device_map[name] = devices[obj]
+                }
+                console.log($scope.device_map)
+            }
+
+	    function handleErrors(errorDict){
+		$scope.errors = errorDict;
+                        $scope.images = { 0: "/static/checked.png", 
+                                          1: "/static/warning-t.png",
+                                          3: "/static/cancel.png"}
+			$scope.ping_failure = 0;
+			$scope.ssh_failure = 0;
+			$scope.src_ping = 0;
+			$scope.dst_ping = 0;
+			$scope.dg_ping = 0;
+		if($scope.errors == null)
+			return;
+
+		if("ping_failure" in $scope.errors){
+			
+			if($scope.errors["ping_failure"] == "false")
+				$scope.ping_failure = 0; 
+			else
+				$scope.ping_failure = 3;
+				
+		}
+		if("ssh_failure" in $scope.errors){
+		
+			if($scope.errors["ssh_failure"] == "false")
+				$scope.ssh_failure = 0; 
+			else
+				$scope.ssh_failure = 3;
+				
+		}
+		if("source" in $scope.errors){
+			
+			if($scope.errors["source"] == "perfect")
+				$scope.src_ping = 0; 
+			else
+				$scope.src_ping = 3;
+				
+		}
+		if("dg" in $scope.errors){
+			
+			if($scope.errors["dg"] == "perfect")
+				$scope.dg_ping = 0; 
+			else
+				$scope.dg_ping = 3;
+				
+		}
+		if("dest" in $scope.errors){
+			
+			if($scope.errors["dest"] == "perfect")
+				$scope.dst_ping = 0; 
+			else
+				$scope.dst_ping = 3;
+				
+		}
+	    }
+
+            $scope.fetchData = function () {
+                console.log("Fetching for (src,dst) : ",$scope.src,",",$scope.dst)
+                $http({
+                    method: 'POST',
+                    url: '/Topology',
+                    data: {
+                        src: $scope.src,
+                        dst: $scope.dst,
+                    }
+                }).then(function (res) {
+                    response = res.data;
+                    console.log(response);
+                    if (response !== undefined) {
+		        handleErrors(response[2]);
+                        makeTable(response[1]);
+                        drawMap(response[0]);
+	                        
+                    }
+                }, function (res) {
+                    console.log("Response Error Occured")
+                });
+            };
+
+
+        });
+    </script>
 </head>
 <div class="jumbotron">
-  <div class="container text-center">
-    <h1>Network Maps for Enterprise Networks</h1>      
-    <p>By CMS HSBC Interns </p>
-  </div>
+    <div class="container text-center">
+        <h1>Automated Network Troubleshooter</h1>
+        <p>Version 1.0 </p>
+    </div>
 </div>
 <body>
-  <form action="/Topology" method="get">
-  
-    <div class="form-group">
-        Source IP:
-    <input type="text" name="src">  
-  
-    Destination IP:
- 
-    <input type="text" name="dst">   
- 
-    <input type="submit" value="Submit">
-  </div>
-  </form> 
-  
-  <div id="mynetwork" style="width:40%;float:left"></div>
-  
-  <div id="popup" class = "col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-8 col-xs-offset-2" style="width:60%;float:right;">
-  <p id="popup-content"></p>
-  <div class = "container">
-  <div class="kpi hoverWrapper" id="gen_head" onclick="alert()"><b>&nbsp;Device Health&nbsp;</b><img src="/static/checked.png" height="20" width="20"/>
-    <div class="hoverShow" id="general">device level information</div></div>
-  <div class="kpi hoverWrapper" id="int_head" onclick="alert()"><b>&nbsp;Interfaces&nbsp;</b><img src="/static/warning-t.png" height="20" width="20"/>
-    <div class="hoverShow" id="interface">INTERFACE INFORMATION</div></div>
-  <div class="kpi hoverWrapper" id="qos_head" onclick="alert()"><b>&nbsp;QoS&nbsp;</b><img src="/static/cancel.png" height="20" width="20"/>
-    <div class="hoverShow" id="qos">QOS INFORMATION</div></div>
-  <div class="kpi hoverWrapper" id="prot_head" onclick="alert()"><b>&nbsp;Protocols&nbsp;</b><img src="/static/checked.png" height="20" width="20"/>
-    <div class="hoverShow" id="protocol">PROTOCOL INFORMATION</div></div>
-   
-  </div>
-  </div>
-     
-     
-  
-  <!-- <div class = "bottomright" style="width:70%;float:right">Bottom Right</div> -->
-  <script type="text/javascript">
-    var response = {{response | safe }}
-    if(response != undefined){
- 
-      drawMap($.parseJSON(response.jsons[0]));
-      makeTable($.parseJSON(response.jsons[1]))
-    }
-    // Utility Function to Abbreviate Interface Names
-    function removeSmall(str){
-        var temp=""
-        for(i=0;i<str.length;i++){
-          var ch = str.charAt(i);
-          if(ch >= "a" && ch <= "z") 
-            continue;
-          temp+=str.charAt(i);
-        }
-        return temp.toLowerCase();
-    }
-    var nodes;
-    function drawMap(response){     
-      console.log(response)
-      // Creating Nodes
-      var ds = []
-      var set = new Set();
-      for (line in response){
-          name = response[line]["next"]
-          if(!set.has(name)){
-            set.add(name);
-            var obj = new Object();
-            obj.id = name
-            if(name==response[line]["now"])
-              obj.label = "DEST: "+name            
-            else
-              obj.label = name
-            obj.shape = "image"
-            if(name.includes('RC'))
-            obj.image = "/static/router.png"
-            else
-            obj.image = "/static/switchl3.png"
-            ds.push(obj);    
-          }      
-      }
-      // Finding Source 
-      for(line in response){
-        name = response[line]["now"]
-        if(!set.has(name)){
-            set.add(name);
-            var obj = new Object();
-            obj.id = name
-            obj.label = "SRC: " +name            
-            obj.shape = "image"
-            if(name.includes('RC'))
-            obj.image = "/static/router.png"
-            else
-            obj.image = "/static/switchl3.png"
-            ds.push(obj);  
-        }
-      }
-      nodes = new vis.DataSet(ds);    
-      // Creating Edges
-      var ds1 = []
-      for (line in response){
-        var edge = new Object();
-        edge.from = response[line]["now"]
-        edge.to = response[line]["next"]
-        if(edge.to == edge.from)
-          continue;
-        edge.label = removeSmall(response[line]["entry"])+" / "+removeSmall(response[line]["exit"])
-        ds1.push(edge)
-      }   
-      var edges = new vis.DataSet(ds1)
-      // Creating Network
-      var container = document.getElementById('mynetwork');
-      var data = {
-        nodes: nodes,
-        edges: edges
-      };
-      var options = {physics : {enabled :false}};
-      var network = new vis.Network(container, data, options); 
-      
-      network.on("click", function(properties){
-                  var popup = $("#popup");
-                  var clicked = properties.nodes;
-                  if(clicked.length==0){
-                    popup.hide();
-                    return
-                  }
-                  var exits =""
-                  var entries=""
-                  for (entry in response){
-                    from = response[entry]["now"]
-                    if(from == clicked){
-                      if(response[entry]['next']==from)
-                        continue;
-                      exits+= response[entry]["next"] + " via " + response[entry]["exit"] + "<br>"
-                    }
-                    to = response[entry]["next"]
-                    if(to == clicked){
-                      if(response[entry]['now']==to)
-                        continue;
-                      entries+= response[entry]["now"] + " via " + response[entry]["entry"] +"<br>"
-                    }
-                  }
-                  var ex_appender = "Towards";
-                  var en_appender = "From";
-                  if(exits.length==0){
-                    exits="THIS IS DESTINATION<br>"
-                    ex_appender = " ";
-                  }
-                  if(entries.length==0){
-                    entries="THIS IS SOURCE<br>"
-                    en_appender = " ";
-                  }
-                    var content=$("#popup-content")
-                    var data="<h4>"+clicked+"</h4><br>";
-                    data+= "<b>EXITS:"+"</b><br>" + ex_appender  + " " + exits+ "<br>"+ "<b>ENTRIES:</b><br>" + en_appender + " "+ entries+ "<br>";
-                    content.text("")
-                    content.append(data);
-                    populateHiddenDivs(clicked)
-                    popup.css('display','inline');          
-                  });
-    }
+<div ng-app="myApp" ng-controller="myController">
+    <div class="align-middle">
+    <form ng-submit="fetchData()" class="w-50">
+        <div class="form-row">
+            <div class="col-4">
+                <input type="text" ng-model="src" class="form-control" placeholder="Source IP">
+            </div>
+            <div class="col-1 text-center">
+                <span class="align-middle">to</span>
+            </div>
+            <div class="col-4">
+                <input type="text" ng-model="dst" class="form-control" placeholder="Destination IP">
+            </div>
+            <div class="col-3">
+                <input type="submit" value="Get Topology" class="btn btn-secondary">
+            </div>
+        </div>
+        <br>
+    </form>
+    </div>
+    <div class="row min-vh-100">
+        <div id="mynetwork" class="col-3 border">
 
+        </div>
+        <div class="col-9 border">
+	    <div ng-if="errors">
+	         <h4 class="kpi"> Connectivity Errors were detected for the given query </h4>
+		 <table class="table">
+		 <tr ng-if="errors.ping_failure">
+			<td>  <h5 class="sub-kpi">Ping Failed : {{ errors.ping_failure }} : <img ng-src = "{{images[ping_failure]}}" style="width:20px"/></h5> </td>		
+ 		</tr>
+		 <tr ng-if="errors.source">
+			<td>  Source Ping : {{ errors.source }} : <img ng-src = "{{images[src_ping]}}" style="width:20px"/> </td>		
+ 		</tr>
+		 <tr ng-if="errors.dest">
+			<td>  Destination Ping : {{ errors.dest }} : <img ng-src = "{{images[dst_ping]}}" style="width:20px"/> </td>		
+ 		</tr>
+		 <tr ng-if="errors.dg">
+			<td>  Default Gateway Ping : {{ errors.dg }} : <img ng-src = "{{images[dg_ping]}}" style="width:20px"/> </td>		
+ 		</tr>
+		 <tr ng-if="errors.ssh_failure">
+			<td>  <h5 class="sub-kpi">SSH Failed : {{ errors.ssh_failure }} : <img ng-src = "{{images[ssh_failure]}}" style="width:20px"/></h5> </td>		
+ 		</tr>
+		 <tr ng-if="errors.ssh_err_ip">
+			<td>  SSH failed on device : {{ errors.ssh_err_ip }}</td>		
+ 		</tr>
+		</table>
+	    </div>
 
-    // to do : define a set of threshold dicts
-    var gen_node_thres = {}
-     
-    // Compares KPI dict with Thresholds dict and sets CSS as per results
-    function checkThreshold(dict,kpi_name){
-      
+            <div ng-if="clicked_device">
+                <h4 class="sub-kpi">{{ clicked_device.Name[0] }}</h4>
+                <div class="kpi">Entry: {{ entries }}</div>
+                <div class="kpi">Exit: {{ exits }}</div>
+            
+                <div class="mt-4 border tint">
+                    <h5 class="kpi"> Device Health: <img ng-src = "{{images[device]}}" style="width:20px"/></h5>
+		    <div>
+		    	<h6 class="sub-kpi">Platform: <img ng-src = "{{images[platform]}}" style="width:20px"/></h6>
+			<table class="table table-borderless">
+			    <tr>
+				<td ng-if="clicked_device.device.version.hardware.length > 0">Hardware: {{ clicked_device.device.version.hardware }}</td>
+				<td ng-if="clicked_device.device.version.reload_reason.length > 0">Reload Reason: {{ clicked_device.device.version.reload_reason }}</td>
+				<td ng-if="clicked_device.device.version.soft_ver.length > 0">Software Version: {{ clicked_device.device.version.soft_ver }}</td>
+				<td ng-if="clicked_device.device.version.uptime.length > 0">Uptime: {{ clicked_device.device.version.uptime }}</td>
+				<td ng-if="clicked_device.device.version.version.length > 0">Version: {{ clicked_device.device.version.version }}</td>
+			    </tr>
+			</table>
+		    </div>
+                    <div>
+                        <h6 class="sub-kpi">CPU Usage: <img ng-src = "{{images[cpu]}}" style="width:20px"/></h6>                    
+                        <div class="row">
+                            <div class="col"><b> CPU Total</b></div>
+                            <div class="col">Five Second: {{ clicked_device.CPU.cpu_util.cpu_5_sec }}%</div>
+                            <div class="col">One Minute: {{ clicked_device.CPU.cpu_util.cpu_1_min }}%</div>
+                            <div class="col">Five Minutes: {{ clicked_device.CPU.cpu_util.cpu_5_min }}%</div>
+                        </div> 
+                        <table class="table table-borderless" ng-if="cpu > 0">
+                            <thead>
+                            <tr>
+                                <th>Process</th>
+                                <th>PID</th>
+                                <th>5 Sec</th>
+                                <th>1 Min</th>
+                                <th>5 Min</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="(key,value) in clicked_device.CPU.pid">
+                                <td>{{value.process}}</td>
+                                <td>{{key}}</td>
+                                <td>{{value.proc_5_sec}}%</td>
+                                <td>{{value.proc_1_min}}%</td>
+                                <td>{{value.proc_5_min}}%</td>
+                            </tr>
+                            </tbody>
+                        </table> 
+                    </div>
+                    <div>
+                        <h6 class="sub-kpi">Memory Usage: <img ng-src = "{{images[memory]}}" style="width:20px"/></h6>
+                        <table class="table table-borderless">
+                            <thead>
+                            <tr>
+                                <th>Pool</th>
+                                <th>Total</th>
+                                <th>Free</th>
+                                <th>Used</th>
+                                <th>% Used</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="(key,value) in clicked_device.device.memory">
+                                <td>{{ key }}</td>
+                                <td>{{ value.total }}Mb</td>
+                                <td>{{ value.free }}Mb</td>
+                                <td>{{ value.used }}Mb</td>
+                                <td>{{ value.percent }}%</td>
+                            </tr>
+                            </tbody>
+                        </table> 
+                    </div>
+                    <div>
+                        <h6 class="sub-kpi">SysLog: <img ng-src = "{{images[logs]}}" style="width:20px"/></h6>    
+                        <h6 class="sub-kpi red" ng-if="logs>0">SysLog Issues detected, Check Protocol Information for Details</h6>                
+                        <div class="row" ng-if="logs>0" ng-repeat="log in clicked_device.device.log">
+                                <div class="col">{{ log }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 border tint">
+                    <h5 class="kpi"> Interface Statistics: <img ng-src = "{{images[interface]}}" style="width:20px"/></h5>
+                    <table class="table" ng-repeat="(key,interface) in clicked_device['Interface Dictionary']">
+                        <thead><tr class="sub-kpi w-100"><td><h6>{{ key }} : {{ interface.ip }}
+                               <img ng-src = "{{images[interfaces[key]]}}" style="width:20px"/></h6></td>
+                               </tr>
+                        </thead>
+                        <tr>
+                            <td>B/W: {{ interface.bandwidth[2] }}</td>
+                            <td>Collisions: {{ interface.collisions }}</td>
+                            <td>CRC: {{ interface.crc }}</td>
+                            <td>{{ interface.duplex[2] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Frame: {{ interface.frame }}</td>
+                            <td>Ignored: {{ interface.ignored }}</td>
+                            <td>Input Errors:{{ interface.input_errors }}</td>
+                            <td>Resets: {{ interface.interf_reset }}</td>                
+                        </tr>
+                        <tr>
+                            <td>Speed: {{ interface.speed[2] }}</td>
+                            <td>Late Collisions: {{ interface.late_collision }}</td>
+                            <td>Output Drops: {{ interface.output_drops }}</td>
+                            <td>Output Errors: {{ interface.output_errors }}</td>
+                        </tr>
+                        <tr>
+                            <td>Overrun: {{ interface.overrun }}</td>
+                            <td>Reliability: {{ interface.reliability[2] }}</td>
+                            <td>RX Load: {{ interface.rxload[2] }}</td>                            
+                            <td>TX Load:Hi{{ interface.txload[2] }}</td>
+                        </tr>
+                    </table>
+                  <h6 class="sub-kpi">Interfaces with Counter Errors: <img ng-src = "{{images[counters]}}" style="width:20px"/></h6> 
+                  
+                    <h6 class="sub-kpi green" ng-if="counters==0">There are no interfaces with Counter errors on this Path</h6>  
+                    
 
-    }
-    // Digests various kpi dictionaries and returns HTML for the divs
-   
-    function asHtml(dict,kpi_name){
-      var bgp_obj = new Object();
-    var eigrp_obj = new Object();
-      var html="";
-      switch(String(kpi_name)){
-        case "general":
-
-                      for(key in dict){
-                        if(!isNaN(key)){
-                            html+="<b>PID:"+key+"</b><br>";
-                            for(attrib in dict[key])
-                            html+=attrib+" : "+dict[key][attrib]+ ", "
-                            console.log(typeof html)
-                            html = html.slice(0, -2);
-                            html+="<br>"
-                        }
-                        else{
-                          if(key != "eigrp_neigh" && key!= "bgp_neigh"){
-                          html+="<b>"+key+":"+"</b><br>";
-                          for(attrib in dict[key])
-                          if(typeof dict[key][attrib] != "object")
-                          html+=attrib+" : "+dict[key][attrib]+"<br>"
-                          else{
-                            Object.keys(dict[key][attrib]).forEach(key1 =>{
-                              html+= key1 + ":" + dict[key][attrib][key1] +"<br>"
-                            });
-                          }          
-                        }
-                        }
-                      }
-                      return html;
-                     
-        case "interfaces":
-                         var details = "";
-                         for(key in dict){
-                            for(attrib in dict[key]){
-                                details+=attrib+" : "+dict[key][attrib]+"<br>"
-                            }
-                         html+="<div class=\"kpi hoverWrapper\"><b>"+key+"</b><div class=\"hoverShow\">"+details+"</div></div>"                            
-                         }
-                      return html;
-          case "protocols":
-          for(key in dict){
-            if(isNaN(key))
-            {
-              //html+="<b>"+key+":"+"</b><br>";
-                          if(key == "bgp_neigh"){
-                            Object.assign(bgp_obj,dict[key]);
-                          }
-                          else if(key == "eigrp_neigh"){
-                            Object.assign(eigrp_obj,dict[key]);
-                          }
-            }
-          }
-              if(bgp_obj!=null){
-                html+="<b>"+"bgp_neigh"+":"+"</b><br>";
-                Object.keys(bgp_obj).forEach(key2 => {
-                  html+= "<i><u>" + key2+ ": " + " </u></i>" + "<br>"
-                  Object.keys(bgp_obj[key2]).forEach(key3 => {
-                    html+= key3+ ":" + bgp_obj[key2][key3] + "<br>"
-                  })
-
-                })
-        }
-          if(eigrp_obj!=null){
-            html+="<b>"+"eigrp_neigh"+":"+"</b><br>";
-                Object.keys(eigrp_obj).forEach(key2 => {
-                  html+="<i><u>" + key2+ ": " + " </u></i>" + "<br>"
-                  Object.keys(eigrp_obj[key2]).forEach(key3 => {
-                    html+= key3+ ":" + eigrp_obj[key2][key3] + "<br>"
-                  })
-                })
-          }
-          return html;
-      }
-
-      return "error"
-    }
-   
-    function populateHiddenDivs(clicked){
-      $('#general').html(asHtml(device_map[clicked]["General Node"],"general"))
-      $('#device').text();
-      $('#interface').html(asHtml(device_map[clicked]["Interface Dictionary"],"interfaces"))
-      $("#protocol").html(asHtml(device_map[clicked]["General Node"],"protocols"))
-    }
-   
-    var device_map;
-    function makeTable(devices){ 
-      device_map = {};   
-      for(obj in devices){
-        name = devices[obj]['Name'][0]
-        device_map[name] = devices[obj]
-      }
-      console.log(device_map)
-    }
-  
-  
-</script>
-
-
+                </div>
+                <div class="mt-4 border tint">
+                    <h5 class="kpi"> Protocol Information: <img ng-src = "{{images[protocols]}}" style="width:20px"/></h5>
+                    <div ng-if="clicked_device.Protocols.eigrp">
+                        <h6 class="sub-kpi">EIGRP Neighbors: <img ng-src = "{{images[eigrp]}}" style="width:20px"/></h6>
+                        <table class="table table-borderless">
+                            <thead>
+                            <tr>
+                                <th>Neighbor</th>
+                                <th>RTO (ms)</th>
+                                <th>SRTT (ms)</th>
+				<th>Hold (ms)</th>
+                                <th>Uptime</th>
+				<!--<th>Up in Iterations:</th>-->
+				<th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="neigh in clicked_device.Protocols.eigrp">
+                                
+                                <td>{{ neigh.neighbor }}</td>
+				<td>{{ neigh.rto }}</td>
+                                <td>{{ neigh.srtt }}</td>
+                                <td>{{ neigh.hold }}</td>
+				<td>{{ neigh.uptime[0] }}</td>
+                                <!--<td>{{ neigh.iteration }}</td>-->
+				<td>{{ neigh.status }}</td>
+				
+			        
+                            </tr>
+			    <div><h6 class="">{{ eigrp_neigh_count }} </h6></div>
+			    <div ng-if="eigrp_down.length !=0" ng-repeat="neigh in eigrp_down">
+                                <h6 class="red">Neighbor Down : {{ neigh }}</h6></div>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div ng-if="clicked_device.Protocols.bgp">
+                        <h6 class="sub-kpi">BGP Neighbors: <img ng-src = "{{images[bgp]}}" style="width:20px"/></h6>
+			<h6> {{ clicked_device.Protocols.bgp.Number_of_neigh }} </h6>
+                        <table class="table table-borderless">
+                            <thead>
+                            <tr>
+				<th>Router ID</th>
+                                <th>Neighbor</th>
+                                <th>Local AS</th>
+                                <th>Neigh AS</th>
+                                <th>Prefixes Recived</th>
+                                <th>Up/Down</th>
+                                <th>Status</th>
+		 		
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="neigh in clicked_device.Protocols.bgp">
+				<td>{{ neigh.router_id }}</td>
+                                <td>{{ neigh.bgp_neigh }}</td>
+                                <td>{{ neigh.local_as}}</td>
+                                <td>{{ neigh.neigh_as }}</td>
+                                <td>{{ neigh.state_pfxrcd }}</td>
+                                <td>{{ neigh.updown}}</td>
+                                <td>{{ neigh.condition }}</td>
+				 
+                            </tr>
+                            </tbody>
+                        </table>
+<div ng-if="bgp_down.length !=0" ng-repeat="neigh in bgp_down">
+                                <h6 class="tint">Neighbor Down : {{ neigh }}</h6></div>
+                    </div>
+                    <div>
+                        <h6 class="sub-kpi">Route Flaps in the last hour: <img ng-src = "{{images[routeflaps]}}" style="width:20px"/></h6>    
+                        <h6 class="sub-kpi green" ng-if="clicked_device.Protocols.ip_route.length == 0">No recent route flaps detected</h6>                
+                        <div class="row" ng-repeat="flap in clicked_device.Protocols.ip_route">
+                                <div class="col">{{ flap }}</div>
+                        </div>
+                    </div>
+		    <div ng-if="clicked_device.Protocols.spanning_tree">
+                        <h6 class="sub-kpi">Spanning Tree : <img ng-src = "{{images[spanning]}}" style="width:20px"/></h6>
+			<h6 class="sub-kpi green"> No topology changes observed  </h6>
+                    </div>              
+		</div> 
+                <div class="mt-4 border tint">
+                        <h5 class="kpi"> Quality of Service: <img ng-src = "{{images[qos]}}" style="width:20px"/></h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
-
 </html>

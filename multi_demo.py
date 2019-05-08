@@ -6,6 +6,7 @@ import textfsm
 import re
 from netmiko import ConnectHandler, SSHDetect
 from subprocess import Popen, PIPE
+from collections import defaultdict
 
 app = Flask(__name__)
 jinja_options = app.jinja_options.copy()
@@ -1042,12 +1043,13 @@ def backend(src,dst):
 	        print("LINE: ",line)
 	        line2=line.split()
 	        print("Splitted LINE: ",line2)
-	        if not(not(line2)) and line2[0]!='S' and line2[0]!='C' and line2[0]!='S*' and 'via' in line2 and line2[0]=='D' and line2[0]=='B':
+	        if not(not(line2)) and line2[0]!='S' and line2[0]!='C' and line2[0]!='S*' and 'via' in line2 and (line2[0]=='D' or line2[0]=='B'):
 	            pos=line2.index('via')
 	            if line2[pos+2][0:2]=='00':
 	                ct1+=1
 	                gen[ct1]=line
-	                print(line)        
+	                print(line)
+	                print("Yes")
 	    dictofobj[nme].gennodedict['ip_route_00']=gen
 	                
 	    	    
@@ -1476,21 +1478,45 @@ def backend(src,dst):
 	                print("9-7 Exception handled - sh int counters error, Trying again")
 	            print("Return from show int counters error")
 	            print(command)
-	    
+	        
 	            
 	        if not(command):
 	            print("Sorry empty")
 	        else:           
-	            output = command.split('\n')
-	            output.pop(0)
-	            if (output[1]):
-	                for i in output:
-	                    print(i + '\n')
-	                    Int_count = {i: 5 for i in output}
-	            else:
-	                print("Sorry Empty")
-	        
-	    dictofobj[nme].gennodedict['interface_counters_errors']=Int_count
+	            s = 'Port      Single-Col  Multi-Col   Late-Col  Excess-Col  Carri-Sen      Runts     Giants '
+	            m = defaultdict(list)
+	            count = -2
+	            m1 = defaultdict(list)
+	            for j in range(0,3):
+	                ret1 = ssh .send_command("sh interface counters errors")
+	                l2 = ret1.split("\n")
+	                for i in l2[2:]:
+	                        if(i!=s):
+	                            count += 1
+	                            list1 = i.split(' ')
+	                            while ("" in list1):
+	                                list1.remove("")
+	                            if(len(list1)!=0):
+	                                m[list1[0]].append(list1[1: ])
+				# print(i)
+	                        elif(i==s):
+	                            break
+	            count = int(count/3)
+	            count+=3
+	            for j in range(0,3):
+	                for i in l2[count+1 : ]:
+	                        list1 = i.split(' ')
+	                        while ("" in list1):
+	                            list1.remove("")
+			    #print(list1)
+	                        if(len(list1)!=0):
+	                       	    m1[list1[0]].append(list1[1: ])
+
+	            for x in m.keys():
+	        	    m[x] = m[x] + m1[x]
+	            print(m)
+			
+	        dictofobj[nme].gennodedict['interface_counters_errors']=m
 
 
 
