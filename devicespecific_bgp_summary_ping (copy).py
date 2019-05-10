@@ -991,8 +991,8 @@ def backend(src,dst):
 	            ret=ssh.send_command("sh proc cpu | ex 0.0",use_textfsm=True)
 	            print(ret)
 	            boo=False
-	        except:
-	            print("9 Exception Raised , Trying again")
+	        except Exception as e:
+	            print("9 Exception Raised , Trying again",e)
 	            boo=True
 	        if not(isinstance(ret,list)):
 	            boo=True
@@ -1514,9 +1514,111 @@ def backend(src,dst):
 
 	            for x in m.keys():
 	        	    m[x] = m[x] + m1[x]
+	            for x in m.keys():
+	                  k = int(len(m[x]) / 2)
+	                  for y in range(0, k):
+	                      m[x][y] = m[x][y] + m[x][y + 3]
+	                  m[x] = m[x][:3]
+	            print("The errors are \n")
 	            print(m)
-			
-	        dictofobj[nme].gennodedict['interface_counters_errors']=m
+
+	    if dictofobj[nme].gennodedict['version']['soft_ver']=='cisco_nxos':
+	    #if ios_ver=='cisco_ios':	     
+	        boo=True
+	        while boo:
+	            try:
+	                command = ssh.send_command("sh int counters error | ex 0")
+	                boo=False
+	            except:
+	                boo=True
+	                print("9-7 Exception handled - sh int counters error, Trying again")
+	            print("Return from show int counters error")
+	            print(command)
+	        
+	            
+	        if not(command):
+	            print("Sorry empty")
+	        else:           
+	            s = 'Port      Single-Col   Multi-Col    Late-Col   Exces-Col   Carri-Sen       Runts'
+	            s1 = 'Port          Giants  SQETest-Er Deferred-Tx IntMacTx-Er IntMacRx-Er  Symbol-Err'
+	            s2 = 'mgmt0             --          --          --          --          --          --'
+	            m.empty()	
+	            m1.empty()
+	            m2 = defaultdict(list)
+	            count = -4
+
+	            for j in range(0,3):
+  	              ret1 = ssh.send_command("sh int counters error")
+  	              list_1 = ret1.split("\n")
+  	              for i in list_1[4:]:
+	                   if (i != s):
+	                     count += 1
+	                     list1 = i.split(' ')
+	                     while ("" in list1):
+	                       list1.remove("")
+	                     #print(list1)
+	                     if (len(list1) != 0):
+	                        m[list1[0]].append(list1[1:])
+	                   elif (i == s):
+	                        break
+#print(m)
+	            count = int(count / 3)
+	            count += 8
+	            k=count
+#print(list_1[count])
+	            list1 = []
+	            for j in range(0,3):
+	               for i in list_1[k:]:
+	                  if i != s1:
+	                    count += 1
+	                    list1 = i.split(' ')
+	                    while "" in list1:
+	                      list1.remove("")
+	                    if len(list1) != 0:
+	                      m1[list1[0]].append(list1[1:])
+	                  elif i == s1:
+	                    break
+#print(m1)
+	            count = int(count / 3)
+	            count+=51
+#print(list_1[count])
+	            k1 = count
+#print(list_1[k1:])
+	            list1= []
+	            for j in range(0, 3):
+	               for i in list_1[k1:]:
+	                  if i != s2:
+	                    list1 = i.split(' ')
+	                    while ("" in list1):
+	                       list1.remove("")
+	                    if (len(list1) != 0):
+	                       m2[list1[0]].append(list1[1:])
+	                  elif i == s2:
+	                     break
+
+#print(m2)
+
+	            for x in m.keys():
+	              m[x] = m[x] + m1[x]
+	              m[x] = m[x] + m2[x]
+	            if 'mgmt0' in m:
+	              m.pop('mgmt0')
+	            if '--------------------------------------------------------------------------------' in m:
+	              m.pop('--------------------------------------------------------------------------------')
+#print(m)
+	            for x in m.keys():
+	               if x != 'mgmt0':
+	                 k = int(len(m[x]) / 3)
+	                 for y in range(0, k):
+	                   l = y+3
+	                   m[x][y] = m[x][y] + m[x][l]
+	                 for y in range(0,k):
+	                   l=l+1
+	                   print(l)
+	                   print(m[x][l])
+	                   m[x][y] = m[x][y] + m[x][l]
+	               m[x] = m[x][:3]
+	    dictofobj[nme].gennodedict['interface_counters_errors']=m
 
 
 

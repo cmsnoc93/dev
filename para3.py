@@ -310,7 +310,7 @@ for neigh in all_bgp_neigh:
     print(c)
     #dictofobj[nme].gennodedict['bgp_neigh'][c['bgp_neigh']]=dict()
     #dictofobj[nme].gennodedict['bgp_neigh'][c['bgp_neigh']]=c
-'''
+
 
 ret=ssh.send_command("sh feature | i eigrp",use_textfsm=True)
 print(ret)
@@ -322,7 +322,7 @@ for moo in ret:
 
 #bgp not checked    
 
-       ''' 
+    
 ret=ssh.send_command("sh feature | i bgp",use_textfsm=True)
 print(ret)
 for l in ret:
@@ -336,7 +336,7 @@ print(ret)
 for l in ret:
     print(l)
     print('\n')
-   '''
+   
 neigh_wise_eig=dict()
 all_eig_neigh=set()
 
@@ -398,8 +398,19 @@ if ios_ver=='cisco_nxos':
         print(last_iter) 
 
 
-        
-        
+        '''
+ret=ssh.send_command("sh ip route | inc 00:",use_textfsm=True)
+nxos_ip_route=dict()
+ip_rou_ct=1
+#print(ret)
+for inter_rou in ret:
+    print(inter_rou)
+    print('\n')
+    nxos_ip_route[ip_rou_ct]=inter_rou
+    ip_rou_ct+=1
+
+#dictofobj[nme].gennodedict['ip_route_00']=dict()
+#dictofobj[nme].gennodedict['ip_route_00']=ip_rou_ct
 
 
 

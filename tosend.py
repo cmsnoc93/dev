@@ -1450,7 +1450,7 @@ def fetchKPI(ssh,nme,lock):
 	                m1[l[k]] = l[k + 6]
 	                p += 9
 	        p = 12
-	        time.sleep(1)
+	        #time.sleep(1)
 	        for lo in range(0, 2):
 	            for k in range(len(l)-6):
 	                if (k == p):
@@ -1469,7 +1469,7 @@ def fetchKPI(ssh,nme,lock):
 	                        flag = 0
 	                    p += 9
 	            p = 12
-	            time.sleep(20)
+	            time.sleep(1)
 	        if (flag == 0):
 	            print("No Changes in the Past 1 minute")
 	        flag = 0
