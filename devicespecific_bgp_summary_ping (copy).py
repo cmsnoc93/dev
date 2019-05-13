@@ -305,15 +305,15 @@ def backend(src,dst):
 
 
 
-
+	    print("IOS VER ",ios_ver)
 	    if ios_ver=='cisco_nxos':
 	        ret=ssh.send_command("sh ip route "+dst)
-	        print(" return from sh ip route | inc known via ")
+	        print(" return from sh ip route ||||| inc known via ")
 	        ret=ret.split('\n')[6:]
 	        print(ret)
 
 
-	        if 'attached' in ret[0]:
+	        if 'attached' in ret[0] or 'local' in ret[0]:
 	            print('connected",')
 	            prot='connected",'
 	        else:
@@ -371,7 +371,7 @@ def backend(src,dst):
 	                boo2=False
 	            
 	    
-	    
+
 	    if prot=='bgp':
 	        dst1=dst
 	        fl=0
@@ -462,7 +462,7 @@ def backend(src,dst):
 	    elif prot=='connected",':
 	        if ios_ver=='cisco_nxos':
 	            ret=ssh.send_command("sh ip route "+dst)
-	            print(" return from sh ip route | inc known via ")
+	            print(" return from sh ip route | includeeee known via ")
 	            ret=ret.split('\n')[6:]
 	            print(ret)
 	            ret=ret[1].split()
@@ -472,6 +472,10 @@ def backend(src,dst):
 	            exit_int=ret[posn+2][:-1]
 	            print(exit_int)
 	            ret=ssh.send_command("sh ip int brief | include "+exit_int)
+	            if ret == '':
+	                print(exit_int + "inside null")
+	                exit_int = 'Ethernet'+exit_int[:]
+	                ret=ssh.send_command("sh ip int brief | include "+exit_int)
 	            ret=ret.split()
 	            print(ret)
 	            exit_int_ip=ret[1]
@@ -567,11 +571,19 @@ def backend(src,dst):
 	            for line in ret:
 	                line=line.split()
 	                print(line)
+	                print("ye ")
 	                if '*via' in line:
 	                    via_pos=line.index('*via')
 	                    next_hop_ip=line[via_pos+1][:-1]
 	                    exit_int=line[via_pos+2][:-1]
+	                    print(exit_int+"outside null")
 	                    ret2=ssh.send_command("sh ip int brief | include "+exit_int)
+	                    if ret2 == '':
+	                        print(exit_int + "inside null")
+	                        exit_int = 'Ethernet'+exit_int[-3:]
+	                        print(exit_int)
+	                        ret2=ssh.send_command("sh ip int brief | include "+exit_int)
+	                        print("[[[[["+ret2)
 	                    ret2=ret2.split()
 	                    print(ret2)
 	                    exit_int_ip=ret2[1]
@@ -1465,6 +1477,9 @@ def backend(src,dst):
 	    print("For show interface counters")
 	    #print(dictofobj[nme].gennodedict['version']['hardware'])
 	    Int_count={}
+	    m = defaultdict(list)
+	    m1 = defaultdict(list)
+	    m2 = defaultdict(list)
 	    print(nme," ",dictofobj[nme].gennodedict['version']['soft_ver'])
 	    if dictofobj[nme].gennodedict['version']['soft_ver']=='cisco_ios':
 	    #if ios_ver=='cisco_ios':	     
@@ -1484,14 +1499,14 @@ def backend(src,dst):
 	            print("Sorry empty")
 	        else:           
 	            s = 'Port      Single-Col  Multi-Col   Late-Col  Excess-Col  Carri-Sen      Runts     Giants '
-	            m = defaultdict(list)
+	            m.clear()
 	            count = -2
-	            m1 = defaultdict(list)
+	            m1.clear()
 	            for j in range(0,3):
 	                ret1 = ssh .send_command("sh interface counters errors")
 	                l2 = ret1.split("\n")
 	                for i in l2[2:]:
-	                        if(i!=s):
+	                        if('Port' not in i):
 	                            count += 1
 	                            list1 = i.split(' ')
 	                            while ("" in list1):
@@ -1499,7 +1514,7 @@ def backend(src,dst):
 	                            if(len(list1)!=0):
 	                                m[list1[0]].append(list1[1: ])
 				# print(i)
-	                        elif(i==s):
+	                        elif('Port' in i):
 	                            break
 	            count = int(count/3)
 	            count+=3
@@ -1514,6 +1529,7 @@ def backend(src,dst):
 
 	            for x in m.keys():
 	        	    m[x] = m[x] + m1[x]
+	            print(m)
 	            for x in m.keys():
 	                  k = int(len(m[x]) / 2)
 	                  for y in range(0, k):
@@ -1522,8 +1538,7 @@ def backend(src,dst):
 	            print("The errors are \n")
 	            print(m)
 
-	    if dictofobj[nme].gennodedict['version']['soft_ver']=='cisco_nxos':
-	    #if ios_ver=='cisco_ios':	     
+	    if dictofobj[nme].gennodedict['version']['soft_ver']=='cisco_nxos':     
 	        boo=True
 	        while boo:
 	            try:
@@ -1551,7 +1566,7 @@ def backend(src,dst):
   	              ret1 = ssh.send_command("sh int counters error")
   	              list_1 = ret1.split("\n")
   	              for i in list_1[4:]:
-	                   if (i != s):
+	                   if ('Port' not in i):
 	                     count += 1
 	                     list1 = i.split(' ')
 	                     while ("" in list1):
@@ -1559,7 +1574,7 @@ def backend(src,dst):
 	                     #print(list1)
 	                     if (len(list1) != 0):
 	                        m[list1[0]].append(list1[1:])
-	                   elif (i == s):
+	                   elif ('Port' in i):
 	                        break
 #print(m)
 	            count = int(count / 3)
@@ -1569,14 +1584,14 @@ def backend(src,dst):
 	            list1 = []
 	            for j in range(0,3):
 	               for i in list_1[k:]:
-	                  if i != s1:
+	                  if 'Port' not in i:
 	                    count += 1
 	                    list1 = i.split(' ')
 	                    while "" in list1:
 	                      list1.remove("")
 	                    if len(list1) != 0:
 	                      m1[list1[0]].append(list1[1:])
-	                  elif i == s1:
+	                  elif 'Port' in i:
 	                    break
 #print(m1)
 	            count = int(count / 3)
@@ -1587,13 +1602,13 @@ def backend(src,dst):
 	            list1= []
 	            for j in range(0, 3):
 	               for i in list_1[k1:]:
-	                  if i != s2:
+	                  if 'mgmt0' not in i:
 	                    list1 = i.split(' ')
 	                    while ("" in list1):
 	                       list1.remove("")
 	                    if (len(list1) != 0):
 	                       m2[list1[0]].append(list1[1:])
-	                  elif i == s2:
+	                  elif 'mgmt0' in i:
 	                     break
 
 #print(m2)
