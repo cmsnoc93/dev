@@ -1287,14 +1287,17 @@ def fetchKPI(ssh,nme,lock):
 
 
 	#------------------------------------------Neeraj-----------------------------------------------------------------------------------------------
-
+	    version = dictofobj[nme].gennodedict['version']['soft_ver']
 
 
 	    boo=True
 	    while boo:
-
+	        
 	        try:
-	            ret = ssh.send_command("show proc mem | include Total")
+	            if(version=="cisco_nxos"):
+	                ret = ssh.send_command("show proc mem shared | include totals")
+	            else:
+	                ret = ssh.send_command("show proc mem | include Total")
 	            boo=False
 	        except:
 	            print(" 9-4 Exception handled in sh proc mem | inc Pool Total. Trying Again")
@@ -1307,37 +1310,43 @@ def fetchKPI(ssh,nme,lock):
 	        elif not(isinstance(ret,str)):
 	            boo=True
 	            print("9-4 Returned value is not string, trying again ")
-	        elif ret.split()[0]!='Processor':
-	            print("9-4 Returned value on show proc mem is not proper, trying again")
-	        elif len(ret.split())<6:
-	            print("9-4 Returned value on show proc mem is not proper, trying again")
-	            boo=True
 	        else:
 	            boo=False
 	        
 
 	    def mb(str):
 	        return round(int(str)/1024/1024,2)
-	        #return 1
-	        
+	       	        
 
 	    def percent(a,b):
 	        return round((int(a)/int(b)) * 100,2)
 	        
 	    memory = dict()
 	    ret = ret.split('\n')
-	    count=0
-	    for line in ret:
-	        count=count+1
-	        if(count>2):
+	    if version == "cisco_nxos":
+	        for line in ret:
+	            temp_vals = line.split(' ')
+	            vals = []
+	            for string in temp_vals:
+	                if len(string.strip())>0:
+	                    vals.append(string)
+	            print(vals)
+	            memory.update({vals[0]:{'total':mb(vals[3]),'used':mb(vals[5]),'free':mb(vals[7]),'percent':percent(vals[5],vals[3])}}) 
 	            break;
-	        temp_vals = line.split(' ')
-	        vals = []
-	        for string in temp_vals:
-	            if len(string.strip())>0:
-	                vals.append(string)
-	        print(vals)
-	        memory.update({vals[0]:{'total':mb(vals[3]),'used':mb(vals[5]),'free':mb(vals[7]),'percent':percent(vals[5],vals[3])}})   
+
+	    else:
+	        count=0
+	        for line in ret:
+	            count=count+1
+	            if(count>2):
+	                break;
+	            temp_vals = line.split(' ')
+	            vals = []
+	            for string in temp_vals:
+	                if len(string.strip())>0:
+	                    vals.append(string)
+	            print(vals)
+	            memory.update({vals[0]:{'total':mb(vals[3]),'used':mb(vals[5]),'free':mb(vals[7]),'percent':percent(vals[5],vals[3])}})   
 
 	    dictofobj[nme].gennodedict['Process_Memory']=dict()
 	    dictofobj[nme].gennodedict['Process_Memory']=memory
@@ -1378,8 +1387,10 @@ def fetchKPI(ssh,nme,lock):
 	    boo=True
 	    while boo:
 	        try:
-	            
-	            ret = ssh.send_command("show log | i err|drop|fail|Fail|crash|MALLOCFAIL|down")
+	            if(version=="cisco_nxos"):
+	                ret=ssh.send_command("show logging | i err|drop|fail|Fail|crash|MALLOCFAIL|down")
+	            else:
+	                ret = ssh.send_command("show log | i err|drop|fail|Fail|crash|MALLOCFAIL|down")
 	            boo=False
 	        except:
 	            print("9-5 exception handled in show log. Trying again ")
@@ -1395,7 +1406,7 @@ def fetchKPI(ssh,nme,lock):
 	    count=0
 	    syslog = dict()
 	    for line in array:
-	        if line.find('%')!=-1 and (line.find("NBRCHANGE")!=-1 or line.find("ADJCHANGE")!=-1 or line.find("UPDOWN")!=-1 or line.find("duplex")!=-1):
+	        if line.find('%')!=-1:
 	            syslog.update({count:line})
 	            count+=1
 	    dictofobj[nme].gennodedict['log']=syslog
@@ -1642,6 +1653,7 @@ def fetchKPI(ssh,nme,lock):
 
 	    forjson['Interface Dictionary']=dictofobj[nme].dictint
 	    forjson['General Node']=dict()
+	    print("Added key",forjson['General Node'])
 	    forjson['General Node']=dictofobj[nme].gennodedict
 	   
 	    intojson.append(forjson) 
@@ -1671,6 +1683,9 @@ def topology():
 
 		print("src:",src)
 		print("dst:",dst)
+
+		dictofob = {}
+		intojson = []
 
 		exit,reverse,kpi_json,terminate_stat = backend(src,dst);
 		if(terminate_stat != None):
@@ -1727,6 +1742,7 @@ def topology():
 			device["device"]["interface_counters_errors"] = dict();
 			device["CPU"] = dict()
 			device["CPU"]["pid"] = dict()
+			
 			for key in device["General Node"].keys():
 				if (key == "interface_counters_errors"):
 					device["device"][key] = device["General Node"][key]
@@ -1752,10 +1768,12 @@ def topology():
 				device["Protocols"] = protocols
 			del device["General Node"]
 			device_json.append(device)
+			
 		response_list = list()
 		response_list.append(temp)
 		response_list.append(device_json)
 		response_list.append(terminate_stat)
+		kpi_json.clear(); dictofobj.clear();
 		return json.dumps(response_list)		
 		#return json.dumps(Response(responseList).__dict__)
 

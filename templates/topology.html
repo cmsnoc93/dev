@@ -98,6 +98,8 @@ hours) : "00") + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes)
 		clearTimeout(t);
 		timer_func();
 	 	document.getElementById("loader-head").style.display="block";
+				
+		
                 $http({
                     method: 'POST',
                     url: '/Topology',
@@ -290,7 +292,9 @@ sortMethod:"directed"}}};
 		var eigrp_down = new Set();
 	 	var bgp_down = new Set();
                 for (it in $scope.clicked_device.device.log){   
-                    var line = $scope.clicked_device.device.log[it]               
+                    var line = $scope.clicked_device.device.log[it];
+		    console.log("line :",line)
+		                
                     if(line.includes("DUAL")){
                         var r = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
                         var ip =  line.match(r);
@@ -331,7 +335,7 @@ sortMethod:"directed"}}};
                 // Device
                 $scope.device = $scope.cpu | $scope.memory | $scope.logs
 //Interface counter errors
-				if($scope.clicked_device.device.interface_counters_errors == null)
+				if(Object.keys($scope.clicked_device.device.interface_counters_errors).length == 0)
 		{
 		$scope.counters = 0;
 		}
@@ -420,9 +424,13 @@ sortMethod:"directed"}}};
                 }
                 $scope.eigrp = $scope.eigrp | flag;
 
+		
 		// ROUTE FLAPS
-		if($scope.clicked_device.Protocols.ip_route.length!= 0)
-		$scope.routeflaps = thresholds.red;
+		
+                for (it in $scope.clicked_device.Protocols.ip_route){   
+                    $scope.routeflaps = thresholds.red;
+		    break;
+		}
                 
                 // BGP
                 var flag = thresholds.green;
@@ -572,7 +580,7 @@ sortMethod:"directed"}}};
 
         </div>
 	
-        <div class="row-6 border">
+        <div id="kpipanel" class="row-6 border">
 	    <div ng-if="errors">
 	         <h4 class="kpi"> Connectivity Errors were detected for the given query </h4>
 		 <table class="table">
@@ -708,7 +716,7 @@ sortMethod:"directed"}}};
                             <td>TX Load: {{ interface.txload[2] }}</td>
                         </tr>
                     </table>
-                  <h6 class="sub-kpi">Interfaces with Counter Errors: <img ng-src = "{{images[counters]}}" style="width:20px"/></h6> 
+                  <h6 class="sub-kpi">Interfaces with Counter Errors:{{counters}} <img ng-src = "{{images[counters]}}" style="width:20px"/></h6> 
                   
                     <h6 class="sub-kpi green" ng-if="counters==0">There are no interfaces with Counter errors on this Path</h6>  
 
@@ -953,7 +961,7 @@ sortMethod:"directed"}}};
                     </div>
                     <div>
                         <h6 class="sub-kpi">Route Flaps in the last hour: <img ng-src = "{{images[routeflaps]}}" style="width:20px"/></h6>    
-                        <h6 class="sub-kpi green" ng-if="clicked_device.Protocols.ip_route.length == 0">No recent route flaps detected</h6>                
+                        <h6 class="sub-kpi green" ng-if="routeflaps == 0">No recent route flaps detected</h6>                
                         <div class="row" ng-repeat="flap in clicked_device.Protocols.ip_route">
                                 <div class="col">{{ flap }}</div>
                         </div>
