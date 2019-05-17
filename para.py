@@ -318,11 +318,12 @@ eigrp_flag=0
 for moo in ret:
     if moo['state']=='enabled':
         eigrp_flag=1
+        print("Enabled")
         break
 
 #bgp not checked    
 
-       ''' 
+''' 
 ret=ssh.send_command("sh feature | i bgp",use_textfsm=True)
 print(ret)
 for l in ret:
@@ -330,13 +331,14 @@ for l in ret:
     print('\n')
             
 
-
+'''
 ret=ssh.send_command("sh ip route | inc 00:",use_textfsm=True)
+print("Routes")
 print(ret)
 for l in ret:
     print(l)
     print('\n')
-   '''
+   
 neigh_wise_eig=dict()
 all_eig_neigh=set()
 

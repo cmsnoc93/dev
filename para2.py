@@ -3,7 +3,7 @@ import time
 from netmiko import ConnectHandler, SSHDetect
 from subprocess import Popen, PIPE
 import re
-ip = '10.9.10.10'
+ip = '10.9.10.9'
 username = 'rit'
 password = 'CMSnoc$1234'
 rem = paramiko.SSHClient()
@@ -102,6 +102,7 @@ now=ip
 ssh= ConnectHandler(device_type=ios_ver,host=now,username="rit",password="CMSnoc$1234")
 
 dst='10.1.2.1'
+
 '''
 if ios_ver=='cisco_nxos':
     ret=ssh.send_command("sh ip route "+dst)
@@ -183,7 +184,7 @@ if ios_ver=='cisco_nxos':
     entry_int_dst=ret[0]
     print("entry on dest "+entry_int_dst)
 
-'''
+
 
 #ret=ssh.send_command('ping 10.9.16.16')
 #ret=ret.split()
@@ -218,7 +219,13 @@ ret=ssh.send_command("ping "+dst)
 ret=ret.split()
 print(ret)
 
+'''
 
+
+if ios_ver=='cisco_nxos':
+    ret=ssh.send_command('show proc cpu | ex 0.0',use_textfsm=True)
+    #ret=ret.split()
+    print(ret)
 
 
 

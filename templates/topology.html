@@ -164,7 +164,7 @@ hours) : "00") + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes)
                     var edge = {from:response[line]["now"],to:response[line]["next"]};
                     if (edge.to == edge.from)
                         continue;
-                    edge.label = removeSmall(response[line]["entry"]) + " / " + removeSmall(response[line]["exit"]);
+                    edge.label = removeSmall(response[line]["exit"]) + " / " + removeSmall(response[line]["entry"]);
                     edgelist.push(edge)
                 }
                 var edges = new vis.DataSet(edgelist);
@@ -361,6 +361,7 @@ sortMethod:"directed"}}};
 
                 // EIGRP
                 var flag = thresholds.green;
+	        if($scope.clicked_device.device.soft_ver=='cisco_ios'){
                 for(neigh in $scope.clicked_device.Protocols.eigrp){
 		    $scope.eigrp_neigh_count = "Number of neighbors constant"
                     var srtt = $scope.clicked_device.Protocols.eigrp[neigh].srtt;
@@ -423,7 +424,17 @@ sortMethod:"directed"}}};
 		  $scope.clicked_device.Protocols.eigrp[neigh].status= status
                 }
                 $scope.eigrp = $scope.eigrp | flag;
-
+	   }
+	else if ($scope.clicked_device.device.soft_ver=='cisco_nxos'){
+	 for(neigh in $scope.clicked_device.Protocols.eigrp){ 
+		if(neigh.condition == 'perfect.')
+		  flag = flag | thresholds.green;
+		else if(neigh.condition == ' rto value fluctuating. ' || neigh.condition == ' srtt value fluctuating. ')
+		  flag = flag | thresholds.amber;
+		else if(neigh.condition == ' srtt value very high. ' || neigh.condition == ' rto value very high. ')
+		  flag = flag | thresholds.red;
+	     }
+	}
 		
 		// ROUTE FLAPS
 		
@@ -608,7 +619,7 @@ sortMethod:"directed"}}};
             <div ng-if="clicked_device">
                 <h4 class="sub-kpi">{{ clicked_device.Name[0] }}</h4>
                 <div class="kpi">Entry: {{ entries }}</div>
-                <div class="kpi">Exit: {{ exits }}</div>
+                <div class="kpi">Exit: {{ exits }}<br></div>
             
                 <div class="mt-4 border tint">
                     <h5 class="kpi"> Device Health: <img ng-src = "{{images[device]}}" style="width:20px"/></h5>
@@ -624,7 +635,7 @@ sortMethod:"directed"}}};
 			    </tr>
 			</table>
 		    </div>
-                    <div>
+                    <div ng-if = "clicked_device.device.version.soft_ver=='cisco_ios'">
                         <h6 class="sub-kpi">CPU Usage: <img ng-src = "{{images[cpu]}}" style="width:20px"/></h6>                    
                         <div class="row">
                             <div class="col"><b> CPU Total</b></div>
@@ -649,6 +660,30 @@ sortMethod:"directed"}}};
                                 <td>{{value.proc_5_sec}}%</td>
                                 <td>{{value.proc_1_min}}%</td>
                                 <td>{{value.proc_5_min}}%</td>
+                            </tr>
+                            </tbody>
+                        </table> 
+                    </div>
+<!--NXOS CPU-->
+                    <div ng-if = "clicked_device.device.version.soft_ver=='cisco_nxos'">
+                        <h6 class="sub-kpi">CPU Usage: <img ng-src = "{{images[cpu]}}" style="width:20px"/></h6>                    
+                        <div class="row">
+                            <div class="col"><b> CPU Total</b></div>
+                            <div class="col">One Second: {{ clicked_device.CPU.cpu_util.cpu_1_sec }}%</div>
+                        </div> 
+                        <table class="table table-borderless" ng-if="cpu > 0">
+                            <thead>
+                            <tr>
+                                <th>Process</th>
+                                <th>PID</th>
+                                <th>1 Sec</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="(key,value) in clicked_device.CPU.pid">
+                                <td>{{value.process}}</td>
+                                <td>{{key}}</td>
+                                <td>{{value.proc_1_sec}}%</td>
                             </tr>
                             </tbody>
                         </table> 
@@ -716,7 +751,7 @@ sortMethod:"directed"}}};
                             <td>TX Load: {{ interface.txload[2] }}</td>
                         </tr>
                     </table>
-                  <h6 class="sub-kpi">Interfaces with Counter Errors:{{counters}} <img ng-src = "{{images[counters]}}" style="width:20px"/></h6> 
+                  <h6 class="sub-kpi">Interfaces with Counter Errors: <img ng-src = "{{images[counters]}}" style="width:20px"/></h6> 
                   
                     <h6 class="sub-kpi green" ng-if="counters==0">There are no interfaces with Counter errors on this Path</h6>  
 
@@ -893,7 +928,7 @@ sortMethod:"directed"}}};
                 </div>
                 <div class="mt-4 border tint">
                     <h5 class="kpi"> Protocol Information: <img ng-src = "{{images[protocols]}}" style="width:20px"/></h5>
-                    <div ng-if="clicked_device.Protocols.eigrp">
+                    <div ng-if="clicked_device.Protocols.eigrp && clicked_device.version.soft_ver=='cisco_ios'">
                         <h6 class="sub-kpi">EIGRP Neighbors: <img ng-src = "{{images[eigrp]}}" style="width:20px"/></h6>
                         <table class="table table-borderless">
                             <thead>
@@ -927,6 +962,43 @@ sortMethod:"directed"}}};
                             </tbody>
                         </table>
                     </div>
+<!--NXOS -->
+		                       <div ng-if="clicked_device.Protocols.eigrp && clicked_device.version.soft_ver=='cisco_nxos'">
+                        <h6 class="sub-kpi">EIGRP Neighbors: <img ng-src = "{{images[eigrp]}}" style="width:20px"/></h6>
+                        <table class="table table-borderless">
+                            <thead>
+                            <tr>
+                                <th>Neighbor</th>
+                                <th>RTO (ms)</th>
+                                <th>SRTT (ms)</th>
+				<th>Hold (ms)</th>
+                                <th>Uptime</th>
+				<!--<th>Up in Iterations:</th>-->
+				<th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="neigh in clicked_device.Protocols.eigrp">
+                                
+                                <td>{{ neigh.e_neigh }}</td>
+				<td>{{ neigh.e_rto }}</td>
+                                <td>{{ neigh.e_srtt }}</td>
+                                <td>{{ neigh.e_hold }}</td>
+				<td>{{ neigh.e_uptime }}</td>
+                                <!--<td>{{ neigh.iteration }}</td>-->
+				<td>{{ neigh.condition }}</td>
+				
+			        
+                            </tr>
+			    <div><h6 class="">{{ eigrp_neigh_count }} </h6></div>
+			    <div ng-if="eigrp_down.length !=0" ng-repeat="neigh in eigrp_down">
+                                <h6 class="red">Neighbor Down : {{ neigh }}</h6></div>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
                     <div ng-if="clicked_device.Protocols.bgp">
                         <h6 class="sub-kpi">BGP Neighbors: <img ng-src = "{{images[bgp]}}" style="width:20px"/></h6>
 			<h6> {{ clicked_device.Protocols.bgp.Number_of_neigh }} </h6>
