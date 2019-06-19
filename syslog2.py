@@ -1061,11 +1061,9 @@ def fetchKPI(ssh,nme,lock,path_no):
 	    # SHOW PROC CPU
 	    fname=nme+".txt"
 	    fhand=open(fname,'w')
-
 	    version = dictofobj[nme].gennodedict['version']['soft_ver']
-	    fhand.write("<!doctype html><html><head> <title>"+nme+"</title></style></head><body>")
 	    fhand.write("Version "+version+"\n\n")
-	    if version != 'cisco_nxos':	    
+	    if version == 'cisco_ios':	    
 	     boo=True
 	     while boo:
 	         try:
@@ -1132,7 +1130,6 @@ def fetchKPI(ssh,nme,lock,path_no):
 	     fhand.write("Show proc cpu | ex 0.0 \n")
 	     fhand.write(str(ret))
 	     fhand.write("\n\n")
-	     ker_flag=0
 	     for line in ret:
 
 	         cpu={}
@@ -1140,27 +1137,15 @@ def fetchKPI(ssh,nme,lock,path_no):
 	             cpu['user']=line['user']
 	             cpu['kernel']=line['kernel']
 	             cpu['idle']=line['idle']
-	             dictofobj[nme].gennodedict['CPU']=cpu   
-	             ker_flag=1             
+	             dictofobj[nme].gennodedict['CPU']=cpu                
 	         else:
 	             combine={}
 	             if 'process' in line.keys():
 	                 combine['process']=line['process']
 	             if 'proc_1_sec' in line.keys():
 	                 combine['proc_1_sec']=line['proc_1_sec']
-	             dictofobj[nme].gennodedict[line['pid']]=combine 
-	     if ker_flag==0:
-	         ret=ssh.send_command("show proc cpu | inc kernel") 
-	         ret=ret.split()
-	         fhand.write("Show proc cpu | inc kernel\n")
-	         fhand.write(str(ret))
-	         print(ret)
-	         fhand.write("\n\n")
-	         cpu={}
-	         cpu['kernel']=ret[ret.index('kernel,')-1][:-1]
-	         cpu['user']=ret[ret.index('user,')-1][:-1]
-	         cpu['idle']=ret[ret.index('idle')-1][:-1]
-	         dictofobj[nme].gennodedict['CPU']=cpu
+	             dictofobj[nme].gennodedict[line['pid']]=combine      
+	         
 	    # SHOW IP ROUTE
 	    version = dictofobj[nme].gennodedict['version']['soft_ver']
 	    print("VERSION ",version)
@@ -1614,8 +1599,8 @@ def fetchKPI(ssh,nme,lock,path_no):
 	    
 	    
 	    time1=time1.split(" ")[3:5]
-	    day = time1[0]+" "+time1[1]
-	    print("day: ",day)
+	    time1 = time1[0]+" "+time1[1]
+	    print(time1)
 	    #ret = src.send_command("show log | i down|Down|up|Up|err|fail|Fail|drop|crash|MALLOCFAIL|duplex",time[0]+" "+str((int(time[1])-1)))
 
 	    boo=True
@@ -1639,37 +1624,16 @@ def fetchKPI(ssh,nme,lock,path_no):
 	    
 	    array = ret.split('\n')
 
-	    
-	    fhand.write("Current Day: "+day)
-	    
-	    flaps=dict()
+	    fhand.write(ret)
+	    fhand.write("\n\n")
 	    count=0
-	    limit = 30 # Fetch the last N log
 	    syslog = dict()
 	    for line in array:
-	        if line.find("Syslog logging")==-1:
-	            if line.find('NBRCHANGE')!=-1:
-	                print(line)
-	                ip = re.search(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}',line).group()
-	                print(ip)
-	                if not ip in flaps:
-	                    flaps[ip]=1
-	                else:
-	                    flaps[ip]+=1
-	                
+	        if line.find('%')!=-1:
 	            syslog.update({count:line})
 	            count+=1
-	            fhand.write(str(count)+": "+line+"\n")
-	            limit=limit - 1
-	            if limit == 0:
-	                break;
-	            
 	    dictofobj[nme].gennodedict['log']=syslog
-	    fhand.write('\n'+json.dumps(flaps))
 	    print(syslog)
-	    if(count == 0):
-	        fhand.write("\nNo Logs")
-	    fhand.write("\n\n")
 
 
 	#---------------------------------------------------------------------------------------------------------------------------------------
@@ -1704,7 +1668,7 @@ def fetchKPI(ssh,nme,lock,path_no):
 	            else:
 	                boo=False
 	        fhand.write("Show spanning-tree active\n")
-	        fhand.write(output_span)
+	        fhand.write(ret)
 	        fhand.write("\n\n")
 	        l=output_span.split('\n')
 	        print("Spanning LIST")
@@ -2040,8 +2004,6 @@ def fetchKPI(ssh,nme,lock,path_no):
 	        intojson2.append(forjson)
 
 	    ssh.disconnect()
-	    fhand.close()
-	    
 
 
 

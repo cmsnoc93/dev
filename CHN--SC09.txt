@@ -1,0 +1,68 @@
+<!doctype html><html><head> <title>CHN--SC09</title></style></head><body>Version cisco_nxos
+
+Show proc cpu | ex 0.0 
+[{'user': '', 'idle': '', 'cpu_1_sec': '', 'proc_1_sec': '10.25', 'interrupts': '', 'kernel': '', 'pid': '3487', 'process': 'bcm_usd'}, {'user': '', 'idle': '', 'cpu_1_sec': '', 'proc_1_sec': '3.40', 'interrupts': '', 'kernel': '', 'pid': '3522', 'process': 'statsclient'}, {'user': '5.00', 'idle': '93.50', 'cpu_1_sec': '', 'proc_1_sec': '', 'interrupts': '', 'kernel': '1.50', 'pid': '', 'process': ''}]
+
+Show ip route | i 00: 
+
+
+Show feature | i eigrp 
+[{'instance': '1', 'name': 'eigrp', 'state': 'enabled'}, {'instance': '2', 'name': 'eigrp', 'state': 'enabled (not-running)'}, {'instance': '3', 'name': 'eigrp', 'state': 'enabled (not-running)'}, {'instance': '4', 'name': 'eigrp', 'state': 'enabled (not-running)'}]
+
+Show proc mem shared | inc totals
+Shared memory totals - Size: 472 MB, Used: 26 MB, Available: 446 MB
+
+show logging | i err|drop|fail|Fail|crash|MALLOCFAIL|down
+Current Day: Jun 121: 3(errors)               4(warnings)     5(notifications)
+2: 2010 Mar 15 07:54:13 CHN--SC09 %ETHPORT-5-IF_DOWN_LINK_FAILURE: Interface Ethernet1/3 is down (Link failure)
+3: 2010 Mar 15 07:54:14 CHN--SC09 %EIGRP-5-NBRCHANGE_DUAL:  eigrp-200 [25252] (default-base) IP-EIGRP(0) 200: Neighbor 10.3.9.3 (Ethernet1/3) is down: interface status down
+4: 2010 Mar 15 13:10:20 CHN--SC09 %ETHPORT-5-IF_DOWN_LINK_FAILURE: Interface Ethernet1/4 is down (Link failure)
+5: 2010 Mar 15 13:10:21 CHN--SC09 %EIGRP-5-NBRCHANGE_DUAL:  eigrp-200 [25252] (default-base) IP-EIGRP(0) 200: Neighbor 10.9.10.10 (Ethernet1/4) is down: interface status down
+6: 2010 Mar 17 05:38:44 CHN--SC09 %AUTHPRIV-3-SYSTEM_MSG: pam_aaa:Authentication failed for user admin from console - login
+
+{"10.9.10.10": 1, "10.3.9.3": 1}
+
+Show spanning-tree active
+No spanning tree instance exists.
+
+Show int counters error | ex 0
+
+--------------------------------------------------------------------------------
+Port          Align-Err    FCS-Err   Xmit-Err    Rcv-Err  UnderSize OutDiscards
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Port         Single-Col  Multi-Col   Late-Col  Exces-Col  Carri-Sen       Runts
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Port          Giants SQETest-Err Deferred-Tx IntMacTx-Er IntMacRx-Er Symbol-Err
+--------------------------------------------------------------------------------
+
+Show interface Eth1/4 
+[{'hardware_type': '100/1000/10000 Ethernet', 'address': '885a.92fb.1741', 'frame': '', 'input_errors': '', 'mtu': '1500', 'ip_address': '10.9.10.9/24', 'input_packets': '3558539', 'bandwidth': '1000000 Kbit', 'overrun': '', 'reliability': '255/255', 'delay': '10 usec', 'late_collision': '0', 'admin_state': '', 'bia': '885a.92fb.170b', 'interf_reset': '8', 'interface': 'Ethernet1/4', 'giants': '', 'link_status': 'up', 'underrun': '', 'txload': '1/255', 'collisions': '0', 'rxload': '1/255', 'output_errors': '0', 'description': '', 'output_packets': '3151539', 'speed': '1000 Mb/s', 'duplex': 'full-duplex', 'encapsulation': 'ARPA'}]
+
+Show interface Eth1/4 
+[{'hardware_type': '100/1000/10000 Ethernet', 'address': '885a.92fb.1741', 'frame': '', 'input_errors': '', 'mtu': '1500', 'ip_address': '10.9.10.9/24', 'input_packets': '3558540', 'bandwidth': '1000000 Kbit', 'overrun': '', 'reliability': '255/255', 'delay': '10 usec', 'late_collision': '0', 'admin_state': '', 'bia': '885a.92fb.170b', 'interf_reset': '8', 'interface': 'Ethernet1/4', 'giants': '', 'link_status': 'up', 'underrun': '', 'txload': '1/255', 'collisions': '0', 'rxload': '1/255', 'output_errors': '0', 'description': '', 'output_packets': '3151539', 'speed': '1000 Mb/s', 'duplex': 'full-duplex', 'encapsulation': 'ARPA'}]
+
+Show interface Eth1/4 
+[{'hardware_type': '100/1000/10000 Ethernet', 'address': '885a.92fb.1741', 'frame': '', 'input_errors': '', 'mtu': '1500', 'ip_address': '10.9.10.9/24', 'input_packets': '3558540', 'bandwidth': '1000000 Kbit', 'overrun': '', 'reliability': '255/255', 'delay': '10 usec', 'late_collision': '0', 'admin_state': '', 'bia': '885a.92fb.170b', 'interf_reset': '8', 'interface': 'Ethernet1/4', 'giants': '', 'link_status': 'up', 'underrun': '', 'txload': '1/255', 'collisions': '0', 'rxload': '1/255', 'output_errors': '0', 'description': '', 'output_packets': '3151539', 'speed': '1000 Mb/s', 'duplex': 'full-duplex', 'encapsulation': 'ARPA'}]
+
+Show interface Eth1/3 
+[{'hardware_type': '100/1000/10000 Ethernet', 'address': '885a.92fb.1741', 'frame': '', 'input_errors': '', 'mtu': '1500', 'ip_address': '10.3.9.9/24', 'input_packets': '4389996', 'bandwidth': '1000000 Kbit', 'overrun': '', 'reliability': '255/255', 'delay': '10 usec', 'late_collision': '0', 'admin_state': '', 'bia': '885a.92fb.170a', 'interf_reset': '3', 'interface': 'Ethernet1/3', 'giants': '', 'link_status': 'up', 'underrun': '', 'txload': '1/255', 'collisions': '0', 'rxload': '1/255', 'output_errors': '0', 'description': '', 'output_packets': '4489318', 'speed': '1000 Mb/s', 'duplex': 'full-duplex', 'encapsulation': 'ARPA'}]
+
+Show interface Eth1/3 
+[{'hardware_type': '100/1000/10000 Ethernet', 'address': '885a.92fb.1741', 'frame': '', 'input_errors': '', 'mtu': '1500', 'ip_address': '10.3.9.9/24', 'input_packets': '4390003', 'bandwidth': '1000000 Kbit', 'overrun': '', 'reliability': '255/255', 'delay': '10 usec', 'late_collision': '0', 'admin_state': '', 'bia': '885a.92fb.170a', 'interf_reset': '3', 'interface': 'Ethernet1/3', 'giants': '', 'link_status': 'up', 'underrun': '', 'txload': '1/255', 'collisions': '0', 'rxload': '1/255', 'output_errors': '0', 'description': '', 'output_packets': '4489325', 'speed': '1000 Mb/s', 'duplex': 'full-duplex', 'encapsulation': 'ARPA'}]
+
+Show interface Eth1/3 
+[{'hardware_type': '100/1000/10000 Ethernet', 'address': '885a.92fb.1741', 'frame': '', 'input_errors': '', 'mtu': '1500', 'ip_address': '10.3.9.9/24', 'input_packets': '4390019', 'bandwidth': '1000000 Kbit', 'overrun': '', 'reliability': '255/255', 'delay': '10 usec', 'late_collision': '0', 'admin_state': '', 'bia': '885a.92fb.170a', 'interf_reset': '3', 'interface': 'Ethernet1/3', 'giants': '', 'link_status': 'up', 'underrun': '', 'txload': '1/255', 'collisions': '0', 'rxload': '1/255', 'output_errors': '0', 'description': '', 'output_packets': '4489338', 'speed': '1000 Mb/s', 'duplex': 'full-duplex', 'encapsulation': 'ARPA'}]
+
+Show interface Eth1/5 
+[{'hardware_type': '100/1000/10000 Ethernet', 'address': '885a.92fb.1741', 'frame': '', 'input_errors': '', 'mtu': '1500', 'ip_address': '10.9.15.9/24', 'input_packets': '3159637', 'bandwidth': '1000000 Kbit', 'overrun': '', 'reliability': '255/255', 'delay': '10 usec', 'late_collision': '0', 'admin_state': '', 'bia': '885a.92fb.170c', 'interf_reset': '3', 'interface': 'Ethernet1/5', 'giants': '', 'link_status': 'up', 'underrun': '', 'txload': '1/255', 'collisions': '0', 'rxload': '1/255', 'output_errors': '0', 'description': '', 'output_packets': '2750691', 'speed': '1000 Mb/s', 'duplex': 'full-duplex', 'encapsulation': 'ARPA'}]
+
+Show interface Eth1/5 
+[{'hardware_type': '100/1000/10000 Ethernet', 'address': '885a.92fb.1741', 'frame': '', 'input_errors': '', 'mtu': '1500', 'ip_address': '10.9.15.9/24', 'input_packets': '3159637', 'bandwidth': '1000000 Kbit', 'overrun': '', 'reliability': '255/255', 'delay': '10 usec', 'late_collision': '0', 'admin_state': '', 'bia': '885a.92fb.170c', 'interf_reset': '3', 'interface': 'Ethernet1/5', 'giants': '', 'link_status': 'up', 'underrun': '', 'txload': '1/255', 'collisions': '0', 'rxload': '1/255', 'output_errors': '0', 'description': '', 'output_packets': '2750692', 'speed': '1000 Mb/s', 'duplex': 'full-duplex', 'encapsulation': 'ARPA'}]
+
+Show interface Eth1/5 
+[{'hardware_type': '100/1000/10000 Ethernet', 'address': '885a.92fb.1741', 'frame': '', 'input_errors': '', 'mtu': '1500', 'ip_address': '10.9.15.9/24', 'input_packets': '3159638', 'bandwidth': '1000000 Kbit', 'overrun': '', 'reliability': '255/255', 'delay': '10 usec', 'late_collision': '0', 'admin_state': '', 'bia': '885a.92fb.170c', 'interf_reset': '3', 'interface': 'Ethernet1/5', 'giants': '', 'link_status': 'up', 'underrun': '', 'txload': '1/255', 'collisions': '0', 'rxload': '1/255', 'output_errors': '0', 'description': '', 'output_packets': '2750692', 'speed': '1000 Mb/s', 'duplex': 'full-duplex', 'encapsulation': 'ARPA'}]
+
