@@ -1,7 +1,7 @@
 <!doctype html><html><head> <title>MUM--SC12</title></style></head><body>Version cisco_ios
 
 Show proc cpu | ex 0.0
-[{'process': '', 'cpu_5_min': '5', 'pid': '', 'proc_5_min': '', 'proc_5_sec': '', 'cpu_5_sec': '4', 'proc_1_min': '', 'cpu_1_min': '5', 'interrupts': '0'}]
+[{'cpu_5_sec': '4', 'proc_5_min': '', 'interrupts': '0', 'proc_5_sec': '', 'process': '', 'cpu_5_min': '5', 'pid': '', 'proc_1_min': '', 'cpu_1_min': '5'}]
 
 Show ip protocols | i bgp: 
 
@@ -14,34 +14,34 @@ Show ip eigrp neigh
 EIGRP-IPv4 neighbors for process 300
 H   Address                 Interface       Hold Uptime   SRTT   RTO  Q  Seq
                                             (sec)         (ms)       Cnt Num
-2   10.6.12.6               Fa0/4             12 1w0d        1   200  0  70
-1   10.11.12.11             Fa0/2             13 6w2d        1   200  0  1082
-0   10.12.18.18             Fa0/1             10 6w2d        1   200  0  663
+2   10.6.12.6               Fa0/4             14 1w2d        1   200  0  78
+1   10.11.12.11             Fa0/2             12 6w4d        1   200  0  1097
+0   10.12.18.18             Fa0/1             13 6w4d        1   200  0  675
 
 Show ip eigrp neigh 
 EIGRP-IPv4 neighbors for process 300
 H   Address                 Interface       Hold Uptime   SRTT   RTO  Q  Seq
                                             (sec)         (ms)       Cnt Num
-2   10.6.12.6               Fa0/4             10 1w0d        1   200  0  70
-1   10.11.12.11             Fa0/2             11 6w2d        1   200  0  1082
-0   10.12.18.18             Fa0/1             14 6w2d        1   200  0  663
+2   10.6.12.6               Fa0/4             13 1w2d        1   200  0  78
+1   10.11.12.11             Fa0/2             10 6w4d        1   200  0  1097
+0   10.12.18.18             Fa0/1             12 6w4d        1   200  0  675
 
 Show ip eigrp neigh 
 EIGRP-IPv4 neighbors for process 300
 H   Address                 Interface       Hold Uptime   SRTT   RTO  Q  Seq
                                             (sec)         (ms)       Cnt Num
-2   10.6.12.6               Fa0/4             13 1w0d        1   200  0  70
-1   10.11.12.11             Fa0/2             10 6w2d        1   200  0  1082
-0   10.12.18.18             Fa0/1             12 6w2d        1   200  0  663
+2   10.6.12.6               Fa0/4             11 1w2d        1   200  0  78
+1   10.11.12.11             Fa0/2             13 6w4d        1   200  0  1097
+0   10.12.18.18             Fa0/1             10 6w4d        1   200  0  675
 
 Show proc mem | inc totals
-Processor Pool Total:   86665460 Used:   19819848 Free:   66845612
+Processor Pool Total:   86665460 Used:   19819180 Free:   66846280
       I/O Pool Total:    8380416 Used:    3596700 Free:    4783716
 Driver te Pool Total:    1048576 Used:         40 Free:    1048536
-                                 23404784 Total
+                                 23404196 Total
 
 show log | i err|drop|fail|Fail|crash|MALLOCFAIL|down
-Current Day: Feb 151: 00:00:23: %LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan1, changed state to down
+Current Day: Feb 171: 00:00:23: %LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan1, changed state to down
 2: 5w1d: %DUAL-5-NBRCHANGE: EIGRP-IPv4:(254) 300: Neighbor 10.6.12.6 (FastEthernet0/4) is down: holding time expired
 3: 5w1d: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/4, changed state to down
 4: 5w1d: %LINK-3-UPDOWN: Interface FastEthernet0/4, changed state to down
@@ -60,20 +60,20 @@ Port        Align-Err     FCS-Err    Xmit-Err     Rcv-Err  UnderSize  OutDiscard
 Port      Single-Col  Multi-Col   Late-Col  Excess-Col  Carri-Sen      Runts     Giants 
 
 Show interface FastEthernet0/4 
-[{'reliability': '255/255', 'ignored': '0', 'ip_address': '10.6.12.12/24', 'txload': '1/255', 'hardware_type': 'Fast Ethernet', 'bia': '2893.fec0.7444', 'description': '', 'output_errors': '0', 'late_collision': '0', 'mtu': '1504', 'collisions': '0', 'duplex': 'Full-duplex', 'last_output_hang': 'never', 'input_rate': '3000', 'crc': '0', 'protocol_status': 'up (connected)', 'address': '2893.fec0.7444', 'interface': 'FastEthernet0/4', 'queue_strategy': 'fifo', 'overrun': '0', 'output_drops': '0', 'input_errors': '0', 'rxload': '1/255', 'encapsulation': 'ARPA', 'link_status': 'up', 'bandwidth': '100000 Kbit', 'output_packets': '1413559', 'last_input': '00:00:00', 'delay': '100 usec', 'last_output': '00:00:02', 'interf_reset': '0', 'frame': '0', 'speed': '100Mb/s', 'input_packets': '922625', 'output_rate': '0'}]
+[{'rxload': '1/255', 'txload': '1/255', 'bandwidth': '100000 Kbit', 'frame': '0', 'input_packets': '965286', 'last_output': '00:00:01', 'input_rate': '4000', 'overrun': '0', 'speed': '100Mb/s', 'input_errors': '0', 'interf_reset': '0', 'encapsulation': 'ARPA', 'output_packets': '1476085', 'collisions': '0', 'last_output_hang': 'never', 'protocol_status': 'up (connected)', 'mtu': '1504', 'output_drops': '0', 'output_errors': '0', 'delay': '100 usec', 'bia': '2893.fec0.7444', 'description': '', 'crc': '0', 'address': '2893.fec0.7444', 'hardware_type': 'Fast Ethernet', 'output_rate': '0', 'ip_address': '10.6.12.12/24', 'last_input': '00:00:00', 'reliability': '255/255', 'late_collision': '0', 'queue_strategy': 'fifo', 'ignored': '0', 'duplex': 'Full-duplex', 'interface': 'FastEthernet0/4', 'link_status': 'up'}]
 
 Show interface FastEthernet0/4 
-[{'reliability': '255/255', 'ignored': '0', 'ip_address': '10.6.12.12/24', 'txload': '1/255', 'hardware_type': 'Fast Ethernet', 'bia': '2893.fec0.7444', 'description': '', 'output_errors': '0', 'late_collision': '0', 'mtu': '1504', 'collisions': '0', 'duplex': 'Full-duplex', 'last_output_hang': 'never', 'input_rate': '3000', 'crc': '0', 'protocol_status': 'up (connected)', 'address': '2893.fec0.7444', 'interface': 'FastEthernet0/4', 'queue_strategy': 'fifo', 'overrun': '0', 'output_drops': '0', 'input_errors': '0', 'rxload': '1/255', 'encapsulation': 'ARPA', 'link_status': 'up', 'bandwidth': '100000 Kbit', 'output_packets': '1413559', 'last_input': '00:00:00', 'delay': '100 usec', 'last_output': '00:00:03', 'interf_reset': '0', 'frame': '0', 'speed': '100Mb/s', 'input_packets': '922661', 'output_rate': '0'}]
+[{'rxload': '1/255', 'txload': '1/255', 'bandwidth': '100000 Kbit', 'frame': '0', 'input_packets': '965314', 'last_output': '00:00:03', 'input_rate': '5000', 'overrun': '0', 'speed': '100Mb/s', 'input_errors': '0', 'interf_reset': '0', 'encapsulation': 'ARPA', 'output_packets': '1476085', 'collisions': '0', 'last_output_hang': 'never', 'protocol_status': 'up (connected)', 'mtu': '1504', 'output_drops': '0', 'output_errors': '0', 'delay': '100 usec', 'bia': '2893.fec0.7444', 'description': '', 'crc': '0', 'address': '2893.fec0.7444', 'hardware_type': 'Fast Ethernet', 'output_rate': '0', 'ip_address': '10.6.12.12/24', 'last_input': '00:00:00', 'reliability': '255/255', 'late_collision': '0', 'queue_strategy': 'fifo', 'ignored': '0', 'duplex': 'Full-duplex', 'interface': 'FastEthernet0/4', 'link_status': 'up'}]
 
 Show interface FastEthernet0/4 
-[{'reliability': '255/255', 'ignored': '0', 'ip_address': '10.6.12.12/24', 'txload': '1/255', 'hardware_type': 'Fast Ethernet', 'bia': '2893.fec0.7444', 'description': '', 'output_errors': '0', 'late_collision': '0', 'mtu': '1504', 'collisions': '0', 'duplex': 'Full-duplex', 'last_output_hang': 'never', 'input_rate': '4000', 'crc': '0', 'protocol_status': 'up (connected)', 'address': '2893.fec0.7444', 'interface': 'FastEthernet0/4', 'queue_strategy': 'fifo', 'overrun': '0', 'output_drops': '0', 'input_errors': '0', 'rxload': '1/255', 'encapsulation': 'ARPA', 'link_status': 'up', 'bandwidth': '100000 Kbit', 'output_packets': '1413562', 'last_input': '00:00:00', 'delay': '100 usec', 'last_output': '00:00:00', 'interf_reset': '0', 'frame': '0', 'speed': '100Mb/s', 'input_packets': '922699', 'output_rate': '0'}]
+[{'rxload': '1/255', 'txload': '1/255', 'bandwidth': '100000 Kbit', 'frame': '0', 'input_packets': '965350', 'last_output': '00:00:00', 'input_rate': '5000', 'overrun': '0', 'speed': '100Mb/s', 'input_errors': '0', 'interf_reset': '0', 'encapsulation': 'ARPA', 'output_packets': '1476085', 'collisions': '0', 'last_output_hang': 'never', 'protocol_status': 'up (connected)', 'mtu': '1504', 'output_drops': '0', 'output_errors': '0', 'delay': '100 usec', 'bia': '2893.fec0.7444', 'description': '', 'crc': '0', 'address': '2893.fec0.7444', 'hardware_type': 'Fast Ethernet', 'output_rate': '0', 'ip_address': '10.6.12.12/24', 'last_input': '00:00:00', 'reliability': '255/255', 'late_collision': '0', 'queue_strategy': 'fifo', 'ignored': '0', 'duplex': 'Full-duplex', 'interface': 'FastEthernet0/4', 'link_status': 'up'}]
 
 Show interface FastEthernet0/2 
-[{'reliability': '255/255', 'ignored': '0', 'ip_address': '10.11.12.12/24', 'txload': '1/255', 'hardware_type': 'Fast Ethernet', 'bia': '2893.fec0.7442', 'description': '', 'output_errors': '0', 'late_collision': '0', 'mtu': '1504', 'collisions': '0', 'duplex': 'Full-duplex', 'last_output_hang': 'never', 'input_rate': '0', 'crc': '0', 'protocol_status': 'up (connected)', 'address': '2893.fec0.7442', 'interface': 'FastEthernet0/2', 'queue_strategy': 'fifo', 'overrun': '0', 'output_drops': '0', 'input_errors': '0', 'rxload': '1/255', 'encapsulation': 'ARPA', 'link_status': 'up', 'bandwidth': '100000 Kbit', 'output_packets': '1400832', 'last_input': '00:00:04', 'delay': '100 usec', 'last_output': '00:00:00', 'interf_reset': '0', 'frame': '0', 'speed': '100Mb/s', 'input_packets': '890063', 'output_rate': '4000'}]
+[{'rxload': '1/255', 'txload': '1/255', 'bandwidth': '100000 Kbit', 'frame': '0', 'input_packets': '930401', 'last_output': '00:00:00', 'input_rate': '0', 'overrun': '0', 'speed': '100Mb/s', 'input_errors': '0', 'interf_reset': '0', 'encapsulation': 'ARPA', 'output_packets': '1466220', 'collisions': '0', 'last_output_hang': 'never', 'protocol_status': 'up (connected)', 'mtu': '1504', 'output_drops': '0', 'output_errors': '0', 'delay': '100 usec', 'bia': '2893.fec0.7442', 'description': '', 'crc': '0', 'address': '2893.fec0.7442', 'hardware_type': 'Fast Ethernet', 'output_rate': '5000', 'ip_address': '10.11.12.12/24', 'last_input': '00:00:02', 'reliability': '255/255', 'late_collision': '0', 'queue_strategy': 'fifo', 'ignored': '0', 'duplex': 'Full-duplex', 'interface': 'FastEthernet0/2', 'link_status': 'up'}]
 
 Show interface FastEthernet0/2 
-[{'reliability': '255/255', 'ignored': '0', 'ip_address': '10.11.12.12/24', 'txload': '1/255', 'hardware_type': 'Fast Ethernet', 'bia': '2893.fec0.7442', 'description': '', 'output_errors': '0', 'late_collision': '0', 'mtu': '1504', 'collisions': '0', 'duplex': 'Full-duplex', 'last_output_hang': 'never', 'input_rate': '0', 'crc': '0', 'protocol_status': 'up (connected)', 'address': '2893.fec0.7442', 'interface': 'FastEthernet0/2', 'queue_strategy': 'fifo', 'overrun': '0', 'output_drops': '0', 'input_errors': '0', 'rxload': '1/255', 'encapsulation': 'ARPA', 'link_status': 'up', 'bandwidth': '100000 Kbit', 'output_packets': '1400869', 'last_input': '00:00:01', 'delay': '100 usec', 'last_output': '00:00:00', 'interf_reset': '0', 'frame': '0', 'speed': '100Mb/s', 'input_packets': '890064', 'output_rate': '4000'}]
+[{'rxload': '1/255', 'txload': '1/255', 'bandwidth': '100000 Kbit', 'frame': '0', 'input_packets': '930401', 'last_output': '00:00:00', 'input_rate': '0', 'overrun': '0', 'speed': '100Mb/s', 'input_errors': '0', 'interf_reset': '0', 'encapsulation': 'ARPA', 'output_packets': '1466255', 'collisions': '0', 'last_output_hang': 'never', 'protocol_status': 'up (connected)', 'mtu': '1504', 'output_drops': '0', 'output_errors': '0', 'delay': '100 usec', 'bia': '2893.fec0.7442', 'description': '', 'crc': '0', 'address': '2893.fec0.7442', 'hardware_type': 'Fast Ethernet', 'output_rate': '6000', 'ip_address': '10.11.12.12/24', 'last_input': '00:00:03', 'reliability': '255/255', 'late_collision': '0', 'queue_strategy': 'fifo', 'ignored': '0', 'duplex': 'Full-duplex', 'interface': 'FastEthernet0/2', 'link_status': 'up'}]
 
 Show interface FastEthernet0/2 
-[{'reliability': '255/255', 'ignored': '0', 'ip_address': '10.11.12.12/24', 'txload': '1/255', 'hardware_type': 'Fast Ethernet', 'bia': '2893.fec0.7442', 'description': '', 'output_errors': '0', 'late_collision': '0', 'mtu': '1504', 'collisions': '0', 'duplex': 'Full-duplex', 'last_output_hang': 'never', 'input_rate': '0', 'crc': '0', 'protocol_status': 'up (connected)', 'address': '2893.fec0.7442', 'interface': 'FastEthernet0/2', 'queue_strategy': 'fifo', 'overrun': '0', 'output_drops': '0', 'input_errors': '0', 'rxload': '1/255', 'encapsulation': 'ARPA', 'link_status': 'up', 'bandwidth': '100000 Kbit', 'output_packets': '1400903', 'last_input': '00:00:03', 'delay': '100 usec', 'last_output': '00:00:00', 'interf_reset': '0', 'frame': '0', 'speed': '100Mb/s', 'input_packets': '890064', 'output_rate': '4000'}]
+[{'rxload': '1/255', 'txload': '1/255', 'bandwidth': '100000 Kbit', 'frame': '0', 'input_packets': '930402', 'last_output': '00:00:00', 'input_rate': '0', 'overrun': '0', 'speed': '100Mb/s', 'input_errors': '0', 'interf_reset': '0', 'encapsulation': 'ARPA', 'output_packets': '1466292', 'collisions': '0', 'last_output_hang': 'never', 'protocol_status': 'up (connected)', 'mtu': '1504', 'output_drops': '0', 'output_errors': '0', 'delay': '100 usec', 'bia': '2893.fec0.7442', 'description': '', 'crc': '0', 'address': '2893.fec0.7442', 'hardware_type': 'Fast Ethernet', 'output_rate': '6000', 'ip_address': '10.11.12.12/24', 'last_input': '00:00:00', 'reliability': '255/255', 'late_collision': '0', 'queue_strategy': 'fifo', 'ignored': '0', 'duplex': 'Full-duplex', 'interface': 'FastEthernet0/2', 'link_status': 'up'}]
 

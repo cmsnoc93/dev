@@ -1,7 +1,7 @@
 <!doctype html><html><head> <title>BGL--SC07</title></style></head><body>Version cisco_ios
 
 Show proc cpu | ex 0.0
-[{'proc_5_sec': '', 'proc_1_min': '', 'interrupts': '0', 'pid': '', 'cpu_5_min': '5', 'cpu_5_sec': '4', 'cpu_1_min': '5', 'process': '', 'proc_5_min': ''}]
+[{'pid': '88', 'proc_5_min': '0.13', 'interrupts': '0', 'cpu_5_sec': '5', 'cpu_5_min': '6', 'proc_5_sec': '0.79', 'cpu_1_min': '7', 'proc_1_min': '0.18', 'process': 'HULC Tcam Memory '}]
 
 Show ip protocols | i bgp: 
 
@@ -14,34 +14,34 @@ Show ip eigrp neigh
 EIGRP-IPv4 Neighbors for AS(100)
 H   Address                 Interface       Hold Uptime   SRTT   RTO  Q  Seq
                                             (sec)         (ms)       Cnt Num
-3   10.7.14.14              Gi0/1             12 6w3d        6   200  0  217
-2   10.1.7.1                Gi0/6             14 6w3d        1   200  0  321
-1   10.7.8.8                Gi0/3             11 6w3d        3   200  0  476
-0   10.7.13.13              Gi0/2             10 6w4d        1   200  0  338
+3   10.7.14.14              Gi0/1             11 6w4d        6   200  0  217
+2   10.1.7.1                Gi0/6             11 6w4d        1   200  0  321
+1   10.7.8.8                Gi0/3             11 6w4d        3   200  0  476
+0   10.7.13.13              Gi0/2             11 6w4d        1   200  0  338
 
 Show ip eigrp neigh 
 EIGRP-IPv4 Neighbors for AS(100)
 H   Address                 Interface       Hold Uptime   SRTT   RTO  Q  Seq
                                             (sec)         (ms)       Cnt Num
-3   10.7.14.14              Gi0/1             14 6w3d        6   200  0  217
-2   10.1.7.1                Gi0/6             12 6w3d        1   200  0  321
-1   10.7.8.8                Gi0/3             14 6w3d        3   200  0  476
-0   10.7.13.13              Gi0/2             13 6w4d        1   200  0  338
+3   10.7.14.14              Gi0/1             14 6w4d        6   200  0  217
+2   10.1.7.1                Gi0/6             14 6w4d        1   200  0  321
+1   10.7.8.8                Gi0/3             14 6w4d        3   200  0  476
+0   10.7.13.13              Gi0/2             14 6w4d        1   200  0  338
 
 Show ip eigrp neigh 
 EIGRP-IPv4 Neighbors for AS(100)
 H   Address                 Interface       Hold Uptime   SRTT   RTO  Q  Seq
                                             (sec)         (ms)       Cnt Num
-3   10.7.14.14              Gi0/1             13 6w3d        6   200  0  217
-2   10.1.7.1                Gi0/6             11 6w3d        1   200  0  321
-1   10.7.8.8                Gi0/3             13 6w3d        3   200  0  476
+3   10.7.14.14              Gi0/1             13 6w4d        6   200  0  217
+2   10.1.7.1                Gi0/6             12 6w4d        1   200  0  321
+1   10.7.8.8                Gi0/3             13 6w4d        3   200  0  476
 0   10.7.13.13              Gi0/2             12 6w4d        1   200  0  338
 
 Show proc mem | inc totals
-Processor Pool Total:   66378820 Used:   24595072 Free:   41783748
+Processor Pool Total:   66378820 Used:   24595952 Free:   41782868
       I/O Pool Total:    8388608 Used:    3608904 Free:    4779704
 Driver te Pool Total:    1048576 Used:         40 Free:    1048536
-                                 28208736 Total
+                                 28209016 Total
 
 show log | i err|drop|fail|Fail|crash|MALLOCFAIL|down
 Current Day: Feb 171: *Mar  1 00:03:24.547: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/1, changed state to down
@@ -64,37 +64,34 @@ No spanning tree instance exists.
 
 Show int counters error | ex 0
 
+Port        Align-Err     FCS-Err    Xmit-Err     Rcv-Err  UnderSize  OutDiscards 
 
-Show int counters error | ex 0
+Port      Single-Col  Multi-Col   Late-Col  Excess-Col  Carri-Sen      Runts     Giants 
 
+Show interface GigabitEthernet0/3 
+[{'protocol_status': 'up (connected)', 'ignored': '0', 'encapsulation': 'ARPA', 'bandwidth': '1000000 Kbit', 'hardware_type': 'Gigabit Ethernet', 'speed': '1000Mb/s', 'bia': 'f4ea.6797.3b43', 'last_output': '00:00:02', 'reliability': '255/255', 'frame': '0', 'output_rate': '0', 'duplex': 'Full-duplex', 'input_errors': '0', 'input_packets': '1331263', 'output_errors': '0', 'link_status': 'up', 'rxload': '1/255', 'last_output_hang': 'never', 'mtu': '1500', 'late_collision': '0', 'interface': 'GigabitEthernet0/3', 'collisions': '0', 'output_drops': '0', 'txload': '1/255', 'interf_reset': '0', 'overrun': '0', 'address': 'f4ea.6797.3b43', 'crc': '0', 'last_input': '00:00:02', 'output_packets': '964621', 'delay': '10 usec', 'description': '', 'queue_strategy': 'fifo', 'input_rate': '0', 'ip_address': '10.7.8.7/24'}]
 
-Show int counters error | ex 0
+Show interface GigabitEthernet0/3 
+[{'protocol_status': 'up (connected)', 'ignored': '0', 'encapsulation': 'ARPA', 'bandwidth': '1000000 Kbit', 'hardware_type': 'Gigabit Ethernet', 'speed': '1000Mb/s', 'bia': 'f4ea.6797.3b43', 'last_output': '00:00:03', 'reliability': '255/255', 'frame': '0', 'output_rate': '0', 'duplex': 'Full-duplex', 'input_errors': '0', 'input_packets': '1331264', 'output_errors': '0', 'link_status': 'up', 'rxload': '1/255', 'last_output_hang': 'never', 'mtu': '1500', 'late_collision': '0', 'interface': 'GigabitEthernet0/3', 'collisions': '0', 'output_drops': '0', 'txload': '1/255', 'interf_reset': '0', 'overrun': '0', 'address': 'f4ea.6797.3b43', 'crc': '0', 'last_input': '00:00:03', 'output_packets': '964621', 'delay': '10 usec', 'description': '', 'queue_strategy': 'fifo', 'input_rate': '0', 'ip_address': '10.7.8.7/24'}]
 
-
-Show int counters error | ex 0
-
-
-Show int counters error | ex 0
-
-
-Show int counters error | ex 0
-
-
-Show interface GigabitEthernet0/1 
-[{'overrun': '0', 'ip_address': '10.7.14.7/24', 'link_status': 'up', 'duplex': 'Full-duplex', 'last_output_hang': 'never', 'output_rate': '26000', 'interf_reset': '0', 'input_errors': '0', 'description': '', 'encapsulation': 'ARPA', 'address': 'f4ea.6797.3b41', 'mtu': '1500', 'bia': 'f4ea.6797.3b41', 'input_rate': '16000', 'output_drops': '0', 'frame': '0', 'reliability': '255/255', 'protocol_status': 'up (connected)', 'last_input': '00:00:00', 'crc': '0', 'interface': 'GigabitEthernet0/1', 'queue_strategy': 'fifo', 'delay': '10 usec', 'late_collision': '0', 'bandwidth': '1000000 Kbit', 'hardware_type': 'Gigabit Ethernet', 'output_packets': '1565224', 'speed': '1000Mb/s', 'collisions': '0', 'rxload': '1/255', 'ignored': '0', 'last_output': '00:00:00', 'output_errors': '0', 'txload': '1/255', 'input_packets': '2094397'}]
-
-Show interface GigabitEthernet0/1 
-[{'overrun': '0', 'ip_address': '10.7.14.7/24', 'link_status': 'up', 'duplex': 'Full-duplex', 'last_output_hang': 'never', 'output_rate': '31000', 'interf_reset': '0', 'input_errors': '0', 'description': '', 'encapsulation': 'ARPA', 'address': 'f4ea.6797.3b41', 'mtu': '1500', 'bia': 'f4ea.6797.3b41', 'input_rate': '18000', 'output_drops': '0', 'frame': '0', 'reliability': '255/255', 'protocol_status': 'up (connected)', 'last_input': '00:00:00', 'crc': '0', 'interface': 'GigabitEthernet0/1', 'queue_strategy': 'fifo', 'delay': '10 usec', 'late_collision': '0', 'bandwidth': '1000000 Kbit', 'hardware_type': 'Gigabit Ethernet', 'output_packets': '1565663', 'speed': '1000Mb/s', 'collisions': '0', 'rxload': '1/255', 'ignored': '0', 'last_output': '00:00:00', 'output_errors': '0', 'txload': '1/255', 'input_packets': '2094736'}]
-
-Show interface GigabitEthernet0/1 
-[{'overrun': '0', 'ip_address': '10.7.14.7/24', 'link_status': 'up', 'duplex': 'Full-duplex', 'last_output_hang': 'never', 'output_rate': '31000', 'interf_reset': '0', 'input_errors': '0', 'description': '', 'encapsulation': 'ARPA', 'address': 'f4ea.6797.3b41', 'mtu': '1500', 'bia': 'f4ea.6797.3b41', 'input_rate': '18000', 'output_drops': '0', 'frame': '0', 'reliability': '255/255', 'protocol_status': 'up (connected)', 'last_input': '00:00:00', 'crc': '0', 'interface': 'GigabitEthernet0/1', 'queue_strategy': 'fifo', 'delay': '10 usec', 'late_collision': '0', 'bandwidth': '1000000 Kbit', 'hardware_type': 'Gigabit Ethernet', 'output_packets': '1565946', 'speed': '1000Mb/s', 'collisions': '0', 'rxload': '1/255', 'ignored': '0', 'last_output': '00:00:00', 'output_errors': '0', 'txload': '1/255', 'input_packets': '2094962'}]
+Show interface GigabitEthernet0/3 
+[{'protocol_status': 'up (connected)', 'ignored': '0', 'encapsulation': 'ARPA', 'bandwidth': '1000000 Kbit', 'hardware_type': 'Gigabit Ethernet', 'speed': '1000Mb/s', 'bia': 'f4ea.6797.3b43', 'last_output': '00:00:01', 'reliability': '255/255', 'frame': '0', 'output_rate': '0', 'duplex': 'Full-duplex', 'input_errors': '0', 'input_packets': '1331265', 'output_errors': '0', 'link_status': 'up', 'rxload': '1/255', 'last_output_hang': 'never', 'mtu': '1500', 'late_collision': '0', 'interface': 'GigabitEthernet0/3', 'collisions': '0', 'output_drops': '0', 'txload': '1/255', 'interf_reset': '0', 'overrun': '0', 'address': 'f4ea.6797.3b43', 'crc': '0', 'last_input': '00:00:00', 'output_packets': '964622', 'delay': '10 usec', 'description': '', 'queue_strategy': 'fifo', 'input_rate': '0', 'ip_address': '10.7.8.7/24'}]
 
 Show interface GigabitEthernet0/6 
-[{'overrun': '0', 'ip_address': '10.1.7.7/24', 'link_status': 'up', 'duplex': 'Full-duplex', 'last_output_hang': 'never', 'output_rate': '17000', 'interf_reset': '0', 'input_errors': '0', 'description': '', 'encapsulation': 'ARPA', 'address': 'f4ea.6797.3b44', 'mtu': '1500', 'bia': 'f4ea.6797.3b44', 'input_rate': '27000', 'output_drops': '0', 'frame': '0', 'reliability': '255/255', 'protocol_status': 'up (connected)', 'last_input': '00:00:04', 'crc': '0', 'interface': 'GigabitEthernet0/6', 'queue_strategy': 'fifo', 'delay': '10 usec', 'late_collision': '0', 'bandwidth': '1000000 Kbit', 'hardware_type': 'Gigabit Ethernet', 'output_packets': '1640559', 'speed': '1000Mb/s', 'collisions': '0', 'rxload': '1/255', 'ignored': '0', 'last_output': '00:00:01', 'output_errors': '0', 'txload': '1/255', 'input_packets': '1560212'}]
+[{'protocol_status': 'up (connected)', 'ignored': '0', 'encapsulation': 'ARPA', 'bandwidth': '1000000 Kbit', 'hardware_type': 'Gigabit Ethernet', 'speed': '1000Mb/s', 'bia': 'f4ea.6797.3b44', 'last_output': '00:00:00', 'reliability': '255/255', 'frame': '0', 'output_rate': '4000', 'duplex': 'Full-duplex', 'input_errors': '0', 'input_packets': '1646383', 'output_errors': '0', 'link_status': 'up', 'rxload': '1/255', 'last_output_hang': 'never', 'mtu': '1500', 'late_collision': '0', 'interface': 'GigabitEthernet0/6', 'collisions': '0', 'output_drops': '0', 'txload': '1/255', 'interf_reset': '0', 'overrun': '0', 'address': 'f4ea.6797.3b44', 'crc': '0', 'last_input': '00:00:03', 'output_packets': '1722844', 'delay': '10 usec', 'description': '', 'queue_strategy': 'fifo', 'input_rate': '8000', 'ip_address': '10.1.7.7/24'}]
 
 Show interface GigabitEthernet0/6 
-[{'overrun': '0', 'ip_address': '10.1.7.7/24', 'link_status': 'up', 'duplex': 'Full-duplex', 'last_output_hang': 'never', 'output_rate': '19000', 'interf_reset': '0', 'input_errors': '0', 'description': '', 'encapsulation': 'ARPA', 'address': 'f4ea.6797.3b44', 'mtu': '1500', 'bia': 'f4ea.6797.3b44', 'input_rate': '30000', 'output_drops': '0', 'frame': '0', 'reliability': '255/255', 'protocol_status': 'up (connected)', 'last_input': '00:00:01', 'crc': '0', 'interface': 'GigabitEthernet0/6', 'queue_strategy': 'fifo', 'delay': '10 usec', 'late_collision': '0', 'bandwidth': '1000000 Kbit', 'hardware_type': 'Gigabit Ethernet', 'output_packets': '1640794', 'speed': '1000Mb/s', 'collisions': '0', 'rxload': '1/255', 'ignored': '0', 'last_output': '00:00:03', 'output_errors': '0', 'txload': '1/255', 'input_packets': '1560506'}]
+[{'protocol_status': 'up (connected)', 'ignored': '0', 'encapsulation': 'ARPA', 'bandwidth': '1000000 Kbit', 'hardware_type': 'Gigabit Ethernet', 'speed': '1000Mb/s', 'bia': 'f4ea.6797.3b44', 'last_output': '00:00:02', 'reliability': '255/255', 'frame': '0', 'output_rate': '4000', 'duplex': 'Full-duplex', 'input_errors': '0', 'input_packets': '1646463', 'output_errors': '0', 'link_status': 'up', 'rxload': '1/255', 'last_output_hang': 'never', 'mtu': '1500', 'late_collision': '0', 'interface': 'GigabitEthernet0/6', 'collisions': '0', 'output_drops': '0', 'txload': '1/255', 'interf_reset': '0', 'overrun': '0', 'address': 'f4ea.6797.3b44', 'crc': '0', 'last_input': '00:00:00', 'output_packets': '1722922', 'delay': '10 usec', 'description': '', 'queue_strategy': 'fifo', 'input_rate': '8000', 'ip_address': '10.1.7.7/24'}]
 
 Show interface GigabitEthernet0/6 
-[{'overrun': '0', 'ip_address': '10.1.7.7/24', 'link_status': 'up', 'duplex': 'Full-duplex', 'last_output_hang': 'never', 'output_rate': '19000', 'interf_reset': '0', 'input_errors': '0', 'description': '', 'encapsulation': 'ARPA', 'address': 'f4ea.6797.3b44', 'mtu': '1500', 'bia': 'f4ea.6797.3b44', 'input_rate': '30000', 'output_drops': '0', 'frame': '0', 'reliability': '255/255', 'protocol_status': 'up (connected)', 'last_input': '00:00:02', 'crc': '0', 'interface': 'GigabitEthernet0/6', 'queue_strategy': 'fifo', 'delay': '10 usec', 'late_collision': '0', 'bandwidth': '1000000 Kbit', 'hardware_type': 'Gigabit Ethernet', 'output_packets': '1640924', 'speed': '1000Mb/s', 'collisions': '0', 'rxload': '1/255', 'ignored': '0', 'last_output': '00:00:00', 'output_errors': '0', 'txload': '1/255', 'input_packets': '1560674'}]
+[{'protocol_status': 'up (connected)', 'ignored': '0', 'encapsulation': 'ARPA', 'bandwidth': '1000000 Kbit', 'hardware_type': 'Gigabit Ethernet', 'speed': '1000Mb/s', 'bia': 'f4ea.6797.3b44', 'last_output': '00:00:04', 'reliability': '255/255', 'frame': '0', 'output_rate': '4000', 'duplex': 'Full-duplex', 'input_errors': '0', 'input_packets': '1646504', 'output_errors': '0', 'link_status': 'up', 'rxload': '1/255', 'last_output_hang': 'never', 'mtu': '1500', 'late_collision': '0', 'interface': 'GigabitEthernet0/6', 'collisions': '0', 'output_drops': '0', 'txload': '1/255', 'interf_reset': '0', 'overrun': '0', 'address': 'f4ea.6797.3b44', 'crc': '0', 'last_input': '00:00:02', 'output_packets': '1722965', 'delay': '10 usec', 'description': '', 'queue_strategy': 'fifo', 'input_rate': '8000', 'ip_address': '10.1.7.7/24'}]
+
+Show interface GigabitEthernet0/1 
+[{'protocol_status': 'up (connected)', 'ignored': '0', 'encapsulation': 'ARPA', 'bandwidth': '1000000 Kbit', 'hardware_type': 'Gigabit Ethernet', 'speed': '1000Mb/s', 'bia': 'f4ea.6797.3b41', 'last_output': '00:00:00', 'reliability': '255/255', 'frame': '0', 'output_rate': '24000', 'duplex': 'Full-duplex', 'input_errors': '0', 'input_packets': '2195447', 'output_errors': '0', 'link_status': 'up', 'rxload': '1/255', 'last_output_hang': 'never', 'mtu': '1500', 'late_collision': '0', 'interface': 'GigabitEthernet0/1', 'collisions': '0', 'output_drops': '0', 'txload': '1/255', 'interf_reset': '0', 'overrun': '0', 'address': 'f4ea.6797.3b41', 'crc': '0', 'last_input': '00:00:00', 'output_packets': '1670047', 'delay': '10 usec', 'description': '', 'queue_strategy': 'fifo', 'input_rate': '9000', 'ip_address': '10.7.14.7/24'}]
+
+Show interface GigabitEthernet0/1 
+[{'protocol_status': 'up (connected)', 'ignored': '0', 'encapsulation': 'ARPA', 'bandwidth': '1000000 Kbit', 'hardware_type': 'Gigabit Ethernet', 'speed': '1000Mb/s', 'bia': 'f4ea.6797.3b41', 'last_output': '00:00:00', 'reliability': '255/255', 'frame': '0', 'output_rate': '24000', 'duplex': 'Full-duplex', 'input_errors': '0', 'input_packets': '2195578', 'output_errors': '0', 'link_status': 'up', 'rxload': '1/255', 'last_output_hang': 'never', 'mtu': '1500', 'late_collision': '0', 'interface': 'GigabitEthernet0/1', 'collisions': '0', 'output_drops': '0', 'txload': '1/255', 'interf_reset': '0', 'overrun': '0', 'address': 'f4ea.6797.3b41', 'crc': '0', 'last_input': '00:00:00', 'output_packets': '1670172', 'delay': '10 usec', 'description': '', 'queue_strategy': 'fifo', 'input_rate': '9000', 'ip_address': '10.7.14.7/24'}]
+
+Show interface GigabitEthernet0/1 
+[{'protocol_status': 'up (connected)', 'ignored': '0', 'encapsulation': 'ARPA', 'bandwidth': '1000000 Kbit', 'hardware_type': 'Gigabit Ethernet', 'speed': '1000Mb/s', 'bia': 'f4ea.6797.3b41', 'last_output': '00:00:00', 'reliability': '255/255', 'frame': '0', 'output_rate': '24000', 'duplex': 'Full-duplex', 'input_errors': '0', 'input_packets': '2195652', 'output_errors': '0', 'link_status': 'up', 'rxload': '1/255', 'last_output_hang': 'never', 'mtu': '1500', 'late_collision': '0', 'interface': 'GigabitEthernet0/1', 'collisions': '0', 'output_drops': '0', 'txload': '1/255', 'interf_reset': '0', 'overrun': '0', 'address': 'f4ea.6797.3b41', 'crc': '0', 'last_input': '00:00:00', 'output_packets': '1670244', 'delay': '10 usec', 'description': '', 'queue_strategy': 'fifo', 'input_rate': '9000', 'ip_address': '10.7.14.7/24'}]
 
