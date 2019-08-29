@@ -252,7 +252,6 @@ sortMethod:"directed"}}};
 			}else
                        	$scope.cloudclicked = false
 			console.log("Is Cloud:",$scope.cloudclicked)
-ping_
 			if(!$scope.cloudclicked){
                             
                         
@@ -292,8 +291,10 @@ ping_
                         let clicked = properties.nodes;
                         $scope.exits = "";
                         $scope.entries = "";
+console.log("RESPONSE IS"+ response)
                         for (entry in response) {
                             from = response[entry]["now"];
+			    console.log("FROM IS"+from)
                             if (from == clicked) {
                                 if (response[entry]['next'] == from)
                                     continue;
@@ -340,6 +341,7 @@ ping_
             }
 
 	    function thres(arr){
+		
 	        var retval  = 0;
 		var prev = arr[0]
 		for (i in arr){
@@ -464,8 +466,9 @@ ping_
                 for(interface in $scope.clicked_device["Interface Dictionary"]){
                     var flag = thresholds.green;
 		    var int = $scope.clicked_device["Interface Dictionary"][interface]
+		    console.log("Current interface:",int);
                     if(thres(int.collisions) > 0 || thres(int.crc) > 0 || thres(int.frame) > 0 || thres(int.ignored) > 0
-                      || thres(int.input_errors) > 0 || thres(int.interf_reset) > 0 || thres(int.collision) > 0 || thres(int.output_drops) > 0 
+                      || thres(int.input_errors) > 0 || thres(int.interf_reset) > 0 || thres(int.late_collision) > 0 || thres(int.output_drops) > 0 
                       || thres(int.output_errors) > 0 || thres(int.overrun) > 0){
                           flag = thresholds.amber;
                       }
@@ -788,7 +791,7 @@ $scope.eigrp = $scope.eigrp | flag;
         </div>
 	
         <div id="kpipanel" class="row-6 border">
-	   <!-- <div ng-if="fwderrors > 5"> !-->
+	   <div ng-if="fwderrors > 5">
 	         <h4 class="kpi"> Connectivity Errors were detected for the given query </h4>
 		 <table class="table">
 		 <tr ng-if="errors.ping_failure">
@@ -810,7 +813,7 @@ $scope.eigrp = $scope.eigrp | flag;
 			<td>  SSH failed on device : {{ errors.ssh_err_ip }}</td>		
  		</tr>
 		</table>
-	 <!--   </div> !-->
+	    </div> 
 	    <div id="sp" ng-if="cloudclicked" >
  		<h4 class="sub-kpi"><img ng-src = "/static/cloud.png" style="width:20px"/> Service Provider Network</h4>
                 <div class="kpi"><b>Entry: </b>{{ entries }}</div>
@@ -978,6 +981,9 @@ $scope.eigrp = $scope.eigrp | flag;
                             <td>RX Load: {{ interface.rxload[2] }}</td>                            
                             <td>TX Load: {{ interface.txload[2] }}</td>
                         </tr>
+			<tr>
+			<td ng-if="interface.description"> Description : {{interface.description[2]}}</td>
+			</tr>
                     </table>
                   <h6 class="sub-kpi">Interfaces with Counter Errors: <img ng-src = "{{images[counters]}}" style="width:20px"/></h6> 
                   

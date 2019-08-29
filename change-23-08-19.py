@@ -21,7 +21,6 @@ jinja_options.update(dict(
     comment_end_string='#>'
 ))
 app.jinja_options = jinja_options
-application = app
 
 if __name__ == '__main__' :
 	app.run(threaded=True)
@@ -69,7 +68,24 @@ class router(object):
 	        print(self.gennodedict)
 	        
 	        print("------------------------------")
+def expand_name(rec):
+	if 'Ethernet' not in rec:
+	    if rec[0:3]=="Eth":
+	        snd="Ethernet"+rec[3:]
+	    elif rec[0:2]=="Fa":
+	        snd="FastEthernet"+rec[2:]
+	    else:
+	        snd="GigabitEthernet"+rec[3:]
+	else:
+	    if 'Gig'in rec:
+	        snd='Gig'+rec[rec.find('net')+3:]
+	    elif 'Fast'in rec:
+	        snd='Fa'+rec[rec.find('net')+3:]
+	    else:
+	        snd='Eth'+rec[rec.find('net')+3:]
+	print(" RECEIVED NAME "+rec+" CHANGED NAME "+snd+"\n\n\n\n\n")
 
+	return snd
 def ping_to(check_dst):
 	cmd="ping -c 4 "
 	cmd+=check_dst
@@ -1066,6 +1082,9 @@ def fetchKPI(ssh,nme,lock,path_no):
 	    version = dictofobj[nme].gennodedict['version']['soft_ver']
 	    fhand.write("<!doctype html><html><head> <title>"+nme+"</title></style></head><body>")
 	    fhand.write("Version "+version+"\n\n")
+	    print("name "+nme+" interfaces ")
+	    print(dictofobj[nme].dictint)
+	    print("\n\n\n\n\n\n\n") 
 	    if version != 'cisco_nxos':	    
 	     boo=True
 	     while boo:
@@ -1166,7 +1185,7 @@ def fetchKPI(ssh,nme,lock,path_no):
 	    version = dictofobj[nme].gennodedict['version']['soft_ver']
 	    print("VERSION ",version)
 	    if version=='cisco_nxos':
-	        ret=ssh.send_command("sh ip route | inc 00:",use_textfsm=True)
+	        ret=ssh.send_command("sh ip route",use_textfsm=True)
 	        print(ret)
 	        fhand.write("Show ip route | i 00: \n")
 	        fhand.write(str(ret))
@@ -1175,9 +1194,10 @@ def fetchKPI(ssh,nme,lock,path_no):
 	        ct1=1
 	        for rou in ret:
 	            print(rou)
-	            print('\n')
-	            make_dict[ct1]=rou
-	            ct1+=1
+	            if rou['uptime'][:2]=='00':
+	                print('\n')
+	                make_dict[ct1]=rou
+	                ct1+=1
 	        dictofobj[nme].gennodedict['ip_route_00']=make_dict
 	    else:
 	        boo=True
@@ -1762,170 +1782,53 @@ def fetchKPI(ssh,nme,lock,path_no):
 	    Int_count={}
 	    print(nme," ",dictofobj[nme].gennodedict['version']['soft_ver'])
 	    if dictofobj[nme].gennodedict['version']['soft_ver']=='cisco_ios':
-	    #if ios_ver=='cisco_ios':	     
-	        boo=True
-	        while boo:
-	            try:
-	                command = ssh.send_command("sh int counters error | ex 0")
-	                boo=False
-	            except:
-	                boo=True
-	                print("9-7 Exception handled - sh int counters error, Trying again")
-	            print("Return from show int counters error")
-	            print(command)
-	        fhand.write("Show int counters error | ex 0\n")
-	        fhand.write(command)
-	        fhand.write("\n\n")
-	            
-	        if not(command):
-	            print("Sorry empty")
-	        else:           
-	            s = 'Port      Single-Col  Multi-Col   Late-Col  Excess-Col  Carri-Sen      Runts     Giants '
-	            m = defaultdict(list)
-	            count = -2
-	            m1 = defaultdict(list)
+	        inter_dict=dict()
+	        for intface in dictofobj[nme].dictint.keys():
+	            inter_dict[intface]=dict()
 	            for j in range(0,3):
-	                ret1 = ssh .send_command("sh interface counters errors")
-	                l2 = ret1.split("\n")
-	                for i in l2[2:]:
-	                        if('Port' not in i):
-	                            count += 1
-	                            list1 = i.split(' ')
-	                            while ("" in list1):
-	                                list1.remove("")
-	                            if(len(list1)!=0):
-	                                m[list1[0]].append(list1[1: ])
-				# print(i)
-	                        elif('Port' in i):
-	                            break
-	            count = int(count/3)
-	            count+=3
+  	                ret1 = ssh.send_command("sh int counters error | inc "+intface)
+  	                if not ret1:
+  	                    intfacek=expand_name(intface)
+  	                    if intfacek!=intface:
+  	                        inter_dict[intfacek]=dict()
+  	                        intfacek=intface
+  	                    ret1 = ssh.send_command("sh int counters error | inc "+intface)
+  	                fhand.write("Show int counters error | ex 0\n")
+  	                fhand.write(ret1)
+  	                fhand.write("\n\n")
+  	                inter_dict[intface][j]=list()
+  	                if ret1:
+  	                    ret1=ret1.split('\n')
+  	                    for linex in ret1:
+  	                        if linex.split()[0]==intface:
+  	                            inter_dict[intface][j].append(linex.split()[1:])
+           	              
+	        dictofobj[nme].gennodedict['interface_counters_errors']=inter_dict
+          
+	               
+	    if dictofobj[nme].gennodedict['version']['soft_ver']=='cisco_nxos':                
+	        inter_dict={}
+	        for intface in dictofobj[nme].dictint.keys():
+	            inter_dict[intface]=dict()
 	            for j in range(0,3):
-	                for i in l2[count+1 : ]:
-	                        list1 = i.split(' ')
-	                        while ("" in list1):
-	                            list1.remove("")
-			    #print(list1)
-	                        if(len(list1)!=0):
-	                       	    m1[list1[0]].append(list1[1: ])
+  	                ret1 = ssh.send_command("sh int counters error | inc "+intface)
+  	                if not ret1:
+  	                    intfacek=expand_name(intface)
+  	                    if intfacek!=intface:
+  	                        inter_dict[intfacek]=dict()
+  	                        intfacek=intface
+  	                    ret1 = ssh.send_command("sh int counters error | inc "+intface)
 
-	            for x in m.keys():
-	        	    m[x] = m[x] + m1[x]
-	            print(m)
-	            for x in m.keys():
-	                  k = int(len(m[x]) / 2)
-	                  for y in range(0, k):
-	                      m[x][y] = m[x][y] + m[x][y + 3]
-	                  m[x] = m[x][:3]
-	            print("The errors are \n")
-	            print(m)
-
-	    if dictofobj[nme].gennodedict['version']['soft_ver']=='cisco_nxos':     
-	        boo=True
-	        while boo:
-	            try:
-	                command = ssh.send_command("sh int counters error | ex 0")
-	                boo=False
-	            except:
-	                boo=True
-	                print("9-7 Exception handled - sh int counters error, Trying again")
-	            print("Return from show int counters error")
-	            print(command)
-	        fhand.write("Show int counters error | ex 0\n")
-	        fhand.write(command)
-	        fhand.write("\n\n")
-	            
-	        if not(command):
-	            print("Sorry empty")
-	        else:           
-	            s = 'Port      Single-Col   Multi-Col    Late-Col   Exces-Col   Carri-Sen       Runts'
-	            s1 = 'Port          Giants  SQETest-Er Deferred-Tx IntMacTx-Er IntMacRx-Er  Symbol-Err'
-	            s2 = 'mgmt0             --          --          --          --          --          --'
-	            int_d = defaultdict(list)	
-	            int_d_1 = defaultdict(list)
-	            int_d_2 = defaultdict(list)
-	            count = -4
-
-	            for j in range(0,3):
-  	              ret1 = ssh.send_command("sh int counters error")
-  	              list_1 = ret1.split("\n")
-  	              for i in list_1[4:]:
-	                   if ('Port' not in i):
-	                     count += 1
-	                     list1 = i.split(' ')
-	                     while ("" in list1):
-	                       list1.remove("")
-	                     #print(list1)
-	                     if (len(list1) != 0):
-	                        int_d[list1[0]].append(list1[1:])
-	                   elif ('Port' in i):
-	                        break
-#print(m)
-	            count = int(count / 3)
-	            count += 8
-	            k=count
-#print(list_1[count])
-	            list1 = []
-	            for j in range(0,3):
-	               for i in list_1[k:]:
-	                  if 'Port' not in i:
-	                    count += 1
-	                    list1 = i.split(' ')
-	                    while "" in list1:
-	                      list1.remove("")
-	                    if len(list1) != 0:
-	                      int_d_1[list1[0]].append(list1[1:])
-	                  elif 'Port' in i:
-	                    break
-#print(m1)
-	            count = int(count / 3)
-	            count+=51
-#print(list_1[count])
-	            k1 = count
-#print(list_1[k1:])
-	            list1= []
-	            for j in range(0, 3):
-	               for i in list_1[k1:]:
-	                  if 'mgmt0' not in i:
-	                    list1 = i.split(' ')
-	                    while ("" in list1):
-	                       list1.remove("")
-	                    if (len(list1) != 0):
-	                       int_d_2[list1[0]].append(list1[1:])
-	                  elif 'mgmt0' in i:
-	                     break
-
-#print(m2)
-
-	            for x in int_d.keys():
-	              int_d[x] = int_d[x] + int_d_1[x]
-	              int_d[x] = int_d[x] + int_d_2[x]
-	            print("Map is", int_d)
-	            if 'mgmt0' in int_d:
-	              int_d.pop('mgmt0')
-	            if '--------------------------------------------------------------------------------' in int_d:
-	              int_d.pop('--------------------------------------------------------------------------------')
-#print(m)
-	            print(int_d)
-	            for xint in int_d.keys():
-	               if xint != 'mgmt0':
-	                 k = int(len(int_d[xint]) / 3)
-	                 print("K is", k)
-	                 for yint in range(0, k):
-	                   lco = yint+3
-	                   int_d[xint][yint] = int_d[xint][yint] + int_d[xint][lco]
-	                 #print(m)
-	                 if k==3:
-	                  for yint in range(0,k):
-	                    lco=lco+1
-	                    print(lco,xint)
-	                   #print(int_d[xint])
-	                   #print(int_d)
-	                    int_d[xint][yint] = int_d[xint][yint] + int_d[xint][lco]
-	               int_d[xint] = int_d[xint][:3]
-	        m = int_d	
-	        dictofobj[nme].gennodedict['interface_counters_errors']=m
-
+  	                fhand.write("Show int counters error | ex 0\n")
+  	                fhand.write(ret1)
+  	                fhand.write("\n\n")
+  	                inter_dict[intface][j]=list()
+  	                if ret1:
+  	                    ret1=ret1.split('\n')
+  	                    for linex in ret1:
+  	                        if linex.split()[0]==intface:
+  	                            inter_dict[intface][j].append(linex.split()[1:])
+	        dictofobj[nme].gennodedict['interface_counters_errors']=inter_dict
 
 
 

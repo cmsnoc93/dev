@@ -1,0 +1,73 @@
+<!doctype html><html><head> <title>BGL--RC02</title></style></head><body>Version cisco_ios
+
+Show proc cpu | ex 0.0
+[{'proc_5_sec': '', 'proc_1_min': '', 'interrupts': '0', 'pid': '', 'cpu_5_min': '0', 'cpu_5_sec': '0', 'cpu_1_min': '0', 'process': '', 'proc_5_min': ''}]
+
+Show ip protocols | i bgp: 
+Routing Protocol is "bgp 100"
+
+Show ip protocols | i eigrp 
+Routing Protocol is "eigrp 100"
+  Redistributing: eigrp 100
+
+Show ip eigrp neigh 
+EIGRP-IPv4 neighbors for process 100
+H   Address                 Interface       Hold Uptime   SRTT   RTO  Q  Seq
+                                            (sec)         (ms)       Cnt Num
+1   10.1.2.1                Gi0/0/3           12 1w2d        1   200  0  320
+0   10.2.8.8                Gi0/0/2           12 6w3d        1   200  0  507
+
+Show ip eigrp neigh 
+EIGRP-IPv4 neighbors for process 100
+H   Address                 Interface       Hold Uptime   SRTT   RTO  Q  Seq
+                                            (sec)         (ms)       Cnt Num
+1   10.1.2.1                Gi0/0/3           11 1w2d        1   200  0  320
+0   10.2.8.8                Gi0/0/2           10 6w3d        1   200  0  507
+
+Show ip eigrp neigh 
+EIGRP-IPv4 neighbors for process 100
+H   Address                 Interface       Hold Uptime   SRTT   RTO  Q  Seq
+                                            (sec)         (ms)       Cnt Num
+1   10.1.2.1                Gi0/0/3           13 1w2d        1   200  0  320
+0   10.2.8.8                Gi0/0/2           13 6w3d        1   200  0  507
+
+Show ip :bgp summary
+[{'local_as': '100', 'state_pfxrcd': '22', 'bgp_neigh': '1.1.1.1', 'neigh_as': '100', 'updown': '1w1d', 'router_id': '22.22.22.22'}, {'local_as': '100', 'state_pfxrcd': '22', 'bgp_neigh': '3.3.3.3', 'neigh_as': '200', 'updown': '1w1d', 'router_id': '22.22.22.22'}]
+
+Show ip :bgp summary
+[{'local_as': '100', 'state_pfxrcd': '22', 'bgp_neigh': '1.1.1.1', 'neigh_as': '100', 'updown': '1w1d', 'router_id': '22.22.22.22'}, {'local_as': '100', 'state_pfxrcd': '22', 'bgp_neigh': '3.3.3.3', 'neigh_as': '200', 'updown': '1w1d', 'router_id': '22.22.22.22'}]
+
+Show ip :bgp summary
+[{'local_as': '100', 'state_pfxrcd': '22', 'bgp_neigh': '1.1.1.1', 'neigh_as': '100', 'updown': '1w1d', 'router_id': '22.22.22.22'}, {'local_as': '100', 'state_pfxrcd': '22', 'bgp_neigh': '3.3.3.3', 'neigh_as': '200', 'updown': '1w1d', 'router_id': '22.22.22.22'}]
+
+Show proc mem | inc totals
+Processor Pool Total: 1813062876 Used:  211977176 Free: 1601085700
+ lsmpi_io Pool Total:    6295088 Used:    6294116 Free:        972
+                                218269180 Total
+
+show log | i err|drop|fail|Fail|crash|MALLOCFAIL|down
+Current Day: Feb 171: Feb  7 17:23:04.803: %DUAL-5-NBRCHANGE: EIGRP-IPv4(0) 100: Neighbor 10.1.2.1 (GigabitEthernet0/0/3) is down: interface down
+2: Feb  7 17:23:06.800: %LINK-5-CHANGED: Interface GigabitEthernet0/0/3, changed state to administratively down
+3: Feb  7 17:23:07.801: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/3, changed state to down
+4: Feb  7 17:24:11.067: %LINK-3-UPDOWN: Interface GigabitEthernet0/0/3, changed state to down
+5: Feb  7 17:24:11.447: %LINK-3-UPDOWN: SIP0/0: Interface GigabitEthernet0/0/3, changed state to down
+6: .Feb  7 17:29:22.754: %DUAL-5-NBRCHANGE: EIGRP-IPv4(0) 100: Neighbor 10.1.2.1 (GigabitEthernet0/0/3) is down: interface down
+7: .Feb  7 17:29:24.751: %LINK-5-CHANGED: Interface GigabitEthernet0/0/3, changed state to administratively down
+8: .Feb  7 17:29:25.752: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/3, changed state to down
+9: .Feb  7 17:41:50.405: %LINK-3-UPDOWN: Interface GigabitEthernet0/0/3, changed state to down
+10: .Feb  7 17:41:50.790: %LINK-3-UPDOWN: SIP0/0: Interface GigabitEthernet0/0/3, changed state to down
+11: Feb  8 15:52:34.739: %IOSXE-7-PLATFORM: F0: sntp: resetting on error 1.33 > 0.1
+12: Feb  8 15:52:35.870: %IOSXE-7-PLATFORM: SIP0: sntp: resetting on error 1.33 > 0.1
+
+{"10.1.2.1": 2}
+
+Show spanning-tree active
+
+No spanning tree instance exists.
+
+
+Show int counters error | ex 0
+                          ^
+% Invalid input detected at '^' marker.
+
+
